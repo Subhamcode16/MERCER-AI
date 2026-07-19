@@ -1,0 +1,73 @@
+{
+  "id": "campaign_d4f893c4",
+  "project_id": "proj_123",
+  "product_id": "prod_456",
+  "identity": {
+    "product_dna": null,
+    "reference_dna": null
+  },
+  "planning": {
+    "creative_objective": "luxury_editorial",
+    "campaign_plan": {
+      "assets_requested": [
+        "hero_image",
+        "product_closeup",
+        "lifestyle"
+      ],
+      "dependency_graph": {
+        "hero_image": [],
+        "product_closeup": [],
+        "lifestyle": [],
+        "reel_storyboard": [
+          "hero_image"
+        ]
+      }
+    }
+  },
+  "execution": {
+    "campaign_state": {},
+    "asset_states": [
+      {
+        "type": "hero_image",
+        "status": "pending",
+        "asset_dna": {
+          "composition": null,
+          "lighting_emphasis": null,
+          "framing": null
+        },
+        "prompt": null,
+        "image_path": null
+      },
+      {
+        "type": "product_closeup",
+        "status": "pending",
+        "asset_dna": {
+          "composition": null,
+          "lighting_emphasis": null,
+          "framing": null
+        },
+        "prompt": null,
+        "image_path": null
+      },
+      {
+        "type": "lifestyle",
+        "status": "pending",
+        "asset_dna": {
+          "composition": null,
+          "lighting_emphasis": null,
+          "framing": null
+        },
+        "prompt": null,
+        "image_path": null
+      }
+    ]
+  },
+  "evaluation": {
+    "feedback_log": [],
+    "consistency_scores": {},
+    "approval_rate": null,
+    "edit_distance_minutes": null
+  },
+  "created_at": "2026-07-03T06:05:16.006856",
+  "updated_at": "2026-07-03T06:05:16.006883"
+}
