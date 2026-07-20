@@ -2,7 +2,9 @@
 
 @theme {
   --color-warm-ivory: #E1D4C0;
-  --font-serif: "Playfair Display", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-sans: var(--font-neue-haas), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-cormorant-garamond), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-butler: var(--font-butler), ui-serif, Georgia, serif;
 }
 
 /* Pure, unstyled foundation */

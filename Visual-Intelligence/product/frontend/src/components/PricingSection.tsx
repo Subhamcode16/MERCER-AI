@@ -1,20 +1,73 @@
+import { useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(ScrollTrigger);
+
 export function PricingSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    if (!sectionRef.current) return;
+
+    // Headline Reveal
+    if (textRef.current) {
+      gsap.fromTo(textRef.current.children, 
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1.2,
+          stagger: 0.15,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: textRef.current,
+            start: "top 80%",
+          }
+        }
+      );
+    }
+
+    // Cards Stagger Reveal
+    if (cardsRef.current) {
+      gsap.fromTo(cardsRef.current.children, 
+        { y: 60, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1.2,
+          stagger: 0.2,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: cardsRef.current,
+            start: "top 80%",
+          }
+        }
+      );
+    }
+  }, { scope: sectionRef });
+
   return (
-    <section className="relative w-full min-h-screen bg-black flex flex-col items-center justify-center py-32 px-6 z-[200]">
+    <section ref={sectionRef} className="relative w-full min-h-screen bg-black flex flex-col items-center justify-center py-32 px-6 z-[200]">
       {/* Background Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vh] bg-[#E1D4C0]/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center">
         {/* Header */}
-        <h2 className="text-[12px] tracking-[0.28em] font-medium opacity-70 mb-8 text-[#E1D4C0] uppercase text-center">
-          Access the Intelligence
-        </h2>
-        <h1 className="font-serif font-bold text-[56px] lg:text-[72px] leading-[0.95] text-center mb-24 max-w-3xl">
-          The Cost of Creation.
-        </h1>
+        <div ref={textRef} className="flex flex-col items-center w-full">
+          <h2 className="text-[12px] tracking-[0.28em] font-medium opacity-70 mb-8 text-[#E1D4C0] uppercase text-center">
+            Access the Intelligence
+          </h2>
+          <h1 className="font-serif font-bold text-[56px] lg:text-[72px] leading-[0.95] text-center mb-24 max-w-3xl">
+            The Cost of <span className="italic">Creation.</span>
+          </h1>
+        </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl">
+        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl">
           
           {/* Base Tier */}
           <div className="relative group rounded-2xl border border-white/10 bg-white/5 p-12 overflow-hidden transition-all duration-500 hover:border-white/20 hover:bg-white/10">

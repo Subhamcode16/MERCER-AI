@@ -132,7 +132,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
               strokeLinecap="round"
             />
           </svg>
-          <span className="font-serif text-[#E1D4C0] text-7xl font-medium tracking-tighter tabular-nums">
+          <span className="font-butler text-[#E1D4C0] text-7xl font-medium tracking-tighter tabular-nums">
             {displayCount}
           </span>
         </div>
@@ -156,7 +156,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
         {/* Hero Title */}
         <div 
           ref={titleRef} 
-          className="absolute text-[#E1D4C0] font-serif text-[120px] font-bold z-10 drop-shadow-2xl"
+          className="absolute text-[#E1D4C0] font-butler text-[120px] font-bold z-10 drop-shadow-2xl"
         >
           ATELIER
         </div>

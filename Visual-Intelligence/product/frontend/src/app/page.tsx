@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import Link from 'next/link';
 import { ScrollSequence } from '@/components/ScrollSequence';
 import { Preloader } from '@/components/Preloader';
 import { ObservationArchive } from '@/components/ObservationArchive';
@@ -19,13 +20,13 @@ if (typeof window !== 'undefined') {
 
 export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const frame04BgRef = useRef<HTMLDivElement>(null);
+  const sequence01to03Ref = useRef<HTMLDivElement>(null);
   const frame06BgRef = useRef<HTMLDivElement>(null);
   const frame04UIRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    gsap.set(frame04BgRef.current, { yPercent: 100 });
-    gsap.set(frame04UIRef.current, { opacity: 0 });
+    gsap.set(frame04UIRef.current, { yPercent: 100, opacity: 1 });
+    gsap.set(sequence01to03Ref.current, { yPercent: 0 });
   }, { scope: containerRef });
 
   const [globalScrollProgress, setGlobalScrollProgress] = useState(0);
@@ -33,6 +34,7 @@ export default function Home() {
   const [showEnding, setShowEnding] = useState(false);
   const [showFrame08, setShowFrame08] = useState(false);
   const [isExitingEnding, setIsExitingEnding] = useState(false);
+  const [frame02Revealed, setFrame02Revealed] = useState(false);
   const endingContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -43,6 +45,19 @@ export default function Home() {
       setIsExitingEnding(true);
     }
   }, [globalScrollProgress, showEnding, showFrame08, isExitingEnding]);
+
+  useEffect(() => {
+    if (globalScrollProgress >= 0.173 && globalScrollProgress < 0.340) {
+      if (!frame02Revealed) {
+        const timer = setTimeout(() => {
+          setFrame02Revealed(true);
+        }, 25);
+        return () => clearTimeout(timer);
+      }
+    } else if (globalScrollProgress < 0.160) {
+      setFrame02Revealed(false);
+    }
+  }, [globalScrollProgress, frame02Revealed]);
 
   useGSAP(() => {
     if (isExitingEnding && endingContainerRef.current) {
@@ -66,26 +81,25 @@ export default function Home() {
 
   useEffect(() => {
     let targetY = 100;
-    let targetOpacity = 0;
-    let targetBgOpacity = 1;
+    let sequenceY = 0;
+    let targetOpacity = 1;
     
-    // Background parallax slide up (48.6% to 51.3%)
+    // Frame 04 & Frame 03 Slide Up Transition (0.486 to 0.513)
     if (scrollProgress >= 0.486 && scrollProgress <= 0.513) {
       targetY = 100 - ((scrollProgress - 0.486) / 0.027) * 100;
+      sequenceY = - ((scrollProgress - 0.486) / 0.027) * 100;
     } else if (scrollProgress > 0.513) {
       targetY = 0;
+      sequenceY = -100;
     }
 
-    // UI fades in AFTER background covers viewport (51.3% to 53.3%)
-    if (scrollProgress > 0.513 && scrollProgress <= 0.533) {
-      targetOpacity = (scrollProgress - 0.513) / 0.020;
-    } else if (scrollProgress > 0.533 && scrollProgress <= 0.646) {
-      targetOpacity = 1;
-    } else if (scrollProgress > 0.646 && scrollProgress <= 0.666) {
+    // Frame 04 Fades out into Frame 05 (0.646 to 0.666)
+    if (scrollProgress > 0.646 && scrollProgress <= 0.666) {
       targetOpacity = Math.max(0, 1 - ((scrollProgress - 0.646) / 0.020));
-      targetBgOpacity = targetOpacity; // Fade out background too!
     } else if (scrollProgress > 0.666) {
-      targetBgOpacity = 0;
+      targetOpacity = 0;
+    } else {
+      targetOpacity = 1;
     }
     
     // Frame 06 Dolly (Scale from 1.0 to 1.02 over its active scroll window)
@@ -98,18 +112,20 @@ export default function Home() {
       gsap.set(frame06BgRef.current, { scale: 1.0 });
     }
     
-    if (frame04BgRef.current) {
-      gsap.to(frame04BgRef.current, {
-        yPercent: targetY,
-        opacity: targetBgOpacity,
+    // Animate Frame 03 sliding up
+    if (sequence01to03Ref.current) {
+      gsap.to(sequence01to03Ref.current, {
+        yPercent: sequenceY,
         duration: 0.8,
         ease: 'power2.out',
         overwrite: 'auto'
       });
     }
     
+    // Animate Frame 04 sliding up and eventually fading out
     if (frame04UIRef.current) {
       gsap.to(frame04UIRef.current, {
+        yPercent: targetY,
         opacity: targetOpacity,
         duration: 0.8,
         ease: 'power2.out',
@@ -194,14 +210,16 @@ export default function Home() {
     blackFadeOpacity = 1 - ((scrollProgress - 0.833) / 0.007); 
   }
 
-  // Frame 02 UI
+  // Frame 02 UI & Video Scale
   let frame02Opacity = 0;
-  if (scrollProgress >= 0.180 && scrollProgress <= 0.206) {
-    frame02Opacity = (scrollProgress - 0.180) / 0.026;
-  } else if (scrollProgress > 0.206 && scrollProgress <= 0.280) {
-    frame02Opacity = 1;
-  } else if (scrollProgress > 0.280 && scrollProgress <= 0.306) {
-    frame02Opacity = Math.max(0, 1 - ((scrollProgress - 0.280) / 0.026));
+  let frame02VideoScaleProgress = 0;
+  if (scrollProgress >= 0.173 && scrollProgress <= 0.230) {
+    frame02Opacity = 1; 
+  } else if (scrollProgress > 0.230 && scrollProgress <= 0.250) {
+    frame02Opacity = Math.max(0, 1 - ((scrollProgress - 0.230) / 0.020));
+    frame02VideoScaleProgress = (scrollProgress - 0.230) / 0.020;
+  } else if (scrollProgress > 0.250) {
+    frame02VideoScaleProgress = 1;
   }
 
   // Frame 03 UI
@@ -215,7 +233,7 @@ export default function Home() {
   }
 
   // Frame 04 UI logic
-  const frame04LocalProgress = Math.max(0, (scrollProgress - 0.513) / 0.153);
+  const frame04LocalProgress = Math.max(0, (scrollProgress - 0.513) / 0.133);
 
   // Frame 05 UI logic
   let frame05Opacity = 0;
@@ -243,6 +261,16 @@ export default function Home() {
     frame06BgOpacity = 1;
   } else if (scrollProgress > 0.980) {
     frame06BgOpacity = Math.max(0, 1 - ((scrollProgress - 0.980) / 0.020));
+  }
+
+  // Frame 05 to 06 Black Transition
+  let frame05to06Fade = 0;
+  if (globalScrollProgress > 0.807 && globalScrollProgress <= 0.825) {
+    frame05to06Fade = (globalScrollProgress - 0.807) / 0.018;
+  } else if (globalScrollProgress > 0.825 && globalScrollProgress <= 0.845) {
+    frame05to06Fade = 1;
+  } else if (globalScrollProgress > 0.845 && globalScrollProgress <= 0.890) {
+    frame05to06Fade = 1 - ((globalScrollProgress - 0.845) / 0.045);
   }
 
   // Frame 07 UI logic
@@ -275,40 +303,59 @@ export default function Home() {
       {/* Virtual scroll container (1800vh gives us plenty of scroll distance to scrub sequences smoothly) */}
       <div ref={containerRef} className="w-full" style={{ height: '1800vh' }}>
         
-        {/* Fixed Background Layer */}
-        <div className="fixed inset-0 z-0 bg-black">
-          {scrollProgress < 0.173 ? (
-            <ScrollSequence progress={Math.min(1, scrollProgress / 0.160)} frameCount={80} basePath="/frames" />
-          ) : scrollProgress < 0.340 ? (
-            <ScrollSequence progress={Math.min(1, Math.max(0, (scrollProgress - 0.173) / 0.160))} frameCount={40} basePath="/frames_02" />
-          ) : scrollProgress < 0.666 ? (
-            <ScrollSequence progress={Math.min(1, Math.max(0, (scrollProgress - 0.340) / 0.160))} frameCount={80} basePath="/frames_03" />
-          ) : scrollProgress < 0.830 ? (
+        {/* Frame 05-07 Static Background Layer (Behind everything) */}
+        <div className="fixed inset-0 z-[1] bg-black">
+          {scrollProgress >= 0.666 && scrollProgress < 0.830 ? (
             <ScrollSequence 
               progress={Math.min(1, Math.max(0, (scrollProgress - 0.666) / 0.167))} 
               frameCount={192} 
               basePath="/frames_05" 
               imagePrefix="frame-"
             />
-          ) : (
+          ) : scrollProgress >= 0.830 ? (
             <ScrollSequence 
               progress={Math.min(1, Math.max(0, (globalScrollProgress * 1700 - 1400) / 300))} 
               frameCount={240} 
               basePath="/frames_07" 
               imagePrefix="frame-"
             />
-          )}
+          ) : null}
         </div>
 
-        {/* Frame 04 Static Background */}
+        {/* Frame 01-03 Background Layer (Slides Up) */}
         <div 
-          ref={frame04BgRef}
-          className="fixed inset-0 z-0 bg-black pointer-events-none"
+          ref={sequence01to03Ref}
+          className="fixed inset-0 z-[2] bg-black"
         >
-          <img src="/frame_04_bg.png" alt="Frame 04 Background" className="w-full h-full object-cover" />
+          {scrollProgress < 0.173 ? (
+            <ScrollSequence progress={Math.min(1, scrollProgress / 0.160)} frameCount={80} basePath="/frames" />
+          ) : scrollProgress < 0.340 ? (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div 
+                className="relative overflow-hidden bg-black"
+                style={{
+                  width: `${Math.min(100, 45 + frame02VideoScaleProgress * 55)}vw`,
+                  height: `${Math.min(100, 35 + frame02VideoScaleProgress * 65)}vh`,
+                  borderRadius: `${Math.max(0, 8 - frame02VideoScaleProgress * 8)}px`,
+                  transition: 'width 0.1s linear, height 0.1s linear, border-radius 0.1s linear'
+                }}
+              >
+                <video 
+                  src="/videos/frame_02.mp4" 
+                  autoPlay 
+                  loop 
+                  muted 
+                  playsInline 
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              </div>
+            </div>
+          ) : scrollProgress < 0.666 ? (
+            <ScrollSequence progress={Math.min(1, Math.max(0, (scrollProgress - 0.340) / 0.160))} frameCount={80} basePath="/frames_03" />
+          ) : null}
         </div>
 
-        {/* Transition Black Fade Layer */}
+        {/* Transition Black Fade Layer (Applies to all sequences) */}
         <div 
           className="fixed inset-0 z-[5] bg-black pointer-events-none"
           style={{ opacity: blackFadeOpacity }}
@@ -353,18 +400,18 @@ export default function Home() {
           </h2>
           
           <h1 className="t-stagger-line t-stagger-line--3 font-serif font-bold text-[72px] lg:text-[88px] leading-[0.95] max-w-[620px] mb-12">
-            Where Creativity<br/>Becomes Intelligence
+            Where <span className="italic">Creativity</span><br/>Becomes Intelligence
           </h1>
           
           <p className="t-stagger-line t-stagger-line--4 text-[15px] leading-[1.8] opacity-90 max-w-[520px] mb-14">
-            The world's first creative institution where<br/>
-            materials, research and intelligence converge<br/>
-            to shape what has never existed before.
+            The world's first creative institution where materials, research and intelligence converge to shape what has never existed before.
           </p>
 
-          <button className="t-stagger-line t-stagger-line--5 h-[52px] px-[32px] pointer-events-auto rounded-[14px] border border-[#E1D4C0]/20 bg-[#E1D4C0]/5 backdrop-blur-sm hover:bg-[#E1D4C0]/10 transition-colors duration-300 text-sm font-medium">
-            Enter the Institution
-          </button>
+          <Link href="/studio">
+            <button className="t-stagger-line t-stagger-line--5 h-[52px] px-[32px] pointer-events-auto rounded-[14px] border border-[#E1D4C0]/20 bg-[#E1D4C0]/5 backdrop-blur-sm hover:bg-[#E1D4C0]/10 transition-colors duration-300 text-sm font-medium">
+              Enter Studio
+            </button>
+          </Link>
         </main>
 
         <div className="t-stagger-line t-stagger-line--6 absolute bottom-[4vh] left-1/2 -translate-x-1/2 flex flex-col items-center opacity-60">
@@ -375,32 +422,54 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Frame 02 UI Layer (Fixed, Fades In at end of scroll) */}
+      {/* Frame 02 UI Layer */}
       <div 
-        className="fixed inset-0 z-30 flex flex-col pointer-events-none"
+        className="fixed inset-0 z-30 flex flex-col pointer-events-none items-center justify-center"
         style={{ 
           opacity: frame02Opacity,
           pointerEvents: frame02Opacity > 0.5 ? 'auto' : 'none',
           transition: 'opacity 0.1s linear'
         }}
       >
-        <main className="absolute top-[18vh] left-[8vw] max-w-[680px]">
-          <h2 className="text-[12px] tracking-[0.28em] font-medium opacity-70 mb-10 text-[#E1D4C0] uppercase">
-            WORLD 01 · THE FIRST BREATH
-          </h2>
+        <main className="absolute inset-0 flex flex-col items-center justify-between py-[12vh] px-8 text-center">
+          {/* Top Section */}
+          <div className="flex flex-col items-center">
+            <h2 
+              className="text-[12px] tracking-[0.28em] font-medium opacity-70 mb-6 text-[#E1D4C0] uppercase"
+              style={{
+                clipPath: frame02Revealed ? `inset(0% 0% 0% 0%)` : `inset(100% 0% 0% 0%)`,
+                transition: 'clip-path 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0s'
+              }}
+            >
+              WORLD 01 · THE FIRST BREATH
+            </h2>
+            <h1 
+              className="font-serif font-bold text-[64px] lg:text-[76px] leading-[0.95]"
+              style={{
+                clipPath: frame02Revealed ? `inset(0% 0% 0% 0%)` : `inset(100% 0% 0% 0%)`,
+                transition: 'clip-path 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.15s'
+              }}
+            >
+              Every Great Creation<br/>Begins With <span className="italic">Observation</span>
+            </h1>
+          </div>
           
-          <h1 className="font-serif font-bold text-[72px] lg:text-[88px] leading-[0.95] max-w-[620px] mb-12">
-            Every Great Creation<br/>Begins With Observation
-          </h1>
-          
-          <p className="text-[15px] leading-[1.8] opacity-90 max-w-[520px]">
-            Before imagination comes understanding.<br/><br/>
-            Every material, every shadow and every texture carries intelligence waiting to be discovered.
-          </p>
+          {/* Bottom Section */}
+          <div className="flex flex-col items-center max-w-[520px]">
+            <p 
+              className="text-[15px] leading-[1.8] opacity-90"
+              style={{
+                clipPath: frame02Revealed ? `inset(0% 0% 0% 0%)` : `inset(100% 0% 0% 0%)`,
+                transition: 'clip-path 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.3s'
+              }}
+            >
+              Before imagination comes understanding. Every material, every shadow and every texture carries intelligence waiting to be discovered.
+            </p>
+          </div>
         </main>
       </div>
 
-      {/* Frame 03 UI Layer (Fixed, Fades In at end of scroll) */}
+      {/* Frame 03 UI Layer */}
       <div 
         className="fixed inset-0 z-40 flex flex-col pointer-events-none"
         style={{ 
@@ -415,26 +484,27 @@ export default function Home() {
           </h2>
           
           <h1 className="font-serif font-bold text-[72px] lg:text-[88px] leading-[0.95] max-w-[620px] mb-12">
-            Materials Speak<br/>Before They Are Designed
+            Materials <span className="italic">Speak</span><br/>Before They Are Designed
           </h1>
           
           <p className="text-[15px] leading-[1.8] opacity-90 max-w-[520px]">
-            Every fibre carries structure.<br/><br/>
-            Every shadow reveals behaviour.<br/><br/>
-            Every texture communicates long before a designer makes a decision.
+            Every fibre carries structure, every shadow reveals behaviour, and every texture communicates long before a designer makes a decision.
           </p>
         </main>
       </div>
 
-      {/* Frame 04 UI Layer (Fixed, Slides In via Parallax) */}
+      {/* Frame 04 UI Layer (Fixed, Slides In from bottom pushing Frame 03 up) */}
       <div 
         ref={frame04UIRef}
         className={`fixed inset-0 z-50 ${scrollProgress >= 0.486 && scrollProgress <= 0.666 ? 'pointer-events-auto' : 'pointer-events-none'}`}
       >
-        <ObservationArchive progress={frame04LocalProgress} />
+        <ObservationArchive 
+          progress={frame04LocalProgress} 
+          isVisible={scrollProgress >= 0.50 && scrollProgress <= 0.666}
+        />
       </div>
 
-      {/* Frame 05 UI Layer (Fixed, Fades In at end of scroll) */}
+      {/* Frame 05 UI Layer */}
       <div 
         className="fixed inset-0 z-[60] flex flex-col pointer-events-none t-stagger"
         style={{ 
@@ -449,54 +519,94 @@ export default function Home() {
           </h2>
           
           <h1 className="font-serif font-bold text-[72px] lg:text-[88px] leading-[0.95] max-w-[620px] mb-12">
-            Intelligence<br/>Becomes Expression.
+            Intelligence<br/>Becomes <span className="italic">Expression.</span>
           </h1>
           
           <p className="text-[15px] leading-[1.8] opacity-90 max-w-[520px]">
-            Every campaign begins long before a camera is lifted.<br/><br/>
-            Observation becomes research.<br/>
-            Research becomes understanding.<br/>
-            Understanding becomes imagery.<br/><br/>
-            The gallery is simply the visible result.
+            Every campaign begins long before a camera is lifted. Observation becomes research, research becomes understanding, and understanding becomes imagery. The gallery is simply the visible result.
           </p>
         </main>
       </div>
 
-      {/* Frame 06 Static Background */}
+      {/* Frame 05 to 06 Black Transition Layer */}
+      <div 
+        className="fixed inset-0 z-[62] bg-black pointer-events-none"
+        style={{ 
+          opacity: frame05to06Fade,
+          transition: 'opacity 0.1s linear'
+        }}
+      />
+
+      {/* Frame 06 Boxed Parallax Background */}
       <div 
         ref={frame06BgRef}
-        className="fixed inset-0 z-[1] bg-black pointer-events-none origin-center"
+        className="fixed inset-0 z-[65] bg-black pointer-events-none flex items-center justify-center"
         style={{ opacity: frame06BgOpacity }}
       >
-        <img src="/frame_06_bg.jpg" alt="Frame 06 Background" className="w-full h-full object-cover" />
+        <div 
+          className="w-[55vw] h-[70vh] relative overflow-hidden rounded-sm"
+          style={{
+            transform: `scale(${Math.min(1, 0.6 + (Math.max(0, scrollProgress - 0.83) / 0.15) * 0.4)})`,
+            transition: 'transform 0.1s linear'
+          }}
+        >
+          <img 
+            src="/frame_06_bg.jpg" 
+            alt="Frame 06 Background" 
+            className="w-full h-full object-cover origin-center"
+          />
+          {/* Subtle Inner Border */}
+          <div className="absolute inset-0 border border-[#E1D4C0]/10 pointer-events-none" />
+        </div>
       </div>
 
       {/* Frame 06 UI Layer */}
       <div 
-        className="fixed inset-0 z-[70] flex flex-col pointer-events-none t-stagger"
+        className="fixed inset-0 z-[70] pointer-events-none"
         style={{ 
           opacity: frame06Opacity,
           pointerEvents: frame06Opacity > 0.5 ? 'auto' : 'none',
-          transition: 'opacity 0.1s linear'
+          transition: 'opacity 0.4s ease-in-out'
         }}
       >
-        <main className="absolute top-[18vh] left-[8vw] max-w-[680px]">
-          <h2 className="text-[12px] tracking-[0.28em] font-medium opacity-70 mb-10 text-[#E1D4C0] uppercase">
-            WORLD 01 · THE LIGHT CHAMBER
-          </h2>
-          
-          <h1 className="font-serif font-bold text-[72px] lg:text-[88px] leading-[0.95] max-w-[620px] mb-12">
-            Light<br/>Designs First.
-          </h1>
-          
-          <p className="text-[15px] leading-[1.8] opacity-90 max-w-[520px]">
-            Before colour.<br/><br/>
-            Before composition.<br/><br/>
-            Before photography.<br/><br/>
-            Light determines how every material will be understood.<br/>
-            Everything else follows.
+        {/* Technical Viewfinder Elements */}
+        <div className="absolute top-[10vh] left-[5vw] w-12 h-12 border-t border-l border-[#E1D4C0]/20" />
+        <div className="absolute bottom-[10vh] right-[5vw] w-12 h-12 border-b border-r border-[#E1D4C0]/20" />
+        
+        {/* Top Right: Technical Description */}
+        <div className="absolute top-[15vh] right-[8vw] max-w-[320px] text-right flex flex-col items-end">
+          <div className="flex items-center gap-4 mb-6 opacity-70">
+            <span className="text-[10px] tracking-[0.2em] font-sans text-[#E1D4C0]/80">EV +2.4</span>
+            <div className="h-[1px] w-12 bg-[#E1D4C0]/40"></div>
+            <h2 className="text-[10px] tracking-[0.3em] font-medium text-[#E1D4C0] uppercase">
+              THE LIGHT CHAMBER
+            </h2>
+          </div>
+          <p className="text-[11px] font-sans leading-[2] opacity-80 text-[#E1D4C0]/70 uppercase tracking-widest text-justify text-last-right">
+            Before colour, composition, or photography, light determines how every material will be understood. Everything else follows.
           </p>
-        </main>
+        </div>
+
+        {/* Bottom Left: Massive Motion-Revealed Title */}
+        <div className="absolute bottom-[12vh] left-[5vw]">
+          <h1 className="font-serif font-bold text-[90px] lg:text-[140px] leading-[0.85] tracking-tight">
+            <span className="block overflow-hidden">
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#E1D4C0]/40 via-[#E1D4C0] to-[#E1D4C0]/40 bg-[length:200%_auto] animate-[pulse_4s_cubic-bezier(0.4,0,0.6,1)_infinite]">
+                Light
+              </span>
+            </span>
+            <span className="block overflow-hidden">
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#E1D4C0] via-[#E1D4C0]/40 to-[#E1D4C0] bg-[length:200%_auto] animate-[pulse_4s_cubic-bezier(0.4,0,0.6,1)_infinite_1s]">
+                Designs
+              </span>
+            </span>
+            <span className="block overflow-hidden mt-4">
+              <span className="block italic font-medium text-[#E1D4C0] opacity-90">
+                First.
+              </span>
+            </span>
+          </h1>
+        </div>
       </div>
 
       {/* Frame 07 UI Layer */}
@@ -514,17 +624,11 @@ export default function Home() {
           </h2>
           
           <h1 className="font-serif font-bold text-[72px] lg:text-[88px] leading-[0.95] max-w-[620px] mb-12">
-            Everything<br/>Connects.
+            Everything<br/><span className="italic">Connects.</span>
           </h1>
           
           <p className="text-[15px] leading-[1.8] opacity-90 max-w-[520px]">
-            Observation.<br/>
-            Materials.<br/>
-            Research.<br/>
-            Light.<br/>
-            Creation.<br/><br/>
-            Each discipline strengthens the next.<br/>
-            Together they form one creative intelligence system.
+            Observation, materials, research, light, and creation—each discipline strengthens the next. Together they form one cohesive creative intelligence system.
           </p>
         </main>
       </div>

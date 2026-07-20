@@ -97,7 +97,7 @@ export function Frame08() {
       duration: 1,
       ease: 'power2.inOut',
       onComplete: () => {
-        router.push('/dashboard');
+        router.push('/studio');
       }
     }, '-=1.0');
   };
