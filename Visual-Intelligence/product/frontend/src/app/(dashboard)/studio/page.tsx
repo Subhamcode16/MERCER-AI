@@ -23,21 +23,16 @@ import {
 // --- SVG Icons ---
 
 const FolderIcon = ({ hasMaterial }: { hasMaterial?: boolean }) => (
-  <svg viewBox="0 0 105 105" className="w-full h-full drop-shadow-2xl group-hover:scale-[1.03] transition-transform duration-300">
-    <path d="M 10 90 L 10 25 Q 10 15 20 15 L 35 15 L 45 25 L 85 25 Q 95 25 95 35 L 95 90 Q 95 95 90 95 L 20 95 Q 10 95 10 90 Z" fill="#F7BA3E" stroke="#111111" strokeWidth="4" strokeLinejoin="round" />
-    <rect x="18" y="25" width="69" height="60" fill="#B2EBF2" stroke="#111111" strokeWidth="4" strokeLinejoin="round" />
-    <rect x="18" y="35" width="69" height="50" fill="#FFFFFF" stroke="#111111" strokeWidth="4" strokeLinejoin="round" />
-    <line x1="26" y1="48" x2="65" y2="48" stroke="#111111" strokeWidth="4" strokeLinecap="round" />
-    <line x1="26" y1="58" x2="45" y2="58" stroke="#111111" strokeWidth="4" strokeLinecap="round" />
-    <path d="M 10 90 L 10 55 Q 10 45 20 45 L 42 45 L 52 35 L 85 35 Q 95 35 95 45 L 95 90 Q 95 95 90 95 L 20 95 Q 10 95 10 90 Z" fill="#FCDA68" stroke="#111111" strokeWidth="4" strokeLinejoin="round" />
+  <div className="relative w-full h-full drop-shadow-2xl group-hover:scale-[1.03] transition-transform duration-300 flex items-center justify-center">
+    <img src="/assets/folder-icon.png" alt="Campaign Folder" className="w-full h-full object-contain drop-shadow-lg" />
     {hasMaterial && (
-      <g transform="translate(41, 53)">
+      <svg viewBox="0 0 24 24" className="absolute bottom-6 right-6 w-8 h-8 drop-shadow-md">
         <rect x="0" y="0" width="24" height="24" fill="#FFFFFF" stroke="#111111" strokeWidth="3" rx="4" strokeLinejoin="round" />
         <circle cx="8" cy="8" r="2.5" fill="#111111" />
         <path d="M 0 20 L 8 12 L 16 20 L 24 12 L 24 24 L 0 24 Z" fill="#111111" stroke="#111111" strokeWidth="2" strokeLinejoin="round" />
-      </g>
+      </svg>
     )}
-  </svg>
+  </div>
 );
 
 const DashedFolderIcon = () => (
