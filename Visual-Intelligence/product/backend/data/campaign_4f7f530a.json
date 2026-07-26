@@ -1,0 +1,59 @@
+{
+  "id": "campaign_4f7f530a",
+  "name": "Campaign 01",
+  "material_path": "data\\assets\\campaign_4f7f530a\\material.jpg",
+  "memory_stream": [
+    {
+      "type": "observation",
+      "content": "Material received. Initiating visual analysis...",
+      "timestamp": "2026-07-25T21:06:58.418509"
+    },
+    {
+      "type": "reasoning",
+      "content": "Analysis encountered an issue: GEMINI_API_KEY environment variable is not set.. Retrying with fallback model...",
+      "timestamp": "2026-07-25T21:07:02.956457"
+    }
+  ],
+  "project_id": null,
+  "product_id": null,
+  "identity": {
+    "product_dna": null,
+    "reference_dna": null
+  },
+  "planning": {
+    "creative_objective": "luxury_editorial",
+    "proposed_direction_title": null,
+    "proposed_direction_body": null,
+    "campaign_plan": {
+      "assets_requested": [
+        "hero_image",
+        "product_closeup",
+        "lifestyle"
+      ],
+      "dependency_graph": {
+        "hero_image": [],
+        "product_closeup": [],
+        "lifestyle": [],
+        "reel_storyboard": [
+          "hero_image"
+        ]
+      }
+    },
+    "selected_background": null,
+    "selected_pose": null,
+    "selected_lighting": null,
+    "recommendations": null
+  },
+  "execution": {
+    "campaign_state": {},
+    "asset_states": []
+  },
+  "evaluation": {
+    "feedback_log": [],
+    "consistency_scores": {},
+    "approval_rate": null,
+    "edit_distance_minutes": null
+  },
+  "created_at": "2026-07-25T14:44:50.097559",
+  "updated_at": "2026-07-25T21:06:57.929563"
+}

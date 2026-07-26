@@ -58,7 +58,7 @@ export function CampaignStudio() {
         )}
       </div>
       
-      <WorkflowTimeline hasUploaded={currentStep > 1} currentStep={currentStep} />
+      <WorkflowTimeline hasUploaded={currentStep > 1} />
     </div>
   );
 }

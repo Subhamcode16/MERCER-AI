@@ -8,7 +8,7 @@ export function CopilotInterface({ onSubmit }: { onSubmit?: () => void }) {
             <span className="font-serif text-[16px] text-white/70">A</span>
           </div>
           <div className="flex flex-col gap-2.5">
-            <span className="text-[10px] text-white/40 uppercase tracking-[0.2em] font-medium">Atelier Copilot</span>
+            <span className="text-[10px] text-white/40 uppercase tracking-[0.2em] font-medium">Mercer AI Copilot</span>
             <p className="text-[13px] text-white/70 leading-[1.8] max-w-4xl tracking-wide">
               I've analyzed the Kadhua weave and your brand's heritage positioning. <span className="text-[var(--color-warm-ivory)]">Direction 01 (Royal Warmth)</span> aligns perfectly with the objective of brand elevation by emphasizing the intricate zari work through directional golden hour lighting. Would you like me to proceed with generating the moodboard for this direction?
             </p>
@@ -19,7 +19,7 @@ export function CopilotInterface({ onSubmit }: { onSubmit?: () => void }) {
         <div className="relative mt-2">
           <input 
             type="text" 
-            placeholder="Ask Atelier anything... (e.g. Generate a moodboard based on Direction 01)" 
+            placeholder="Ask Mercer AI anything... (e.g. Generate a moodboard based on Direction 01)" 
             className="w-full bg-black/50 border border-white/10 rounded-lg px-5 py-4 pl-14 text-[13px] text-white placeholder-white/30 focus:outline-none focus:border-[var(--color-warm-ivory)]/40 transition-colors"
           />
           <div className="absolute left-5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] rounded-sm border border-white/20 flex flex-col items-center justify-center gap-[2px] opacity-60">

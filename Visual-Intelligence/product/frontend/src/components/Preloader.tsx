@@ -158,7 +158,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
           ref={titleRef} 
           className="absolute text-[#E1D4C0] font-butler text-[120px] font-bold z-10 drop-shadow-2xl"
         >
-          ATELIER
+          MERCER AI
         </div>
 
         {/* Subtitle */}

@@ -16,7 +16,7 @@ export function IntelligencePanel() {
         <div>
           <h3 className="text-[9px] tracking-[0.25em] uppercase text-white/40 mb-4">Creative Intelligence</h3>
           <p className="font-serif text-[18px] leading-[1.5] text-white/80">
-            The brain of Atelier. Every recommendation is backed by reasoning, evidence and institutional knowledge.
+            The brain of Mercer AI. Every recommendation is backed by reasoning, evidence and institutional knowledge.
           </p>
         </div>
 
@@ -87,10 +87,10 @@ export function IntelligencePanel() {
           </button>
         </div>
 
-        {/* Atelier Principles Footer */}
+        {/* Mercer AI Principles Footer */}
         <div className="border-t border-white/5 pt-10 pb-8 flex items-start justify-between">
           <div className="flex flex-col gap-2 text-[9px] text-white/30 uppercase tracking-[0.15em]">
-            <span className="text-[var(--color-warm-ivory)]/50 mb-1">Atelier Principles</span>
+            <span className="text-[var(--color-warm-ivory)]/50 mb-1">Mercer AI Principles</span>
             <span>Observe everything</span>
             <span>Understand deeply</span>
             <span>Reason with evidence</span>

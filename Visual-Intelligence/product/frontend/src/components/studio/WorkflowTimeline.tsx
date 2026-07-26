@@ -26,7 +26,7 @@ export function WorkflowTimeline({ hasUploaded }: { hasUploaded?: boolean }) {
         )}
       </div>
       <div className="tracking-[0.25em] opacity-50">
-        Atelier OS v1.0.0
+        Mercer AI v1.0.0
       </div>
     </div>
   );

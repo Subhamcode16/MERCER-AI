@@ -80,7 +80,7 @@ export function Footer() {
         <div className="w-full flex flex-col sm:flex-row items-end justify-between border-t border-white/10 pt-12 overflow-hidden">
           {/* Monumental Typography */}
           <h2 ref={titleRef} className="font-serif text-[18vw] sm:text-[140px] md:text-[180px] lg:text-[220px] leading-[0.8] tracking-[-0.02em] text-white opacity-90 select-none origin-left">
-            ATELIER
+            MERCER AI
           </h2>
           
           {/* Right side Logomark & Copyright */}
@@ -90,7 +90,7 @@ export function Footer() {
               <div className="w-2.5 h-2.5 bg-[var(--color-warm-ivory)]/80" />
             </div>
             <p className="text-[10px] tracking-[0.1em] uppercase text-white/30 text-right">
-              © {new Date().getFullYear()} Atelier OS.<br/>All rights reserved.
+              © {new Date().getFullYear()} Mercer AI.<br/>All rights reserved.
             </p>
           </div>
         </div>

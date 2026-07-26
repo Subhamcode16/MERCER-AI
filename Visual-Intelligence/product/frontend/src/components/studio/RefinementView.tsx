@@ -13,7 +13,7 @@ export function RefinementView({ onApprove }: { onApprove: () => void }) {
         <div className="border-b border-white/5 pb-4">
           <h2 className="font-serif text-[24px] text-white/90 mb-2">Art Direction Refinement</h2>
           <p className="text-[12px] text-white/40 tracking-wide leading-relaxed">
-            Fine-tune specific characteristics of the selected concept. Atelier will recalibrate the reasoning upon approval.
+            Fine-tune specific characteristics of the selected concept. Mercer AI will recalibrate the reasoning upon approval.
           </p>
         </div>
 

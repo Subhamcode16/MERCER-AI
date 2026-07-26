@@ -13,6 +13,7 @@ import { Footer } from '@/components/Footer';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+import { ShaderGradientCanvas, ShaderGradient } from '@shadergradient/react';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -189,7 +190,7 @@ export default function Home() {
   } else if (scrollProgress > 0.160 && scrollProgress <= 0.173) {
     blackFadeOpacity = 1; 
   } else if (scrollProgress > 0.173 && scrollProgress <= 0.180) {
-    blackFadeOpacity = 1 - ((scrollProgress - 0.173) / 0.007); 
+    blackFadeOpacity = 0; 
   } else if (scrollProgress > 0.320 && scrollProgress <= 0.326) {
     blackFadeOpacity = (scrollProgress - 0.320) / 0.006; 
   } else if (scrollProgress > 0.326 && scrollProgress <= 0.340) {
@@ -213,6 +214,17 @@ export default function Home() {
   // Frame 02 UI & Video Scale
   let frame02Opacity = 0;
   let frame02VideoScaleProgress = 0;
+  let frame02VideoSlideUp = 0;
+  let frame02VideoOpacity = 0;
+  
+  if (scrollProgress >= 0.173 && scrollProgress <= 0.185) {
+    frame02VideoSlideUp = 1 - ((scrollProgress - 0.173) / 0.012); // 1 to 0
+    frame02VideoOpacity = (scrollProgress - 0.173) / 0.012; // 0 to 1
+  } else if (scrollProgress > 0.185) {
+    frame02VideoSlideUp = 0;
+    frame02VideoOpacity = 1;
+  }
+
   if (scrollProgress >= 0.173 && scrollProgress <= 0.230) {
     frame02Opacity = 1; 
   } else if (scrollProgress > 0.230 && scrollProgress <= 0.250) {
@@ -330,7 +342,13 @@ export default function Home() {
           {scrollProgress < 0.173 ? (
             <ScrollSequence progress={Math.min(1, scrollProgress / 0.160)} frameCount={80} basePath="/frames" />
           ) : scrollProgress < 0.340 ? (
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div 
+              className="absolute inset-0 flex items-center justify-center pointer-events-none"
+              style={{
+                opacity: frame02VideoOpacity,
+                clipPath: `inset(${frame02VideoSlideUp * 100}% 0% 0% 0%)`
+              }}
+            >
               <div 
                 className="relative overflow-hidden bg-black"
                 style={{
@@ -382,7 +400,7 @@ export default function Home() {
       >
         {/* Logo */}
         <div className="t-stagger-line t-stagger-line--1 absolute top-[6vh] left-[8vw] max-w-[120px] font-sans font-bold tracking-widest text-sm opacity-90">
-          ATELIER
+          MERCER AI
         </div>
         
         {/* Navigation */}
@@ -431,7 +449,7 @@ export default function Home() {
           transition: 'opacity 0.1s linear'
         }}
       >
-        <main className="absolute inset-0 flex flex-col items-center justify-between py-[12vh] px-8 text-center">
+        <main className="absolute inset-0 flex flex-col items-center justify-between pt-[12vh] pb-[16vh] px-8 text-center">
           {/* Top Section */}
           <div className="flex flex-col items-center">
             <h2 
@@ -543,8 +561,22 @@ export default function Home() {
         className="fixed inset-0 z-[65] bg-black pointer-events-none flex items-center justify-center"
         style={{ opacity: frame06BgOpacity }}
       >
+        {/* Soft moving background gradient for Frame 06 */}
+        <div className="absolute inset-0 z-0 opacity-60">
+          <ShaderGradientCanvas
+            style={{ position: 'absolute', inset: 0 }}
+            pixelDensity={1}
+            fov={45}
+          >
+            <ShaderGradient 
+              control='query'
+              urlString='https://www.shadergradient.co/customize?animate=on&axesHelper=off&bgColor1=%23000000&bgColor2=%23000000&brightness=0.8&cAzimuthAngle=180&cDistance=3.6&cPolarAngle=90&cameraZoom=1&color1=%231A1512&color2=%233D291F&color3=%23E1D4C0&destination=onCanvas&embedMode=off&envPreset=city&format=gif&fov=45&frameRate=10&gizmoHelper=hide&grain=on&lightType=3d&pixelDensity=1&positionX=-1.4&positionY=0&positionZ=0&range=disabled&rangeEnd=40&rangeStart=0&reflection=0.1&rotationX=0&rotationY=10&rotationZ=50&shader=defaults&type=waterPlane&uAmplitude=0&uDensity=1.3&uFrequency=5.5&uSpeed=0.1&uStrength=1.5&uTime=0.2&wireframe=false'
+            />
+          </ShaderGradientCanvas>
+        </div>
+
         <div 
-          className="w-[55vw] h-[70vh] relative overflow-hidden rounded-sm"
+          className="w-[55vw] h-[70vh] relative z-10 overflow-hidden rounded-sm"
           style={{
             transform: `scale(${Math.min(1, 0.6 + (Math.max(0, scrollProgress - 0.83) / 0.15) * 0.4)})`,
             transition: 'transform 0.1s linear'

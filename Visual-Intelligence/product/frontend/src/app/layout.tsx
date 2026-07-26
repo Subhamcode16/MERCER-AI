@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Cormorant_Garamond } from "next/font/google";
+import { AuthProvider } from "@/contexts/AuthContext";
 import "./globals.css";
 
 const cormorantGaramond = Cormorant_Garamond({
@@ -65,8 +66,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${neueHaas.variable} ${cormorantGaramond.variable} ${butler.variable}`}>
       <body className={`font-sans font-medium antialiased`}>
-        {children}
-        <div className="film-grain" />
+        <AuthProvider>
+          {children}
+          <div className="film-grain" />
+        </AuthProvider>
       </body>
     </html>
   );
