@@ -1,0 +1,16 @@
+{
+  "Benchmark_ID": "CB-POS-037",
+  "Type": "Positive",
+  "Input": {
+    "Product_DNA": "Banarasi Silk",
+    "Brand_DNA": "Heritage Luxury",
+    "Environment": "Studio Seamless",
+    "Creative_Objective": "Romantic"
+  },
+  "Expected_Creative_State": {
+    "Lighting": "Directional warm key",
+    "Camera": "50mm f/8",
+    "Grade": "Film emulsion emulation"
+  },
+  "Expected_Evaluation_Score": ">= 0.85"
+}

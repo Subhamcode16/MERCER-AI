@@ -1,0 +1,195 @@
+# Production Roadmap: From Research Engine to Product
+
+Based on the strategic direction in [temp11.md](file:///c:/Users/User/OneDrive/Desktop/Fashion%20Knowldge%20Wiki/temp11.md) and your answers to my clarifying questions.
+
+## User Review Required
+
+> [!IMPORTANT]
+> This plan redesigns the entire project structure. The engine stays frozen — we build the product **around** it. Review the proposed tech stack, the Campaign State schema, and the phased delivery. If you approve, I will begin Phase 1 execution.
+
+---
+
+## Current State Assessment
+
+What we have (the engine room):
+| Layer | Status | Files |
+|---|---|---|
+| Ontology & Knowledge | ✅ Complete | `VIO-001`, `VIO-002`, material/physics/craft/interaction JSONs |
+| Decision Engine | ✅ Complete | [decision_engine.py](file:///c:/Users/User/OneDrive/Desktop/Fashion%20Knowldge%20Wiki/Visual-Intelligence/src/runtime/decision_engine.py) (Image Formation Solver) |
+| Prompt Compiler | ✅ Complete | [prompt_compiler.py](file:///c:/Users/User/OneDrive/Desktop/Fashion%20Knowldge%20Wiki/Visual-Intelligence/src/runtime/prompt_compiler.py) |
+| Orchestrator | ✅ Complete | [orchestrator.py](file:///c:/Users/User/OneDrive/Desktop/Fashion%20Knowldge%20Wiki/Visual-Intelligence/src/runtime/orchestrator.py) |
+| Benchmarks | ✅ Complete | 60 canonical benchmarks (50 positive, 10 negative) |
+| Architecture Specs | ✅ Complete | OBJ-001, IMG-001 through IMG-004 |
+
+What we don't have:
+- No web interface. No user-facing product.
+- No Campaign State (multi-asset orchestration).
+- No feedback loop. No learning from approvals/rejections.
+- No external validation against real-world campaigns.
+
+---
+
+## Proposed Tech Stack
+
+```
+Frontend: Next.js 15 (App Router) + Vanilla CSS
+Backend:  FastAPI (Python) — wraps the existing engine
+Storage:  Local JSON files (dev) → Supabase (prod migration path)
+AI:       Gemini API (waterfall: 2.5-flash → 1.5-pro → 1.5-flash)
+```
+
+> [!NOTE]
+> The existing Python runtime (`decision_engine.py`, `orchestrator.py`, `prompt_compiler.py`) becomes the core service layer. FastAPI exposes it as REST endpoints. Next.js consumes those endpoints. The engine code itself is **not rewritten**.
+
+---
+
+## Phase 1 — Campaign State Architecture + Backend API (Week 1-2)
+
+The Campaign State is the new first-class data structure. It orchestrates multiple assets from a single Product DNA, ensuring visual consistency across the campaign.
+
+### Campaign State Schema
+```yaml
+Campaign:
+  id: "campaign_001"
+  product_dna: { ... }           # From the existing engine
+  creative_objective: { ... }    # From OBJ-001
+  creative_state: { ... }        # Solver output (renderer-agnostic)
+  assets:
+    - type: "hero_image"
+      status: "pending | generating | complete | rejected"
+      creative_state_overrides: { ... }  # Per-asset tweaks
+      prompt: "..."
+      image_path: null
+      feedback: null
+    - type: "product_closeup"
+      ...
+    - type: "lifestyle"
+      ...
+  feedback_log: []               # Track C flywheel data
+  created_at: "2026-07-03T..."
+  updated_at: "2026-07-03T..."
+```
+
+### Backend API Endpoints (FastAPI)
+| Endpoint | Method | Purpose |
+|---|---|---|
+| `/api/campaign/create` | POST | Upload product info → run engine → return Campaign State |
+| `/api/campaign/{id}` | GET | Retrieve campaign with all assets |
+| `/api/campaign/{id}/generate/{asset_type}` | POST | Generate a specific asset (sequential) |
+| `/api/campaign/{id}/feedback` | POST | Submit approval/rejection with reason |
+| `/api/campaign/{id}/export` | GET | Package all approved assets for download |
+
+### Deliverables
+- `backend/server.py` — FastAPI app wrapping the engine
+- `backend/models/campaign.py` — Campaign State data model
+- `backend/storage/local_store.py` — JSON file storage (hybrid path)
+
+---
+
+## Phase 2 — Frontend MVP (Week 2-4)
+
+The user flow from the document, made real:
+
+```
+Upload Product → System Interview → Review DNA → Choose Objective → Generate → Review → Export
+```
+
+### Pages
+| Route | Purpose |
+|---|---|
+| `/` | Landing / Dashboard (list of campaigns) |
+| `/campaign/new` | Step 1: Upload product image + basic info |
+| `/campaign/new/interview` | Step 2: System asks clarifying questions (material, vibe, occasion) |
+| `/campaign/new/review-dna` | Step 3: User reviews the extracted Product DNA |
+| `/campaign/new/objective` | Step 4: Choose Creative Objective (Luxury Editorial / Catalog / etc.) |
+| `/campaign/{id}` | Campaign workspace — generate assets one by one, review, approve/reject |
+| `/campaign/{id}/export` | Export approved assets |
+
+### Design Principles
+- The user **never** sees Knowledge Claims, Physics Ontology, or Creative State directly.
+- A collapsible "Engine Room" panel (for power users only) shows the Creative Decision Trace.
+- Premium dark UI with glassmorphism. The product should feel like it belongs in the luxury fashion space.
+
+---
+
+## Phase 3 — Feedback Flywheel (Week 4-5)
+
+Every user interaction becomes structured data.
+
+### Feedback Schema
+```json
+{
+  "campaign_id": "...",
+  "asset_type": "hero_image",
+  "action": "rejected",
+  "reason_category": "lighting",
+  "reason_detail": "Too flat, no fabric texture visible",
+  "timestamp": "..."
+}
+```
+
+### What happens on rejection
+1. Feedback is logged to `feedback_log.json` (local) with structured categories.
+2. The system suggests a re-generation with adjusted parameters (e.g., if `reason_category = lighting`, bias the solver toward harder directional light).
+3. Over time, rejection patterns surface as candidates for new interaction rules.
+
+### What happens on approval
+1. The full Creative State + prompt + asset are saved as a **verified pattern**.
+2. These verified patterns feed back into the Expert Pattern Library, increasing confidence scores.
+
+---
+
+## Phase 4 — Scientific Validation Suite (Week 5-7)
+
+### External Benchmark 1: Campaign Reconstruction
+- Take 5 real luxury campaign images (public domain / reference).
+- Feed the product description into the system.
+- Compare the system's Creative State decisions against the real campaign's actual lighting/camera/grading.
+- Score: How many decisions did the system get right?
+
+### External Benchmark 2: Objective Variance
+- Single saree → generate under 4 different Creative Objectives (Catalog, Bridal, Editorial, UGC).
+- Human judges score each for appropriateness to its objective.
+
+### External Benchmark 3: A/B Test
+- Prompt-only workflow (user writes their own prompt) vs. Creative Intelligence workflow.
+- Measure: Product Fidelity, Luxury Perception, Consistency, Human Preference.
+
+### Business Metrics Dashboard
+| Metric | How it's measured |
+|---|---|
+| Product Fidelity | Can a merchant identify the product? (1-10 score) |
+| Brand Fidelity | Does it match the positioning? (1-10 score) |
+| Visual Realism | Can photographers tell it's AI? (blind test %) |
+| Commercial Utility | Would a brand publish this? (yes/no + confidence) |
+| Edit Distance | Minutes of manual editing before approval |
+| Approval Rate | % of generated assets approved on first attempt |
+
+---
+
+## Phase 5 — Expansion (Week 8+, only after validation)
+
+Only after the MVP consistently demonstrates measurable improvement:
+- Jewelry vertical (leverages existing metallic reflectance ontology)
+- Cosmetics vertical
+- Furniture / Architecture
+
+---
+
+## The Milestone We're Optimizing For
+
+> **"A textile brand uploaded one product photo and published an entire campaign generated by the platform with minimal manual editing."**
+
+### Minimum Viable Campaign Package (3 assets)
+1. **Hero Image** — Full editorial shot with model, environment, and lighting.
+2. **Product Close-up** — Tight crop on fabric texture and detail.
+3. **Lifestyle Image** — Contextual scene showing the garment in use.
+
+---
+
+## Open Questions
+
+> [!WARNING]
+> 1. **Image upload & analysis**: Should the system accept a product photo and use a VLM (Gemini) to extract the Product DNA automatically, or should the user manually fill in material/weave/features during the interview step?
+> 2. **Authentication**: Do we need user accounts for the MVP, or is this a single-user local tool initially?
+> 3. **Deployment target**: Local development only for now, or do you want Vercel (frontend) + Render (backend) deployment from the start?

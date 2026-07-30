@@ -1,0 +1,16 @@
+{
+  "Benchmark_ID": "CB-POS-019",
+  "Type": "Positive",
+  "Input": {
+    "Product_DNA": "Organza",
+    "Brand_DNA": "Heritage Luxury",
+    "Environment": "Palace Courtyard",
+    "Creative_Objective": "Romantic"
+  },
+  "Expected_Creative_State": {
+    "Lighting": "Natural ambient with negative fill",
+    "Camera": "50mm f/8",
+    "Grade": "Film emulsion emulation"
+  },
+  "Expected_Evaluation_Score": ">= 0.85"
+}

@@ -1,0 +1,11 @@
+{
+  "Product_DNA": {
+    "BaseGarment": "Saree",
+    "Material": "Silk",
+    "WeavingTechnique": "Banarasi",
+    "PrimaryFeatures": [
+      "Gold Zari Brocade",
+      "Floral Motifs"
+    ]
+  }
+}

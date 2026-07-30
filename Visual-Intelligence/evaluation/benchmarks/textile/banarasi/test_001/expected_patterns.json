@@ -1,0 +1,35 @@
+{
+  "Target_Aesthetic": "Luxury Bridal",
+  "Pattern_Rules": {
+    "Scene": {
+      "SetDesign": "Royal palace courtyard",
+      "PropStyling": "Minimalist heritage props"
+    },
+    "Lighting": {
+      "KeyLight": "Warm golden hour with soft key illumination",
+      "RimLight": "Subtle rim lighting",
+      "ContrastRatio": "3:1"
+    },
+    "Camera": {
+      "Lens": "85mm portrait compression",
+      "Framing": "Eye-level framing",
+      "DepthOfField": "Shallow depth of field"
+    },
+    "Color": {
+      "Palette": "Warm sandstone palette with rich gold accents",
+      "HighlightRollOff": "Controlled highlight roll-off"
+    },
+    "Styling": {
+      "Jewelry": "Heavy antique gold temple jewelry"
+    },
+    "FabricRendering": {
+      "Zari": "Maximum zari detail",
+      "MicroContrast": "High microcontrast",
+      "Reflectance": "Natural silk reflectance"
+    },
+    "Composition": {
+      "Style": "Editorial luxury fashion campaign",
+      "Framing": "Vertical hero composition"
+    }
+  }
+}

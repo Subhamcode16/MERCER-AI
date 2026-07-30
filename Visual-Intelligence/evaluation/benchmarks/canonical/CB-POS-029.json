@@ -1,0 +1,16 @@
+{
+  "Benchmark_ID": "CB-POS-029",
+  "Type": "Positive",
+  "Input": {
+    "Product_DNA": "Chiffon",
+    "Brand_DNA": "Heritage Luxury",
+    "Environment": "Urban Street",
+    "Creative_Objective": "Streetwear"
+  },
+  "Expected_Creative_State": {
+    "Lighting": "Natural ambient with negative fill",
+    "Camera": "50mm f/8",
+    "Grade": "Film emulsion emulation"
+  },
+  "Expected_Evaluation_Score": ">= 0.85"
+}

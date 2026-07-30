@@ -1,0 +1,495 @@
+[
+  {
+    "rule_id": "DR-APP-001",
+    "level": 1,
+    "category": "Styling",
+    "condition": {
+      "FabricType": [
+        "Denim",
+        "Raw Denim"
+      ]
+    },
+    "action": {
+      "Prompt_Inject": "stiff raw denim with wide rigid folds holding structured shape under gravity, double-needle contrast stitching along flat seams and cuffs, twill weave micro-texture",
+      "Prompt_Forbid": [
+        "billowing",
+        "flowing drape",
+        "soft pleats",
+        "slinky"
+      ]
+    },
+    "description": "Denim Drape & Stitching Constraints",
+    "weight": 1.0
+  },
+  {
+    "rule_id": "DR-APP-002",
+    "level": 1,
+    "category": "Styling",
+    "condition": {
+      "FabricType": [
+        "Linen",
+        "Flax Linen"
+      ]
+    },
+    "action": {
+      "Prompt_Inject": "fully matte linen texture with zero sheen, organic high-contrast crease lines and wrinkles locked at elbow and knee joints and waistline"
+    },
+    "description": "Linen Crease Enforcement",
+    "weight": 1.0
+  },
+  {
+    "rule_id": "DR-APP-003",
+    "level": 1,
+    "category": "Styling",
+    "condition": {
+      "FabricType": [
+        "Spandex",
+        "Activewear",
+        "Compression Fabric"
+      ]
+    },
+    "action": {
+      "Prompt_Inject": "compression activewear wrapping body contours tightly under elastic tension, completely smooth wrinkle-free surfaces at joints, flatlock stitching running flush along panels",
+      "Prompt_Forbid": [
+        "loose sagging folds",
+        "draping waistline",
+        "baggy pleats"
+      ]
+    },
+    "description": "Spandex Activewear Contour wrapping",
+    "weight": 1.0
+  },
+  {
+    "rule_id": "DR-APP-004",
+    "level": 1,
+    "category": "Styling",
+    "condition": {
+      "Category": [
+        "Blazer",
+        "Tailored Suit",
+        "Formal Coat"
+      ]
+    },
+    "action": {
+      "Prompt_Inject": "structured tailored blazer with straight sharp shoulder lines supported by internal canvas padding, crisp roll lapels forming a distinct V-shape"
+    },
+    "description": "Tailored Blazer Structure",
+    "weight": 1.0
+  },
+  {
+    "rule_id": "DR-APP-005",
+    "level": 2,
+    "category": "Lighting",
+    "condition": {
+      "Category": [
+        "Blazer",
+        "Formal Coat"
+      ],
+      "Intent": [
+        "Luxury Editorial",
+        "E-Commerce"
+      ]
+    },
+    "action": {
+      "KeyLight": "directional side key lighting at 45 degrees",
+      "Prompt_Inject": "lapel edge casting a subtle drop shadow on the chest, defining tailoring depth and structural overlap"
+    },
+    "description": "Blazer Lapel Lighting",
+    "weight": 0.95
+  },
+  {
+    "rule_id": "DR-APP-006",
+    "level": 3,
+    "category": "Lighting",
+    "condition": {
+      "FabricType": "Linen",
+      "LightingSetting": "Under-specified"
+    },
+    "action": {
+      "KeyLight": "Soft diffused natural daylight or north light",
+      "Prompt_Inject": "soft lighting emphasizing coarse linen weave micro-texture without casting harsh dark shadows"
+    },
+    "description": "Default Linen Lighting",
+    "weight": 0.9
+  },
+  {
+    "rule_id": "DR-FOOT-001",
+    "level": 1,
+    "category": "Styling",
+    "condition": {
+      "Material": [
+        "Polished Leather",
+        "Leather"
+      ]
+    },
+    "action": {
+      "Prompt_Inject": "polished leather upper with narrow sharp specular highlights along natural curves, anisotropic sheen reflecting ambient light"
+    },
+    "description": "Leather Specular Highlights",
+    "weight": 1.0
+  },
+  {
+    "rule_id": "DR-FOOT-002",
+    "level": 1,
+    "category": "Styling",
+    "condition": {
+      "Material": [
+        "Leather",
+        "Polished Leather"
+      ]
+    },
+    "action": {
+      "Prompt_Inject": "subtle organic horizontal flex creases across the toe box vamp, wrinkles interrupting the specular leather sheen"
+    },
+    "description": "Leather Vamp Crease Enforcement",
+    "weight": 1.0
+  },
+  {
+    "rule_id": "DR-FOOT-003",
+    "level": 1,
+    "category": "Styling",
+    "condition": {
+      "Material": [
+        "Suede",
+        "Nubuck"
+      ]
+    },
+    "action": {
+      "Prompt_Inject": "fully diffuse matte suede surface, napped pile texture showing natural light and dark brushed grain variations from fiber direction",
+      "Prompt_Forbid": [
+        "shiny surface",
+        "high gloss",
+        "specular sheen"
+      ]
+    },
+    "description": "Suede Pile Reflectance",
+    "weight": 1.0
+  },
+  {
+    "rule_id": "DR-FOOT-004",
+    "level": 1,
+    "category": "Styling",
+    "condition": {
+      "Category": [
+        "Footwear",
+        "Shoes",
+        "Sneakers"
+      ]
+    },
+    "action": {
+      "Prompt_Inject": "dense black contact shadow directly under the outsole, strong ambient occlusion at tread-ground interface, rapid shadow diffusion outward",
+      "Prompt_Forbid": [
+        "hovering shoe",
+        "floating shoe",
+        "missing shadows under sole"
+      ]
+    },
+    "description": "Ground Contact Shadows",
+    "weight": 1.0
+  },
+  {
+    "rule_id": "DR-FOOT-005",
+    "level": 2,
+    "category": "Styling",
+    "condition": {
+      "Closure": [
+        "Laces",
+        "Laced"
+      ]
+    },
+    "action": {
+      "Prompt_Inject": "matching eyelet counts and symmetrical criss-cross lacing pattern on left and right shoes, laces draping naturally downward under gravity casting subtle drop shadows on the shoe tongue, plastic aglets on lace tips"
+    },
+    "description": "Lacing Symmetry Heuristics",
+    "weight": 0.95
+  },
+  {
+    "rule_id": "DR-FOOT-006",
+    "level": 2,
+    "category": "Lighting",
+    "condition": {
+      "Material": [
+        "Suede",
+        "Nubuck"
+      ],
+      "Intent": [
+        "Luxury Editorial",
+        "E-Commerce"
+      ]
+    },
+    "action": {
+      "KeyLight": "directional angled side key lighting at 45 degrees",
+      "Lighting_Forbid": [
+        "flat ring lighting",
+        "direct front-facing flash"
+      ]
+    },
+    "description": "Suede Angled Lighting",
+    "weight": 0.95
+  },
+  {
+    "rule_id": "DR-FOOT-007",
+    "level": 3,
+    "category": "Styling",
+    "condition": {
+      "Category": [
+        "Footwear",
+        "Shoes"
+      ]
+    },
+    "action": {
+      "Prompt_Inject": "hero shot from a low perspective, emphasizing shoe profile and sole tread depth"
+    },
+    "description": "Default Footwear Camera Angle",
+    "weight": 0.9
+  },
+  {
+    "rule_id": "DR-JEWEL-001",
+    "level": 1,
+    "category": "Styling",
+    "condition": {
+      "Material": [
+        "Polished Gold",
+        "Platinum",
+        "White Gold",
+        "Rose Gold"
+      ]
+    },
+    "action": {
+      "Prompt_Inject": "polished metal surface reflecting clean white studio lighting panel geometries, sharp mirror-like specular reflections mapping the environment details, no blown-out flat white color patches"
+    },
+    "description": "Metal Reflection Mapping",
+    "weight": 1.0
+  },
+  {
+    "rule_id": "DR-JEWEL-002",
+    "level": 1,
+    "category": "Styling",
+    "condition": {
+      "GemstoneType": [
+        "Diamond",
+        "Faceted Stone"
+      ]
+    },
+    "action": {
+      "Prompt_Inject": "faceted gemstone with high refractive index, sharp geometric pavilion facet cuts, complex internal light reflections, colorful dispersion highlights (fire) splitting light into red and blue spectral sparks",
+      "Prompt_Forbid": [
+        "colored glass look",
+        "flat transparent surface",
+        "solid color gem"
+      ]
+    },
+    "description": "Gemstone Refraction & Fire",
+    "weight": 1.0
+  },
+  {
+    "rule_id": "DR-JEWEL-003",
+    "level": 1,
+    "category": "Camera",
+    "condition": {
+      "Category": [
+        "Jewelry",
+        "Ring",
+        "Earring"
+      ]
+    },
+    "action": {
+      "Lens": "90mm macro lens or 105mm macro lens",
+      "Prompt_Inject": "close-up macro shot with tack-sharp focus plane on front jewelry details, gradual soft focal roll-off into creamy background and foreground bokeh"
+    },
+    "description": "Macro Camera & Depth of Field",
+    "weight": 1.0
+  },
+  {
+    "rule_id": "DR-JEWEL-004",
+    "level": 2,
+    "category": "Lighting",
+    "condition": {
+      "Category": [
+        "Jewelry",
+        "Ring",
+        "Necklace"
+      ],
+      "Setting": "Studio"
+    },
+    "action": {
+      "KeyLight": "Dual Studio Layout",
+      "Prompt_Inject": "soft diffused white light boxes mapping smooth glossy bands along metal shanks, combined with a sharp directional key Fresnel spot light at 45 degrees to activate gemstone facet sparkle",
+      "Lighting_Forbid": [
+        "harsh direct flash",
+        "soft light boxes only",
+        "single light source"
+      ]
+    },
+    "description": "Dual Studio Lighting",
+    "weight": 0.95
+  },
+  {
+    "rule_id": "DR-JEWEL-005",
+    "level": 3,
+    "category": "Styling",
+    "condition": {
+      "Category": [
+        "Jewelry",
+        "Ring",
+        "Earring"
+      ],
+      "Intent": "Luxury Editorial"
+    },
+    "action": {
+      "Prompt_Inject": "product placed on a dark textured slate background, creating high-contrast separation and catching sharp specular reflections"
+    },
+    "description": "Default Textured Dark Background",
+    "weight": 0.9
+  },
+  {
+    "rule_id": "DR-SAREE-001",
+    "level": 1,
+    "category": "Styling",
+    "condition": {
+      "FabricType": [
+        "Banarasi Silk",
+        "Brocade"
+      ]
+    },
+    "action": {
+      "Prompt_Inject": "heavy structured Banarasi silk brocade with defined crisp architectural folds, large deep pleats holding shape under gravity",
+      "Prompt_Forbid": [
+        "flowing silk",
+        "billowing fabric",
+        "lightweight drape",
+        "airy folds",
+        "fluttering"
+      ]
+    },
+    "description": "Banarasi Drape Physics Constraints",
+    "weight": 1.0
+  },
+  {
+    "rule_id": "DR-SAREE-002",
+    "level": 1,
+    "category": "Styling",
+    "condition": {
+      "Embellishment": "Zari",
+      "FabricType": [
+        "Banarasi Silk",
+        "Kanjeevaram Silk"
+      ]
+    },
+    "action": {
+      "Prompt_Inject": "individual gold and silver zari threads creating distinct sharp point catchlights, metallic reflective thread-work, micro-contrast details"
+    },
+    "description": "Zari Reflectance Compiler Injection",
+    "weight": 1.0
+  },
+  {
+    "rule_id": "DR-SAREE-003",
+    "level": 1,
+    "category": "Styling",
+    "condition": {
+      "FabricType": [
+        "Kanjeevaram Silk",
+        "Kanjivaram"
+      ]
+    },
+    "action": {
+      "Prompt_Inject": "stiff structural drape, deep architectural folds holding shape independently, posture reflecting heavy fabric weight with subtle forward lean or hip shift",
+      "Pose_Restrict": [
+        "standing_heritage",
+        "temple_stance",
+        "seated_royal"
+      ]
+    },
+    "description": "Kanjeevaram Posture & Drape",
+    "weight": 1.0
+  },
+  {
+    "rule_id": "DR-SAREE-004",
+    "level": 1,
+    "category": "Lighting",
+    "condition": {
+      "FabricType": [
+        "Chanderi",
+        "Chanderi Silk-Cotton"
+      ]
+    },
+    "action": {
+      "KeyLight": "Backlight or counter-light from window or sun",
+      "Prompt_Inject": "semi-translucent sheer fabric base glowing under backlight, opaque silk motifs catching specular highlights, dual-surface texture"
+    },
+    "description": "Chanderi Translucency Lighting",
+    "weight": 1.0
+  },
+  {
+    "rule_id": "DR-SAREE-005",
+    "level": 1,
+    "category": "Styling",
+    "condition": {
+      "FabricType": "Velvet"
+    },
+    "action": {
+      "Prompt_Inject": "deep velvet pile direction creating luminosity gradient across surface folds, fabric reads lighter where pile is compressed and darker in open pile shadow zones",
+      "Lighting_Forbid": [
+        "flat front-facing studio lighting",
+        "ring light key"
+      ]
+    },
+    "description": "Velvet Pile directional Reflectance",
+    "weight": 1.0
+  },
+  {
+    "rule_id": "DR-SAREE-006",
+    "level": 2,
+    "category": "Lighting",
+    "condition": {
+      "Embellishment": "Zari",
+      "FabricType": "Banarasi Silk",
+      "Intent": [
+        "Luxury Bridal",
+        "Luxury Editorial"
+      ]
+    },
+    "action": {
+      "KeyLight": "30 to 60 degrees side or grazing position",
+      "Lighting_Forbid": [
+        "strobe flash key",
+        "flat front light"
+      ]
+    },
+    "description": "Zari Angled Lighting",
+    "weight": 0.95
+  },
+  {
+    "rule_id": "DR-SAREE-007",
+    "level": 2,
+    "category": "Camera",
+    "condition": {
+      "FabricType": [
+        "Kanjeevaram Silk",
+        "Kanjivaram"
+      ]
+    },
+    "action": {
+      "Lens": [
+        "full body",
+        "three-quarter portrait"
+      ]
+    },
+    "description": "Kanjeevaram Framing Rule",
+    "weight": 0.95
+  },
+  {
+    "rule_id": "DR-SAREE-008",
+    "level": 3,
+    "category": "Lighting",
+    "condition": {
+      "Intent": "Luxury Bridal",
+      "LightingSetting": "Under-specified"
+    },
+    "action": {
+      "KeyLight": "Golden Hour Directional"
+    },
+    "description": "Default Luxury Bridal Campaign Lighting",
+    "weight": 0.85
+  }
+]

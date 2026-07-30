@@ -1,0 +1,16 @@
+{
+  "Benchmark_ID": "CB-POS-008",
+  "Type": "Positive",
+  "Input": {
+    "Product_DNA": "Banarasi Silk",
+    "Brand_DNA": "Heritage Luxury",
+    "Environment": "Studio Seamless",
+    "Creative_Objective": "Amazon Listing"
+  },
+  "Expected_Creative_State": {
+    "Lighting": "Flat broad softbox",
+    "Camera": "50mm f/8",
+    "Grade": "Clean neutral"
+  },
+  "Expected_Evaluation_Score": ">= 0.85"
+}

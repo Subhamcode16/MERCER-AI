@@ -1,0 +1,11 @@
+{
+  "Benchmark_ID": "CB-NEG-006",
+  "Type": "Negative",
+  "Input": {
+    "mat": "Linen",
+    "light": "Flat softbox",
+    "reason": "Fails to show weave microcontrast"
+  },
+  "Expected_Solver_Decision": "REJECT",
+  "Failure_Reason": "Fails to show weave microcontrast"
+}

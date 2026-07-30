@@ -60,6 +60,12 @@ export interface FullCampaign {
       image_url: string | null;
     }[];
   };
+  intelligence_trace?: {
+    decisions?: any[];
+    cre_scores?: any;
+    level_1_violation?: any;
+    level_2_recommendation?: any;
+  };
   created_at: string;
   updated_at: string;
 }

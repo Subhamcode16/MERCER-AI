@@ -1,0 +1,11 @@
+{
+  "Benchmark_ID": "CB-NEG-001",
+  "Type": "Negative",
+  "Input": {
+    "mat": "Velvet",
+    "light": "Strong Frontal Flash",
+    "reason": "Destroys pile texture"
+  },
+  "Expected_Solver_Decision": "REJECT",
+  "Failure_Reason": "Destroys pile texture"
+}

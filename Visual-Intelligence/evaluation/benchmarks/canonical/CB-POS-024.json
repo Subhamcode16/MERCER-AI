@@ -1,0 +1,16 @@
+{
+  "Benchmark_ID": "CB-POS-024",
+  "Type": "Positive",
+  "Input": {
+    "Product_DNA": "Velvet",
+    "Brand_DNA": "Heritage Luxury",
+    "Environment": "Lush Garden",
+    "Creative_Objective": "Streetwear"
+  },
+  "Expected_Creative_State": {
+    "Lighting": "Rim light with soft fill",
+    "Camera": "50mm f/8",
+    "Grade": "Film emulsion emulation"
+  },
+  "Expected_Evaluation_Score": ">= 0.85"
+}

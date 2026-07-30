@@ -1,0 +1,11 @@
+{
+  "Benchmark_ID": "CB-NEG-002",
+  "Type": "Negative",
+  "Input": {
+    "mat": "Banarasi Silk",
+    "light": "Heavy Motion Blur",
+    "reason": "Destroys high-frequency metallic zari detail"
+  },
+  "Expected_Solver_Decision": "REJECT",
+  "Failure_Reason": "Destroys high-frequency metallic zari detail"
+}

@@ -1,0 +1,24 @@
+{
+  "claims": [
+    {
+      "Subject": "Garment",
+      "Predicate": "Type",
+      "Value": "Saree",
+      "Confidence": 0.99,
+      "Evidence": [
+        "Unstitched draped fabric",
+        "Pleats at waist"
+      ]
+    },
+    {
+      "Subject": "Weave",
+      "Predicate": "Technique",
+      "Value": "Banarasi",
+      "Confidence": 0.96,
+      "Evidence": [
+        "Heavy gold zari brocade",
+        "Floral motifs woven into silk"
+      ]
+    }
+  ]
+}

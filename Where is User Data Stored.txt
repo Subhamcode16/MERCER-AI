@@ -1,0 +1,10 @@
+Where is User Data Stored? (Hybrid Architecture)
+The system uses a highly secure, hybrid storage strategy:
+
+Supabase Auth (Core Credentials):
+Stores the user’s primary authentication credentials (email, hashed password, signup metadata, and sessions).
+Generates and verifies secure JWT tokens for frontend-backend API requests.
+MongoDB (Application & Billing Data):
+Stores application-specific metadata (user tier, current credit balance, transaction history, and campaign files).
+When a user signs up via Supabase, the frontend immediately triggers /api/auth/provision on the backend, which creates a matching user document in your MongoDB cluster (atelier_os database, users collection) to track credit deductions.
+This gives you the best of both worlds: secure, maintenance-free user authentication (Supabase) alongside flexible, high-speed document storage for your campaigns and billing ledger (MongoDB).

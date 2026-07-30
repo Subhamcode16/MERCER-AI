@@ -1,0 +1,11 @@
+{
+  "Benchmark_ID": "CB-NEG-008",
+  "Type": "Negative",
+  "Input": {
+    "mat": "Patent Leather",
+    "light": "Hard pinpoint source",
+    "reason": "Harsh clipped specular highlights"
+  },
+  "Expected_Solver_Decision": "REJECT",
+  "Failure_Reason": "Harsh clipped specular highlights"
+}

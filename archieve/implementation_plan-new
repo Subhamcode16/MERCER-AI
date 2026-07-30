@@ -1,0 +1,241 @@
+# Production Roadmap v2: From Research Engine to Product (Corrected)
+
+Incorporates all 10 corrections from [implementation-review.md](file:///c:/Users/User/OneDrive/Desktop/Fashion%20Knowldge%20Wiki/implementation-review.md).
+
+## User Review Required
+
+> [!IMPORTANT]
+> This is the corrected plan with all your feedback applied. Please confirm final approval so we can begin building the Product.
+
+---
+
+## Tech Stack
+
+```
+Frontend: Next.js 15 (App Router) + Vanilla CSS
+Backend:  FastAPI (Python) — wraps the existing engine
+Storage:  Local JSON (dev) → Cloud DB (prod migration path)
+Vision:   Vision Adapter layer (model-agnostic)
+Auth:     None (single-user local-first MVP)
+Deploy:   Local development only
+```
+
+---
+
+## Phase 1 — Campaign Architecture + Backend API (Week 1-2)
+
+### Correction #1: Vision Adapter (Model-Agnostic Analysis)
+
+The analysis pipeline mirrors the renderer-agnostic pattern. A `VisionAdapter` class normalizes outputs from any VLM into the same Knowledge Claims schema.
+
+```python
+# backend/adapters/vision_adapter.py
+class VisionAdapter:
+    """Routes product images through available VLMs and normalizes output."""
+    providers = ["gemini", "gpt4_vision", "qwen_vl"]  # Extensible
+
+    def analyze(self, image_path, provider="gemini") -> NormalizedClaims:
+        # Each provider returns raw analysis
+        # Adapter normalizes into Knowledge Claims schema
+```
+
+### Correction #2: Campaign State Lifecycle
+
+The Campaign State is restructured into 4 distinct lifecycle phases:
+
+```yaml
+Campaign:
+  id: "campaign_001"
+
+  # === IDENTITY ===
+  identity:
+    product_dna: { ... }          # Extracted via Vision Adapter
+    reference_dna: { ... }        # From uploaded moodboards/logos (Correction #9)
+
+  # === PLANNING ===
+  planning:
+    creative_objective: { ... }   # From OBJ-001
+    campaign_plan:                # What assets to produce
+      assets_requested: ["hero_image", "product_closeup", "lifestyle"]
+    dependency_graph:             # Correction #3
+      hero_image: []              # No dependencies — can start immediately
+      product_closeup: []         # No dependencies — can start immediately
+      lifestyle: []               # No dependencies — can start immediately
+      reel_storyboard: ["hero_image"]  # Depends on hero
+
+  # === EXECUTION ===
+  execution:
+    campaign_state: { ... }       # Solver output (renderer-agnostic)
+    asset_states:                 # Correction #4: Each asset has its own DNA
+      - type: "hero_image"
+        status: "pending | generating | complete | rejected"
+        asset_dna:                # Inherits Campaign DNA + asset-specific overrides
+          composition: "centered_editorial"
+          lighting_emphasis: "editorial_dramatic"
+          framing: "full_body_hero"
+        prompt: null
+        image_path: null
+      - type: "product_closeup"
+        asset_dna:
+          composition: "macro_tight"
+          lighting_emphasis: "texture_microcontrast"
+          framing: "detail_crop"
+        prompt: null
+        image_path: null
+      - type: "lifestyle"
+        asset_dna:
+          composition: "environmental_narrative"
+          lighting_emphasis: "natural_ambient"
+          framing: "three_quarter_movement"
+        prompt: null
+        image_path: null
+
+  # === EVALUATION ===
+  evaluation:
+    feedback_log: []              # Correction #5: Rich structured feedback
+    consistency_scores: {}        # Correction #7
+    approval_rate: null
+    edit_distance_minutes: null
+
+  created_at: "2026-07-03T..."
+  updated_at: "2026-07-03T..."
+```
+
+### Correction #3: Dependency Graph (Parallel Generation)
+
+Assets are generated based on a dependency graph, not sequentially. Independent assets (Hero, Close-up, Lifestyle) can be dispatched in parallel. Only assets with explicit dependencies (e.g., Reel Storyboard depends on Hero) wait.
+
+### Correction #9: Reference Manager (Reference DNA)
+
+When a brand uploads logos, moodboards, or previous campaign images, the Vision Adapter extracts a **Reference DNA** capturing the brand's visual language (lighting preferences, color palettes, composition patterns, styling conventions). This Reference DNA is inherited by the Campaign, ensuring every generated asset aligns with the brand's established identity.
+
+### Backend API Endpoints (FastAPI)
+| Endpoint | Method | Purpose |
+|---|---|---|
+| `/api/analyze` | POST | Upload image → Vision Adapter → draft Product DNA with confidence scores |
+| `/api/references` | POST | Upload moodboard/logo → extract Reference DNA |
+| `/api/campaign/create` | POST | Product DNA + Reference DNA + Objective → Campaign State |
+| `/api/campaign/{id}` | GET | Retrieve full campaign lifecycle |
+| `/api/campaign/{id}/generate` | POST | Generate assets (respects dependency graph) |
+| `/api/campaign/{id}/feedback` | POST | Submit rich structured feedback |
+| `/api/campaign/{id}/export` | GET | Package approved assets |
+
+---
+
+## Phase 2 — Frontend MVP (Week 2-4)
+
+### Correction #8: Reordered UI Flow
+
+DNA review happens **immediately** after upload — before the interview. This builds instant trust.
+
+| Step | Route | What Happens |
+|---|---|---|
+| 1. Upload | `/campaign/new` | User uploads a product image |
+| 2. Instant AI Analysis | `/campaign/new/analysis` | Vision Adapter extracts draft Product DNA with confidence scores. User sees: *"The AI understood my product."* |
+| 3. Review Product DNA | `/campaign/new/review-dna` | User confirms or corrects low-confidence fields |
+| 4. Interview | `/campaign/new/interview` | System asks targeted questions (occasion, vibe, target audience) |
+| 5. Reference Upload | `/campaign/new/references` | Optional: upload moodboard, logo, past campaigns |
+| 6. Creative Objective | `/campaign/new/objective` | Choose objective (Luxury Editorial / Catalog / etc.) |
+| 7. Campaign Workspace | `/campaign/{id}` | Generate, review, approve/reject assets |
+| 8. Export | `/campaign/{id}/export` | Download approved assets |
+
+### Design Principles
+- User **never** sees Knowledge Claims, Physics Ontology, Constraint Solver, or Creative State.
+- Collapsible "Engine Room" panel for power users shows the Creative Decision Trace.
+- Premium dark UI with glassmorphism — the product must feel luxury-fashion-grade.
+
+---
+
+## Phase 3 — Feedback Flywheel (Week 4-5)
+
+### Correction #5: Rich Structured Feedback
+
+Every rejection captures machine-readable, actionable data:
+
+```yaml
+Feedback:
+  campaign_id: "campaign_001"
+  asset_type: "hero_image"
+  action: "rejected"
+  category: "lighting"
+  severity: 4                           # 1-5 scale
+  reason: "Flat, no fabric texture visible"
+  desired_outcome: "More metallic separation on zari"
+  suggested_solver_adjustment: "Increase directional lighting weight in Creative Fitness Function"
+  timestamp: "2026-07-03T..."
+```
+
+### On Rejection
+1. Rich feedback is logged with `category`, `severity`, `reason`, `desired_outcome`, and `suggested_solver_adjustment`.
+2. The system re-runs the solver with adjusted bias (e.g., if `category = lighting` + `desired_outcome = metallic separation`, the solver increases the weight of directional hard key lighting).
+3. Rejection patterns aggregate into candidates for new interaction rules.
+
+### On Approval
+1. Full Creative State + prompt + asset saved as a **verified pattern** with the campaign context.
+2. Verified patterns feed back into the Expert Pattern Library, increasing confidence scores.
+
+---
+
+## Phase 4 — Scientific Validation Suite (Week 5-7)
+
+### Benchmark 1: Campaign Reconstruction
+Take 5 real luxury campaign images. Feed the product description. Compare the system's Creative State decisions against the real campaign's actual lighting/camera/grading.
+
+### Benchmark 2: Objective Variance
+Single saree → 4 Creative Objectives (Catalog, Bridal, Editorial, UGC). Human judges score appropriateness.
+
+### Benchmark 3: A/B Test
+Prompt-only workflow vs. Creative Intelligence workflow. Measure Product Fidelity, Luxury Perception, Consistency, Human Preference.
+
+### Correction #6: Benchmark 4 — Consistency (NEW)
+One saree → generate 20 images → can experts confirm it's the same product across all 20? This is the core promise of the platform. Measure it.
+
+### Correction #7: Business Metrics Dashboard
+
+| Metric | How it's measured |
+|---|---|---|
+| Product Fidelity | Can a merchant identify the product? (1-10) |
+| Brand Fidelity | Does it match the positioning? (1-10) |
+| Visual Realism | Can photographers tell it's AI? (blind test %) |
+| Commercial Utility | Would a brand publish this? (yes/no + confidence) |
+| Edit Distance | Minutes of manual editing before approval |
+| Approval Rate | % of assets approved on first attempt |
+| **Product Identity Consistency** | Same product recognizable across 20 images? (%) |
+| **Color Consistency** | Color fidelity across campaign assets (%) |
+| **Embroidery Consistency** | Detail preservation across angles/crops (%) |
+| **Brand Consistency** | Visual language alignment across campaign (%) |
+
+---
+
+## Phase 5 — Expansion (Week 8+, only after validation)
+
+Only after the MVP consistently demonstrates measurable improvement:
+- Jewelry vertical (leverages existing metallic reflectance ontology)
+- Cosmetics vertical
+- Furniture / Architecture
+
+---
+
+## Correction #10: Document Mode Shift
+
+The repository officially enters **Product Mode**. Research documents (IMG-001, OBJ-001) remain as the engine specification archive. All new documents follow product engineering conventions:
+
+| Old (Research) | New (Product) |
+|---|---|
+| IMG-001, OBJ-001 | PRD-001 (Product Requirements) |
+| Architecture specs | Frontend Specs, API Specs |
+| Physics ontology docs | Database Schema |
+| Benchmark runner | Integration Tests |
+| — | Acceptance Criteria |
+| — | User Journeys |
+
+---
+
+## The Milestone
+
+> **"A textile brand uploaded one product photo and published an entire campaign generated by the platform with minimal manual editing."**
+
+### Minimum Viable Campaign Package (3 assets)
+1. **Hero Image** — Full editorial shot (Asset DNA: centered composition, editorial lighting, full-body framing)
+2. **Product Close-up** — Tight macro crop (Asset DNA: macro composition, texture microcontrast, detail framing)
+3. **Lifestyle Image** — Contextual narrative (Asset DNA: environmental composition, natural ambient lighting, three-quarter movement framing)

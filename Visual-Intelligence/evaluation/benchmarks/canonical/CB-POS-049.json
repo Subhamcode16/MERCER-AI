@@ -1,0 +1,16 @@
+{
+  "Benchmark_ID": "CB-POS-049",
+  "Type": "Positive",
+  "Input": {
+    "Product_DNA": "Velvet",
+    "Brand_DNA": "Heritage Luxury",
+    "Environment": "Urban Street",
+    "Creative_Objective": "Luxury Editorial"
+  },
+  "Expected_Creative_State": {
+    "Lighting": "Rim light with soft fill",
+    "Camera": "85mm f/5.6",
+    "Grade": "Film emulsion emulation"
+  },
+  "Expected_Evaluation_Score": ">= 0.85"
+}

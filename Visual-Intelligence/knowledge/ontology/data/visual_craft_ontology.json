@@ -1,0 +1,80 @@
+{
+  "version": "1.0",
+  "domain": "visual_craft",
+  "lenses": {
+    "35mm": {
+      "compression": "low",
+      "fov": "wide",
+      "typical_use": ["environmental_storytelling", "full_body", "contextual"],
+      "depth_of_field_characteristic": "deep",
+      "distortion": "slight_barrel"
+    },
+    "50mm": {
+      "compression": "neutral",
+      "fov": "standard",
+      "typical_use": ["editorial", "three_quarter", "natural_perspective"],
+      "depth_of_field_characteristic": "moderate",
+      "distortion": "none"
+    },
+    "85mm": {
+      "compression": "high",
+      "fov": "telephoto",
+      "typical_use": ["beauty", "portrait", "luxury_isolation"],
+      "depth_of_field_characteristic": "shallow",
+      "distortion": "slight_pincushion"
+    },
+    "100mm_macro": {
+      "compression": "very_high",
+      "fov": "telephoto",
+      "typical_use": ["jewelry", "fabric_detail", "micro_texture"],
+      "depth_of_field_characteristic": "razor_thin",
+      "distortion": "none"
+    }
+  },
+  "lighting_archetypes": {
+    "paramount": {
+      "direction": "frontal_high",
+      "shadow_type": "butterfly_under_nose",
+      "typical_use": ["glamour", "beauty", "wrinkle_reduction"],
+      "contrast_ratio": "2:1"
+    },
+    "directional_key": {
+      "direction": "side_45",
+      "shadow_type": "strong_modelling",
+      "typical_use": ["texture_emphasis", "dramatic_portrait", "anisotropic_materials"],
+      "contrast_ratio": "4:1"
+    },
+    "broad_softbox": {
+      "direction": "frontal_side",
+      "shadow_type": "soft_wrap",
+      "typical_use": ["commercial_catalog", "even_illumination"],
+      "contrast_ratio": "1.5:1"
+    },
+    "backlight_rim": {
+      "direction": "rear",
+      "shadow_type": "silhouette_core",
+      "typical_use": ["translucent_materials", "subject_separation", "ethereal_mood"],
+      "contrast_ratio": "high"
+    }
+  },
+  "color_science": {
+    "kodak_portra": {
+      "temperature": "warm",
+      "highlight_rolloff": "smooth",
+      "shadows": "lifted_warm",
+      "skin_tones": "golden_flattering"
+    },
+    "arri_alexa": {
+      "temperature": "neutral",
+      "highlight_rolloff": "filmic_gradual",
+      "shadows": "clean_neutral",
+      "skin_tones": "highly_accurate"
+    },
+    "luxury_desaturated": {
+      "temperature": "cool_neutral",
+      "highlight_rolloff": "crisp",
+      "shadows": "crushed_rich",
+      "skin_tones": "pale_porcelain"
+    }
+  }
+}

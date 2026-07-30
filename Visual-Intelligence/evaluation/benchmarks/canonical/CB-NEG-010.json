@@ -1,0 +1,11 @@
+{
+  "Benchmark_ID": "CB-NEG-010",
+  "Type": "Negative",
+  "Input": {
+    "mat": "Chiffon",
+    "camera": "1/10th shutter",
+    "reason": "Fabric mass is too low, wind will blur it completely"
+  },
+  "Expected_Solver_Decision": "REJECT",
+  "Failure_Reason": "Fabric mass is too low, wind will blur it completely"
+}

@@ -1,0 +1,16 @@
+{
+  "Benchmark_ID": "CB-POS-033",
+  "Type": "Positive",
+  "Input": {
+    "Product_DNA": "Banarasi Silk",
+    "Brand_DNA": "Heritage Luxury",
+    "Environment": "Minimalist Concrete",
+    "Creative_Objective": "Streetwear"
+  },
+  "Expected_Creative_State": {
+    "Lighting": "Directional warm key",
+    "Camera": "50mm f/8",
+    "Grade": "Film emulsion emulation"
+  },
+  "Expected_Evaluation_Score": ">= 0.85"
+}

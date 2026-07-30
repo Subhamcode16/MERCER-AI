@@ -1,0 +1,11 @@
+{
+  "Benchmark_ID": "CB-NEG-009",
+  "Type": "Negative",
+  "Input": {
+    "vibe": "E-Commerce",
+    "camera": "f/1.2",
+    "reason": "Insufficient depth of field for product catalog"
+  },
+  "Expected_Solver_Decision": "REJECT",
+  "Failure_Reason": "Insufficient depth of field for product catalog"
+}

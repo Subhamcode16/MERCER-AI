@@ -1,0 +1,99 @@
+{
+  "Materials": {
+    "Banarasi Silk": {
+      "FabricMass": "High",
+      "FoldRadius": "Large",
+      "WrinkleFrequency": "Low",
+      "Reflectance": "High Microcontrast",
+      "EdgeRigidity": "Medium"
+    },
+    "Velvet": {
+      "FabricMass": "High",
+      "FoldRadius": "Medium",
+      "Reflectance": "Light Absorbing",
+      "EdgeRigidity": "Low"
+    },
+    "Organza": {
+      "FabricMass": "Very Low",
+      "FoldRadius": "Medium",
+      "Reflectance": "Translucent",
+      "EdgeRigidity": "High"
+    },
+    "Chiffon": {
+      "FabricMass": "Low",
+      "FoldRadius": "Small",
+      "Reflectance": "Matte Sheer",
+      "EdgeRigidity": "Low"
+    },
+    "Temple Jewelry": {
+      "FabricMass": "Rigid",
+      "FoldRadius": "None",
+      "Reflectance": "Directional Specular",
+      "EdgeRigidity": "Rigid"
+    }
+  },
+  "Reflectance_To_Lighting": {
+    "High Microcontrast": {
+      "KeyLight": "Warm directional hard key",
+      "Fill": "Large bounce for shadow separation",
+      "Rim": "Subtle edge light",
+      "BackgroundExposure": "Minus 1 stop to emphasize subject"
+    },
+    "Light Absorbing": {
+      "KeyLight": "Soft broad key",
+      "Fill": "Negative fill for contrast",
+      "Rim": "Strong specular rim to preserve texture",
+      "BackgroundExposure": "Matched to subject"
+    },
+    "Translucent": {
+      "KeyLight": "Strong Backlight to emphasize sheer texture",
+      "Fill": "Negative Fill to retain mood",
+      "Rim": "Overexposed Wrap",
+      "BackgroundExposure": "Darker background to separate light leaks"
+    },
+    "Matte Sheer": {
+      "KeyLight": "Softbox overhead",
+      "Fill": "White bounce",
+      "Rim": "Soft hair light",
+      "BackgroundExposure": "High key"
+    },
+    "Directional Specular": {
+      "KeyLight": "Side Key Light for self-shadowing",
+      "Fill": "Black flag to maintain micro-scratches",
+      "Rim": "Hard specular rim",
+      "BackgroundExposure": "Dark"
+    }
+  },
+  "Reflectance_To_Camera": {
+    "High Microcontrast": {
+      "Lens": "85mm macro-capable",
+      "Aperture": "f/5.6-f/8 for deep texture focus",
+      "Shutter": "1/200s",
+      "Contrast": "High local microcontrast"
+    },
+    "Light Absorbing": {
+      "Lens": "50mm prime",
+      "Aperture": "f/2.8-f/4 for smooth roll-off",
+      "Shutter": "1/100s",
+      "Contrast": "Low midtone contrast"
+    },
+    "Translucent": {
+      "Lens": "105mm telephoto",
+      "Aperture": "f/1.4 for shallow depth behind light leaks",
+      "Shutter": "1/500s",
+      "Contrast": "Medium"
+    },
+    "Matte Sheer": {
+      "Lens": "35mm environmental",
+      "Aperture": "f/2.8",
+      "Shutter": "1/1000s",
+      "Contrast": "Low"
+    },
+    "Directional Specular": {
+      "Lens": "100mm macro",
+      "Aperture": "f/8 for full jewelry depth",
+      "Shutter": "1/160s",
+      "Contrast": "High specular contrast"
+    }
+  }
+}

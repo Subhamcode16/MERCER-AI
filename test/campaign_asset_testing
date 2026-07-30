@@ -1,0 +1,125 @@
+# Test Campaign Asset: LB-001
+
+Here is the image generated using the **LB-001: The Royal Heritage Portrait** knowledge pattern:
+
+![LB-001 Royal Heritage Portrait](lb_001_royal_heritage_portrait_with_jewelry_1784584021539.png)
+
+### Alternative Perspective (Profile, Close-up)
+
+By slightly modifying the `CAMERA` and `SUBJECT` pose instructions while passing the previous generation as a reference, we maintain perfect character and material consistency from a new angle:
+
+![LB-001 Royal Heritage Profile](lb_001_royal_heritage_profile_1784584202800.png)
+
+### Alternative Perspective (Macro Product Shoot)
+
+By changing the `CAMERA` to a 100mm macro lens and focusing the `SUBJECT` on the intricate zari weave across her shoulder and the heavy Kundan necklace, we maintain the exact same fabric physics and lighting consistency while focusing entirely on product details:
+
+![LB-001 Royal Heritage Macro](lb_001_royal_heritage_macro_1784584308178.png)
+
+### Prompt Used (from EPL-001)
+> SUBJECT: Indian woman, late 20s, wearing a deep crimson Banarasi silk brocade saree with heavy gold zari floral buti pattern, adorned with heavy traditional Kundan jewelry including a prominent necklace, heavy ear drops (jhumkas), maang tikka, and a stack of gold bangles, standing in three-quarter stance with weight shifted to right hip, left hand holding pallu lightly at mid-chest height, right arm falling naturally with slight outward wrist rotation, face turned toward camera with contemplative confidence, eyes carry knowing emotion — not smiling, chin level. MATERIAL: Heavy structured Banarasi silk drape with defined crisp folds (not flowing), individual gold zari threads creating distinct point catchlights under warm directional light, anisotropic silk sheen shifting across the body, visible micro-wrinkles at fabric stress points at hip and arm, authentic garment weight evident in posture. LIGHTING: Warm directional golden hour sun from camera-left at 45°, 2900K color temperature, 3:1 lighting ratio with soft reflector fill from camera-right, gold zari threads catching anisotropic point highlights, subtle rim light on shoulder and hair from ambient skylight. CAMERA: 85mm lens, f/2.2 aperture, eye-level camera at 1.65m, portrait 4:5 orientation, shallow depth of field with creamy background bokeh, natural lens breathing at frame edges. ENVIRONMENT: Interior of ancient haveli courtyard, weathered carved stone columns partially in foreground, warm afternoon light filtering through wooden jali screens casting shadow geometry on stone floor, atmospheric dust particles visible in backlit air, rich architectural depth in background — soft but legible. QUALITY: Natural skin texture with visible pores, authentic subsurface scattering in warm light, fine peach fuzz on skin, natural facial asymmetry, individual hair strands distinct with natural flyaways at crown, Kodak Portra 400 film response — warm shadows, gentle grain, natural highlight rolloff. FORBIDDEN: smooth plastic skin, uniform solid hair mass, symmetrical pose, flowing Banarasi fabric, flat studio lighting, white background, cool color temperature, digital sharpening artifacts, AI-smooth fabric surface, perfectly symmetrical bilateral composition.
+
+---
+
+## Phase 2: Environment, Lighting & Pose Variations
+
+To test the robustness of the character and material consistency across different contexts, we've generated three new variations using the base generation as an image reference:
+
+### 1. Modern Minimalist Studio (Editorial Look)
+
+Testing high fashion editorial look with cool, dramatic lighting and a modern studio background.
+
+![LB-001 Editorial Studio](lb_001_editorial_studio_1784833153777.png)
+
+> **Prompt Changes:**
+> - **SUBJECT:** Seated on a contemporary sleek chair, one hand resting gracefully on the chin with elbow on knee, looking directly into the lens with an intense editorial gaze.
+> - **ENVIRONMENT:** Modern minimalist studio with textured concrete walls, sleek architectural lines, negative space.
+> - **LIGHTING:** Cool diffused window light mixed with a sharp strobe, creating dramatic chiaroscuro shadows, high contrast.
+
+### 2. Nighttime Palace Balcony (Low Light / Festive)
+
+Testing low-light ambiance with warm firelight and deep shadows.
+
+![LB-001 Nighttime Palace](lb_001_nighttime_palace_1784833164687.png)
+
+> **Prompt Changes:**
+> - **SUBJECT:** Standing by an ornate stone railing, looking thoughtfully into the distance in three-quarter profile.
+> - **ENVIRONMENT:** Grand palace balcony at night, illuminated by hundreds of soft glowing diyas (oil lamps), deep blue night sky.
+> - **LIGHTING:** Low light ambiance, warm flickering firelight casting dynamic shadows, subtle cool moonlight rim on hair.
+
+### 3. Lush Green Royal Garden (Daylight Contrast)
+
+Testing bright outdoor natural light and vibrant color contrasts.
+
+![LB-001 Lush Garden](lb_001_lush_garden_1784833174378.png)
+
+> **Prompt Changes:**
+> - **SUBJECT:** Walking slowly towards the camera mid-stride, holding the pallu securely.
+> - **ENVIRONMENT:** Lush, verdant Indian royal garden, overgrown with vibrant green foliage, bougainvillea vines.
+> - **LIGHTING:** Bright, overcast daylight acting as a massive softbox, even natural illumination.
+
+---
+
+## Phase 3: Testing New Ontology Nodes (Heritage & High-Key)
+
+To test the newly injected nodes from our gap analysis, we've generated three new concepts focusing on heavy fabric physics in motion, ethereal edge lighting, and extreme close-up details on bridal ornaments.
+
+### 1. Heritage Fort Spin (Dynamic Motion + Heavy Brocade)
+
+Testing the physical limits of `FABRIC-001` (Heavy Banarasi Brocade) combined with `MOTION-007` (Dynamic Fabric Spin) within `ENV-014` (Heritage Fort / Palace Corridor).
+
+![Heritage Fort Spin](heritage_spin_test_1784835236244.png)
+
+> **Nodes Tested:**
+> - **ENVIRONMENT:** `ENV-014` (Heritage Fort / Palace Corridor)
+> - **POSE:** `MOTION-007` (Dynamic Fabric Spin)
+> - **FABRIC:** `FABRIC-001` (Heavy Banarasi Brocade)
+
+### 2. Ethereal Threshold (Veil Drape + High-Key Lighting)
+
+Testing the interaction between `FABRIC-002` (Sheer Net Dupatta) and the new `VIO-009` (Ethereal Backlight / Edge Wrap) in a high-key setting.
+
+![Ethereal Veil Threshold](ethereal_veil_test_1784835246518.png)
+
+> **Nodes Tested:**
+> - **ENVIRONMENT:** `ENV-015` (High-Key Window Doorway)
+> - **POSE:** `VEIL-005` (Contemplative Veil Drape)
+> - **LIGHTING:** `VIO-009` (Ethereal Backlight / Edge Wrap)
+> - **FABRIC:** `FABRIC-002` (Sheer Net / Tulle)
+
+### 3. The Editorial Intensity (Close-Up Ornaments)
+
+Testing the new `FDB-001` bridal ornament nodes combined with the intense `EXPRESSION-006`.
+
+![Editorial Close-Up Ornaments](editorial_closeup_test_1784835254571.png)
+
+> **Nodes Tested:**
+> - **POSE/EXPRESSION:** `EXPRESSION-006` (Editorial Close-Up Gaze)
+> - **STYLING:** `ORNAMENT-001` (The Nath), `ORNAMENT-002` (Maang Tikka)
+> - **FABRIC:** `FABRIC-001` (Heavy Banarasi Brocade details)
+
+---
+
+## Phase 4: Kanjeevaram & Lightweight Physics Expansion
+
+After expanding our ontology to handle regional South Indian styles and lightweight wind-responsive fabrics, we tested two distinct aesthetics.
+
+### 1. The Southern Bride (Kanjeevaram & Temple Jewelry)
+
+Testing `FABRIC-026` (Kanjeevaram Silk) with `South Indian Bridal Drape` and traditional styling elements (Gajra & Temple Jewelry) to ensure the heavy, structured physics and broad Zari borders render accurately.
+
+![Kanjeevaram Bride](kanjeevaram_bride_test_1784835988893.png)
+
+> **Nodes Tested:**
+> - **FABRIC:** `FABRIC-026` (Kanjeevaram Silk)
+> - **STYLING:** `South Indian Bridal Drape`, `Gajra`, `Temple Jewelry`
+
+### 2. The Breezy Editorial (Chiffon Toss)
+
+Testing `FABRIC-027` (Chiffon / Organza) combined with the new `MOTION-008` (Wind-Blown Toss) action. The system correctly applied translucent fluid physics instead of the heavy architectural drape used for silks.
+
+![Chiffon Breeze](chiffon_breeze_test_1784835996783.png)
+
+> **Nodes Tested:**
+> - **FABRIC:** `FABRIC-027` (Chiffon / Organza)
+> - **POSE:** `MOTION-008` (Wind-Blown Toss)

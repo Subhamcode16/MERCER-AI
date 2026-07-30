@@ -1,0 +1,11 @@
+{
+  "Benchmark_ID": "CB-NEG-005",
+  "Type": "Negative",
+  "Input": {
+    "mat": "Jewelry",
+    "camera": "24mm wide angle",
+    "reason": "Severe distortion on macro product"
+  },
+  "Expected_Solver_Decision": "REJECT",
+  "Failure_Reason": "Severe distortion on macro product"
+}

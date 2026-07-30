@@ -1,0 +1,16 @@
+{
+  "Benchmark_ID": "CB-POS-041",
+  "Type": "Positive",
+  "Input": {
+    "Product_DNA": "Chiffon",
+    "Brand_DNA": "Heritage Luxury",
+    "Environment": "Studio Seamless",
+    "Creative_Objective": "Amazon Listing"
+  },
+  "Expected_Creative_State": {
+    "Lighting": "Natural ambient with negative fill",
+    "Camera": "50mm f/8",
+    "Grade": "Clean neutral"
+  },
+  "Expected_Evaluation_Score": ">= 0.85"
+}

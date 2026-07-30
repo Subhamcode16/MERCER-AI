@@ -16,6 +16,7 @@ interface UserProfile {
 interface UserPopoverProps {
   profile: UserProfile;
   logout: () => void;
+  isCollapsed?: boolean;
 }
 
 function AnimatedNumber({ value }: { value: number }) {
@@ -37,7 +38,7 @@ function AnimatedNumber({ value }: { value: number }) {
   );
 }
 
-export function UserPopover({ profile, logout }: UserPopoverProps) {
+export function UserPopover({ profile, logout, isCollapsed }: UserPopoverProps) {
   const [isOpen, setIsOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
 
@@ -171,21 +172,27 @@ export function UserPopover({ profile, logout }: UserPopoverProps) {
       {/* Trigger Button */}
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center gap-3 p-2.5 -ml-2 rounded-xl hover:bg-white/5 transition-colors group"
+        className={`w-full flex items-center p-2.5 rounded-xl hover:bg-white/5 transition-all group ${
+          isCollapsed ? "justify-center -ml-0" : "-ml-2 gap-3"
+        }`}
       >
         <div className="w-8 h-8 rounded-full bg-[#1A1A1A] border border-white/10 flex items-center justify-center text-[#E1D4C0] text-[10px] tracking-wider shrink-0 transition-transform group-hover:scale-105 shadow-inner">
           {initials}
         </div>
-        <div className="flex-1 text-left min-w-0">
-          <div className="text-[12px] text-white font-medium truncate tracking-wide">{userId}</div>
-          <div className="text-[10px] tracking-wide text-white/40 uppercase truncate mt-0.5 flex gap-1 items-center">
-            {profile.tier === 'FREE' ? 'Free Plan' : profile.tier}
-          </div>
-        </div>
-        <ChevronUp 
-          size={14} 
-          className={`text-white/40 transition-transform duration-400 group-hover:text-white/70 ${isOpen ? 'rotate-180' : ''}`} 
-        />
+        {!isCollapsed && (
+          <>
+            <div className="flex-1 text-left min-w-0 animate-in fade-in duration-300">
+              <div className="text-[12px] text-white font-medium truncate tracking-wide">{userId}</div>
+              <div className="text-[10px] tracking-wide text-white/40 uppercase truncate mt-0.5 flex gap-1 items-center">
+                {profile.tier === 'FREE' ? 'Free Plan' : profile.tier}
+              </div>
+            </div>
+            <ChevronUp 
+              size={14} 
+              className={`text-white/40 transition-transform duration-400 group-hover:text-white/70 ${isOpen ? 'rotate-180' : ''}`} 
+            />
+          </>
+        )}
       </button>
     </div>
   );

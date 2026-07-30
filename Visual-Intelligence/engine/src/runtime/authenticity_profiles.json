@@ -1,0 +1,26 @@
+{
+  "Luxury Bridal": {
+    "SkinPores": 0.8,
+    "FabricWrinkles": 0.7,
+    "HairFlyaways": 0.6,
+    "LensImperfections": 0.2,
+    "FilmGrain": 0.1,
+    "AtmosphericDust": 0.3
+  },
+  "Editorial": {
+    "SkinPores": 0.9,
+    "FabricWrinkles": 0.9,
+    "HairFlyaways": 0.8,
+    "LensImperfections": 0.4,
+    "FilmGrain": 0.5,
+    "AtmosphericDust": 0.5
+  },
+  "E-Commerce Catalog": {
+    "SkinPores": 0.4,
+    "FabricWrinkles": 0.2,
+    "HairFlyaways": 0.1,
+    "LensImperfections": 0.0,
+    "FilmGrain": 0.0,
+    "AtmosphericDust": 0.0
+  }
+}

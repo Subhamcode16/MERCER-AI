@@ -1,0 +1,11 @@
+{
+  "Benchmark_ID": "CB-NEG-003",
+  "Type": "Negative",
+  "Input": {
+    "mat": "Organza",
+    "light": "No backlight/rim",
+    "reason": "Fails to show translucent property"
+  },
+  "Expected_Solver_Decision": "REJECT",
+  "Failure_Reason": "Fails to show translucent property"
+}

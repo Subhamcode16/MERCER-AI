@@ -1,0 +1,11 @@
+{
+  "Benchmark_ID": "CB-NEG-004",
+  "Type": "Negative",
+  "Input": {
+    "vibe": "Luxury Bridal",
+    "env": "Cold Fluorescent Office",
+    "reason": "Vibe conflict"
+  },
+  "Expected_Solver_Decision": "REJECT",
+  "Failure_Reason": "Vibe conflict"
+}

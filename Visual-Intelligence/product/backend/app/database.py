@@ -96,3 +96,23 @@ async def _ensure_indexes() -> None:
         sparse=True,
         name="idx_idempotency_key_unique",
     )
+
+    # ── workspaces ────────────────────────────────────────────────────────────
+    await db.workspaces.create_index([("owner_id", ASCENDING)])
+
+    # ── brands ────────────────────────────────────────────────────────────────
+    await db.brands.create_index([("workspace_id", ASCENDING)])
+
+    # ── products ──────────────────────────────────────────────────────────────
+    await db.products.create_index([("brand_id", ASCENDING)])
+    await db.products.create_index([("domain", ASCENDING)])
+
+    # ── knowledge_claims (LAW-001) ────────────────────────────────────────────
+    await db.knowledge_claims.create_index([("subject", ASCENDING)])
+    await db.knowledge_claims.create_index([("predicate", ASCENDING)])
+    await db.knowledge_claims.create_index([("status", ASCENDING)])
+
+    # ── graph_edges (ARC-001) ─────────────────────────────────────────────────
+    await db.graph_edges.create_index([("source_id", ASCENDING)])
+    await db.graph_edges.create_index([("target_id", ASCENDING)])
+    await db.graph_edges.create_index([("edge_type", ASCENDING)])

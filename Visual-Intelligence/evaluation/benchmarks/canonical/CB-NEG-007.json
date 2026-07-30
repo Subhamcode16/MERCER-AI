@@ -1,0 +1,11 @@
+{
+  "Benchmark_ID": "CB-NEG-007",
+  "Type": "Negative",
+  "Input": {
+    "skin": "Deep Warm",
+    "grade": "Teal shadows",
+    "reason": "Ashen skin tone conflict"
+  },
+  "Expected_Solver_Decision": "REJECT",
+  "Failure_Reason": "Ashen skin tone conflict"
+}

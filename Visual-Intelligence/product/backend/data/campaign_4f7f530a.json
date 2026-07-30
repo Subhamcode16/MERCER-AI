@@ -39,9 +39,9 @@
         ]
       }
     },
-    "selected_background": null,
-    "selected_pose": null,
-    "selected_lighting": null,
+    "selected_background": "Lush Garden",
+    "selected_pose": "Editorial Close-Up Gaze",
+    "selected_lighting": "Ethereal Backlight / Edge Wrap",
     "recommendations": null
   },
   "execution": {
@@ -55,5 +55,5 @@
     "edit_distance_minutes": null
   },
   "created_at": "2026-07-25T14:44:50.097559",
-  "updated_at": "2026-07-25T21:06:57.929563"
+  "updated_at": "2026-07-28T16:18:03.305422"
 }

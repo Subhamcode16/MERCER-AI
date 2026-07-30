@@ -1,0 +1,16 @@
+{
+  "Benchmark_ID": "CB-POS-018",
+  "Type": "Positive",
+  "Input": {
+    "Product_DNA": "Chiffon",
+    "Brand_DNA": "Heritage Luxury",
+    "Environment": "Studio Seamless",
+    "Creative_Objective": "Luxury Editorial"
+  },
+  "Expected_Creative_State": {
+    "Lighting": "Natural ambient with negative fill",
+    "Camera": "85mm f/5.6",
+    "Grade": "Film emulsion emulation"
+  },
+  "Expected_Evaluation_Score": ">= 0.85"
+}

@@ -1,0 +1,39 @@
+# Sprint 2: The Physical World (Restarted)
+
+The `visual-development-artist` has successfully generated the concept frame strictly adhering to the **LAB-09-Visual-Grammar.md** lock. We did not let the AI hallucinate; we dictated the exact optical behavior, film stock, and material physics.
+
+## Primary Visual Artifact: The True Keyframe
+This is our absolute engineering target. We are matching the 50mm composition, the cyan shadow tint, the T2.8 depth of field, and the hard overhead spotlight.
+
+![Locked Obsidian Silk Concept](file:///C:/Users/User/.gemini/antigravity-ide/brain/14a1610f-6818-4654-8e16-8db3d7a9de89/locked_obsidian_silk_keyframe_1784050553543.png)
+
+## The Goal
+Convert this static visual artifact into a 60FPS WebGL environment using React Three Fiber, recreating the lighting ratios and material transmission precisely.
+
+## User Review Required
+
+> [!WARNING]
+> Because we still do not have the final exported Draco `.glb` mesh from the 3D pipeline, I will use an abstract mathematical geometry (e.g., a highly tessellated sphere or torus knot) to dial in the look first. We are purely focusing on lighting and shader calibration. Do you approve of this approach?
+
+## Proposed Execution Plan
+
+### 1. The Environment & Lighting Rig
+#### [NEW] `src/components/canvas/PhysicalWorld.tsx`
+We will build the lighting rig that matches the image:
+- A strong overhead `SpotLight` with a sharp penumbra for the dramatic spotlight effect.
+- A very dim, warm `AmbientLight` to replicate the charcoal limestone bounce.
+- A subtle `Fog` matched to the limestone hex color (`#111111`) to enforce depth and negative space (the "Void" push).
+
+### 2. The Material (Obsidian Silk)
+#### [NEW] `src/components/canvas/ObsidianSilk.tsx`
+We will construct the subject. The critical challenge here is the material:
+- We will use `MeshPhysicalMaterial` available in Three.js, configuring `transmission`, `thickness`, `roughness`, and `ior: 1.5` to mimic the subtle translucency at the edges of the silk seen in the image.
+- The object will have a slow, breathing, vertical float animation (driven by `useFrame` and `Math.sin`).
+
+### 3. Scene Integration
+#### [MODIFY] `src/components/canvas/Scene.tsx`
+We will import both `PhysicalWorld` and `ObsidianSilk` into the global `Scene`, removing the temporary placeholder light.
+
+## Verification Plan
+1. Start the Next.js dev server.
+2. Ensure the visual output in the browser aligns with the lighting, contrast, and material transmission of the generated keyframe.
