@@ -1,9 +1,9 @@
 @echo off
 echo Cleaning up previous server processes...
-powershell -Command "Get-NetTCPConnection -LocalPort 3000, 8000 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess | Sort-Object -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }"
+powershell -Command "$p = Get-NetTCPConnection -LocalPort 3000, 8000 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess | Sort-Object -Unique; if ($p) { Stop-Process -Id $p -Force -ErrorAction SilentlyContinue }"
 
 echo Starting Backend Server...
-start "Backend Server" cmd /k "cd Visual-Intelligence\product\backend && python -m uvicorn main:app --reload"
+start "Backend Server" cmd /k "cd Visual-Intelligence\product\backend && python -m uvicorn main:app --reload --reload-dir app --host localhost"
 
 echo Starting Frontend Server...
 start "Frontend Server" cmd /k "cd Visual-Intelligence\product\frontend && npm run dev"

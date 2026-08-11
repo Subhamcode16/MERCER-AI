@@ -64,6 +64,7 @@
     "approval_rate": null,
     "edit_distance_minutes": null
   },
+  "v3_creative_state": null,
   "created_at": "2026-07-28T16:01:15.035897",
-  "updated_at": "2026-07-28T19:19:01.694030"
+  "updated_at": "2026-07-30T14:22:45.070969"
 }

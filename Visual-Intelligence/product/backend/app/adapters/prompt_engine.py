@@ -61,16 +61,12 @@ class PromptEngine:
             self._client = genai
         return self._client
 
-    def generate_recommendations(self, campaign: Campaign) -> dict:
+    def generate_recommendations(self, dna: 'ProductDNA', obsidian_knowledge: str) -> dict:
         """
         Calls Gemini to get background, pose, and lighting recommendations based on ProductDNA and ontologies.
         """
-        dna = campaign.identity.product_dna
         if not dna:
             return {}
-            
-        # Retrieve context (ontology and vault files)
-        obsidian_knowledge = self.knowledge_adapter.retrieve_context(dna)
         
         prompt = f"""
 You are the Mercer AI Art Direction Recommendation Engine.

@@ -16,6 +16,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.config import get_settings
 from app.database import connect_db, close_db
+from app.utils.cache import init_redis, close_redis
 from app.utils.logging import setup_logging
 from app.utils.security import limiter
 from app.routers import health, generate, auth, users, admin, payments, jobs
@@ -40,6 +41,9 @@ async def lifespan(app: FastAPI):
     await connect_db()
     logger.info("MongoDB connected.")
     
+    await init_redis()
+    logger.info("Redis initialized.")
+    
     # Initialize OpenTelemetry (Console Exporter for MVP, can be swapped to OTLP later)
     provider = TracerProvider()
     processor = BatchSpanProcessor(ConsoleSpanExporter())
@@ -48,6 +52,7 @@ async def lifespan(app: FastAPI):
     
     yield
     logger.info("Mercer AI API shutting down...")
+    await close_redis()
     await close_db()
 
 
@@ -71,7 +76,14 @@ FastAPIInstrumentor.instrument_app(app)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=(
-        ["http://localhost:3000", "http://localhost:5173", "http://localhost:3001"]
+        [
+            "http://localhost:3000",
+            "http://localhost:5173",
+            "http://localhost:3001",
+            "http://127.0.0.1:3000",
+            "http://127.0.0.1:3001",
+            "http://127.0.0.1:5173",
+        ]
         if settings.environment == "development"
         else [settings.frontend_url]
     ),

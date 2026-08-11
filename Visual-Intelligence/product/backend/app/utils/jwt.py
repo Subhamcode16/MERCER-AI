@@ -5,20 +5,47 @@ Pure utility — no FastAPI dependency injection here.
 Used by auth/dependencies.py to verify Supabase tokens locally
 without making a network call to Supabase on every request.
 
+Algorithm strategy:
+  1. Fetch signing key from Supabase JWKS endpoint (ES256/RS256).
+     Pass the PyJWK object directly to jwt.decode() so PyJWT auto-derives
+     the algorithm from key.algorithm_name — no risk of alg mismatch.
+  2. If the JWKS endpoint is unreachable (network error), fall back to
+     local HS256 verification using the SUPABASE_JWT_SECRET from .env.
+
 All jwt.exceptions.InvalidTokenError subclasses bubble up to the
 caller (auth/dependencies.py), which converts them into HTTP 401.
 """
+import base64
+import logging
+
 import jwt
 from jwt import PyJWKClient
+from jwt.exceptions import PyJWKClientConnectionError
 
 from app.config import get_settings
 
+logger = logging.getLogger(__name__)
 settings = get_settings()
 
 jwks_url = f"{settings.supabase_url}/auth/v1/.well-known/jwks.json"
-jwk_client = PyJWKClient(
-    jwks_url
-)
+
+# cache_keys=True: LRU-cache the PyJWK objects so we don't re-fetch on every
+# request. cache_jwk_set=True (default): cache the raw JWKS JSON for 5 minutes.
+jwk_client = PyJWKClient(jwks_url, cache_keys=True)
+
+
+def _get_hs256_secret() -> bytes:
+    """
+    Supabase JWT secrets are base64-encoded in the Supabase dashboard
+    and in the .env file. PyJWT needs the raw bytes, not the base64 string.
+    We try base64 decode first; if it fails, use the raw string as bytes.
+    """
+    raw = settings.supabase_jwt_secret
+    try:
+        return base64.b64decode(raw + "==")  # pad to avoid padding errors
+    except Exception:
+        return raw.encode("utf-8")
+
 
 def decode_supabase_jwt(token: str) -> dict:
     """
@@ -38,32 +65,39 @@ def decode_supabase_jwt(token: str) -> dict:
         jwt.exceptions.DecodeError             — malformed token
         jwt.exceptions.InvalidTokenError       — any other JWT problem
     """
+    # ── Path 1: JWKS verification (ES256 / RS256) ─────────────────────────────
     try:
-        # Try to get signing key from JWKS (for ES256/RS256)
+        # get_signing_key_from_jwt fetches the JWKS endpoint and returns a
+        # PyJWK object whose .algorithm_name matches the 'alg' header.
         signing_key = jwk_client.get_signing_key_from_jwt(token)
+
+        # CRITICAL: pass the PyJWK object — NOT signing_key.key (raw bytes).
+        # When a PyJWK is passed, PyJWT reads key.algorithm_name automatically,
+        # so the algorithms list is derived correctly and no mismatch can occur.
         return jwt.decode(
             token,
-            signing_key.key,
-            algorithms=["RS256", "ES256", "HS256"],
+            signing_key,                  # PyJWK object — alg auto-derived
+            algorithms=[signing_key.algorithm_name],
             options={"verify_aud": False},
         )
-    except Exception as e:
-        import traceback
-        print("JWK Fetch failed:", type(e).__name__, str(e))
-        try:
-            unverified_header = jwt.get_unverified_header(token)
-            print("Token unverified header:", unverified_header)
-        except Exception as header_e:
-            print("Could not get unverified header:", str(header_e))
 
-        # Fallback for HS256 tokens that don't have a kid in JWKS
-        try:
-            return jwt.decode(
-                token,
-                settings.supabase_jwt_secret,
-                algorithms=["HS256"],
-                options={"verify_aud": False},
-            )
-        except Exception as fallback_e:
-            print("Fallback jwt.decode failed:", type(fallback_e).__name__, str(fallback_e))
-            raise
+    except PyJWKClientConnectionError as conn_err:
+        # JWKS endpoint unreachable (network issue) — try HS256 fallback.
+        logger.warning(
+            "JWKS endpoint unreachable, falling back to HS256: %s", conn_err
+        )
+
+    except jwt.exceptions.InvalidTokenError:
+        # Token is genuinely invalid (expired, bad signature, wrong alg).
+        # Do NOT fall through to HS256 — re-raise immediately so the caller
+        # returns 401 instead of trying an inappropriate algorithm.
+        raise
+
+    # ── Path 2: HS256 fallback (JWKS network failure only) ───────────────────
+    secret_bytes = _get_hs256_secret()
+    return jwt.decode(
+        token,
+        secret_bytes,
+        algorithms=["HS256"],
+        options={"verify_aud": False},
+    )

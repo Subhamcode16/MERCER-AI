@@ -145,7 +145,14 @@ async def get_current_user(
 
     # Step 4 — Load entitlements from MongoDB (never from JWT)
     db = get_db()
-    user_doc = await db.users.find_one({"_id": user_id})
+    try:
+        user_doc = await db.users.find_one({"_id": user_id})
+    except Exception as e:
+        logger.error(f"Failed to fetch user from MongoDB: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Database connection failed. Ensure your IP is whitelisted on MongoDB Atlas."
+        )
 
     if user_doc is None:
         raise HTTPException(

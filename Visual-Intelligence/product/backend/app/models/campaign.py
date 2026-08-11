@@ -97,10 +97,24 @@ class MemoryNode(BaseModel):
     content: str
     timestamp: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
 
+# --- V3 ORRA LOOP CREATIVE STATE ---
+
+class CreativeStrategy(BaseModel):
+    background: str
+    lighting: str
+    pose: str
+
+class CreativeState(BaseModel):
+    product: Dict[str, Any] = {}
+    objective: str = "luxury_editorial"
+    strategy: CreativeStrategy
+    status: str = "pending_green_signal"  # pending_green_signal | approved | rendering
+
 # --- CAMPAIGN ROOT ---
 
 class Campaign(BaseModel):
     id: str = Field(default_factory=lambda: f"campaign_{uuid.uuid4().hex[:8]}")
+    user_id: Optional[str] = None            # Maps to Supabase Auth 'sub'
     name: str = "Untitled Campaign"          # Human-readable folder name (from UI)
     material_path: Optional[str] = None      # Relative path to uploaded material image
     memory_stream: List[MemoryNode] = []     # Episodic AI reasoning log (drives Reasoning Panel)
@@ -117,6 +131,9 @@ class Campaign(BaseModel):
     planning: PlanningPhase = Field(default_factory=PlanningPhase)
     execution: ExecutionPhase = Field(default_factory=ExecutionPhase)
     evaluation: EvaluationPhase = Field(default_factory=EvaluationPhase)
+    
+    # V3 Integration: ORRA Loop Creative State (Strategy, Green Signal status)
+    v3_creative_state: Optional[CreativeState] = None
     
     created_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
     updated_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat())

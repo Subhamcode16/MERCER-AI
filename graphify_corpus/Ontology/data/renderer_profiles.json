@@ -1,0 +1,57 @@
+{
+  "version": "1.0",
+  "domain": "renderers",
+  "profiles": {
+    "gemini_3_1_flash_lite_image": {
+      "supports_explicit_shutter_speed": false,
+      "supports_lighting_direction": true,
+      "supports_camera_lens": true,
+      "supports_camera_path": false,
+      "texture_fidelity": "high",
+      "prompt_translation": {
+        "shutter_speed_fast": "frozen motion, crystal clear",
+        "shutter_speed_slow": "motion blur, dynamic movement",
+        "aperture_shallow": "shallow depth of field, blurred background",
+        "aperture_deep": "deep depth of field, everything in focus"
+      }
+    },
+    "flux_pro": {
+      "supports_explicit_shutter_speed": false,
+      "supports_lighting_direction": true,
+      "supports_camera_lens": true,
+      "supports_camera_path": false,
+      "texture_fidelity": "very_high",
+      "prompt_translation": {
+        "shutter_speed_fast": "crisp edges, frozen action",
+        "shutter_speed_slow": "long exposure blur",
+        "aperture_shallow": "strong bokeh, macro depth",
+        "aperture_deep": "f/16, infinite focus"
+      }
+    },
+    "seedance_video": {
+      "supports_explicit_shutter_speed": true,
+      "supports_lighting_direction": true,
+      "supports_camera_lens": true,
+      "supports_camera_path": true,
+      "texture_fidelity": "medium",
+      "prompt_translation": {
+        "camera_path_pan": "camera pans slowly left to right",
+        "camera_path_push": "camera pushes in steadily on subject",
+        "aperture_shallow": "cinematic shallow depth of field"
+      }
+    },
+    "gpt_image": {
+      "supports_explicit_shutter_speed": false,
+      "supports_lighting_direction": true,
+      "supports_camera_lens": false,
+      "supports_camera_path": false,
+      "texture_fidelity": "medium",
+      "prompt_translation": {
+        "lens_telephoto": "portrait crop, isolated subject",
+        "lens_wide": "wide environmental shot",
+        "shutter_speed_fast": "sharp",
+        "shutter_speed_slow": "blurry motion"
+      }
+    }
+  }
+}

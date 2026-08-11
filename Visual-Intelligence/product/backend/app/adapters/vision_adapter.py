@@ -1,9 +1,12 @@
 import os
 import json
 import base64
-from typing import Dict, Any, List, Optional
+import logging
+from typing import Dict, Any, List, Optional, Tuple
 from pydantic import BaseModel
 from app.models.campaign import ProductDNA, ReferenceDNA, ConfidenceField
+
+logger = logging.getLogger(__name__)
 
 # Model Waterfall: try in order, fall back on quota/availability errors
 VISION_MODELS = ["gemini-2.5-flash", "gemini-1.5-pro", "gemini-1.5-flash"]
@@ -46,7 +49,10 @@ class VisionAdapter:
                 import google.generativeai as genai
                 api_key = os.getenv("GEMINI_API_KEY")
                 if not api_key:
-                    raise ValueError("GEMINI_API_KEY environment variable is not set.")
+                    raise ValueError(
+                        "GEMINI_API_KEY is not set. Vision analysis will use placeholder data. "
+                        "Set GEMINI_API_KEY in your .env file to enable real AI analysis."
+                    )
                 genai.configure(api_key=api_key)
                 self._client = genai
             except ImportError:
@@ -84,12 +90,17 @@ class VisionAdapter:
 
         raise RuntimeError(f"All models in waterfall failed. Last error: {last_error}")
 
-    def analyze_product(self, image_path: str) -> tuple[ProductDNA, Optional[dict]]:
+    def analyze_product(self, image_path: str) -> Tuple[ProductDNA, Optional[dict], bool]:
         """
         Analyzes a product image and extracts physical constraints + creative direction.
-        Returns (ProductDNA, creative_direction_dict) where creative_direction may be None on parse failure.
+
+        Returns:
+            (ProductDNA, creative_direction_dict | None, is_mock: bool)
+
+        is_mock=True means the Gemini Vision call failed and a hardcoded
+        placeholder was returned. The caller should surface this to the user.
         """
-        print(f"[VisionAdapter] Analyzing {image_path} via {self.provider}...")
+        logger.info("[VisionAdapter] Analyzing %s via %s...", image_path, self.provider)
 
         try:
             with open(image_path, "rb") as f:
@@ -119,11 +130,16 @@ class VisionAdapter:
                 "body": data.get("proposed_direction_body")
             }
 
-            return dna, creative_direction
+            return dna, creative_direction, False  # is_mock=False — real data
 
-        except (FileNotFoundError, json.JSONDecodeError, KeyError) as e:
-            print(f"[VisionAdapter] Analysis failed: {e}. Returning fallback mock.")
-            return self._mock_product_dna(), None
+        except (FileNotFoundError, json.JSONDecodeError, KeyError, ValueError, RuntimeError) as e:
+            logger.critical(
+                "[VisionAdapter] ⚠️  Analysis FAILED — returning PLACEHOLDER data. "
+                "Real product intelligence will NOT be available for this campaign. "
+                "Reason: %s",
+                e,
+            )
+            return self._mock_product_dna(), None, True  # is_mock=True
 
     def analyze_reference(self, image_paths: List[str]) -> ReferenceDNA:
         """

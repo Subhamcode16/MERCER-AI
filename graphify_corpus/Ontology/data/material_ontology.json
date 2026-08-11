@@ -1,0 +1,70 @@
+{
+  "version": "1.0",
+  "domain": "materials",
+  "materials": {
+    "banarasi_silk": {
+      "type": "fabric",
+      "mass": 0.8,
+      "rigidity": 0.6,
+      "wrinkle_frequency": "low",
+      "wrinkle_amplitude": "smooth",
+      "surface_topology": "woven_brocade",
+      "reflectance": {
+        "diffuse": 0.4,
+        "specular": 0.6,
+        "anisotropy": 0.8,
+        "transmission": 0.0
+      },
+      "metallic_content": 0.7,
+      "notes": "Contains metallic zari threads woven into silk base, creating high microcontrast and strong anisotropic highlights."
+    },
+    "organza": {
+      "type": "fabric",
+      "mass": 0.2,
+      "rigidity": 0.5,
+      "wrinkle_frequency": "medium",
+      "wrinkle_amplitude": "sharp",
+      "surface_topology": "sheer_planar",
+      "reflectance": {
+        "diffuse": 0.2,
+        "specular": 0.5,
+        "anisotropy": 0.1,
+        "transmission": 0.8
+      },
+      "metallic_content": 0.0,
+      "notes": "Highly translucent, crisp drape, retains volume."
+    },
+    "velvet": {
+      "type": "fabric",
+      "mass": 0.7,
+      "rigidity": 0.3,
+      "wrinkle_frequency": "low",
+      "wrinkle_amplitude": "deep",
+      "surface_topology": "dense_pile",
+      "reflectance": {
+        "diffuse": 0.8,
+        "specular": 0.2,
+        "anisotropy": 0.0,
+        "transmission": 0.0
+      },
+      "metallic_content": 0.0,
+      "notes": "Absorbs light deeply, highlights only appear at grazing angles (rim light)."
+    },
+    "antique_gold_jewelry": {
+      "type": "metal",
+      "mass": 1.0,
+      "rigidity": 1.0,
+      "wrinkle_frequency": "none",
+      "wrinkle_amplitude": "none",
+      "surface_topology": "intricate_carved",
+      "reflectance": {
+        "diffuse": 0.3,
+        "specular": 0.7,
+        "anisotropy": 0.0,
+        "transmission": 0.0
+      },
+      "metallic_content": 1.0,
+      "notes": "High specularity but scattered due to intricate carving and patina."
+    }
+  }
+}

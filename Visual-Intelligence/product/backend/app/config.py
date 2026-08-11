@@ -9,9 +9,10 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    # ── MongoDB ───────────────────────────────────────────────────────────────
+    # ── MongoDB & Redis ───────────────────────────────────────────────────────
     mongodb_uri: str
     mongodb_db_name: str = "atelier_os"
+    redis_url: str = "redis://localhost:6379"
 
     # ── Supabase Auth ─────────────────────────────────────────────────────────
     supabase_url: str
@@ -25,11 +26,11 @@ class Settings(BaseSettings):
     gemini_api_key: str
 
     # ── Cloudflare R2 (S3-compatible object storage) ─────────────────────────
-    r2_account_id: str
-    r2_access_key_id: str
-    r2_secret_access_key: str
-    r2_bucket_name: str
-    r2_public_url: str                    # Your R2 custom domain / public URL base
+    r2_account_id: str = ""
+    r2_access_key_id: str = ""
+    r2_secret_access_key: str = ""
+    r2_bucket_name: str = ""
+    r2_public_url: str = ""               # Your R2 custom domain / public URL base
     r2_url_expiry_seconds: int = 3600     # Signed URL expiry — 1 hour default
 
     # ── Razorpay (primary — India: UPI, cards, netbanking, wallets) ───────────

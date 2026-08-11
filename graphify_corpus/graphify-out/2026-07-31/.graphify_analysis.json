@@ -1,0 +1,343 @@
+{
+  "communities": {
+    "0": [
+      "obsidian_cotton",
+      "obsidian_garment_taxonomy",
+      "obsidian_garments_textiles_moc",
+      "obsidian_home",
+      "obsidian_pdf_handlooms",
+      "obsidian_pdf_textilenet",
+      "obsidian_silk",
+      "obsidian_specialty_fabrics",
+      "obsidian_technical_ui_specs",
+      "obsidian_visual_intelligence_moc"
+    ],
+    "1": [
+      "epl_001_expert_pattern_library",
+      "fdb_001_fabric_physics_database",
+      "pdb_001_pose_motion_database",
+      "sdb_001_studio_environment_database",
+      "vio_008_commercial_semantics",
+      "vio_009_visual_craft",
+      "vio_010_material_intelligence",
+      "vio_011_cinematic_imperfections",
+      "vla_001_visual_library_analysis"
+    ],
+    "2": [
+      "fdb_001_fabric_styling_database",
+      "vio_001_visual_intelligence_ontology",
+      "vio_002_entity_model",
+      "vio_003_relationship_model",
+      "vio_004_creative_semantic_model",
+      "vio_005_universal_ontology",
+      "vio_006_domain_fashion"
+    ],
+    "3": [
+      "apparel_decision_rules",
+      "apparel_evidence",
+      "apparel_knowledge"
+    ],
+    "4": [
+      "arc_005_autonomy_architecture",
+      "law005_laws_of_autonomy",
+      "spec005_autonomy_specification"
+    ],
+    "5": [
+      "footwear_decision_rules",
+      "footwear_evidence",
+      "footwear_knowledge"
+    ],
+    "6": [
+      "glossary001_md",
+      "glossary002_md",
+      "glossary003_md"
+    ],
+    "7": [
+      "jewelry_decision_rules",
+      "jewelry_evidence",
+      "jewelry_knowledge"
+    ],
+    "8": [
+      "sarees_decision_rules",
+      "sarees_evidence",
+      "sarees_knowledge"
+    ],
+    "9": [
+      "arc_001_knowledge_architecture",
+      "law_001_laws_of_knowledge"
+    ],
+    "10": [
+      "arc_002_reasoning_architecture",
+      "law_002_laws_of_reasoning"
+    ],
+    "11": [
+      "arc_003_memory_architecture",
+      "law_003_laws_of_memory"
+    ],
+    "12": [
+      "arc_004_collaboration_architecture",
+      "law_004_laws_of_collaboration"
+    ],
+    "13": [
+      "res_001_final",
+      "res_002_us_market"
+    ],
+    "14": [
+      "apparel_blueprint"
+    ],
+    "15": [
+      "apparel_ontology"
+    ],
+    "16": [
+      "cog001_md"
+    ],
+    "17": [
+      "cog002_md"
+    ],
+    "18": [
+      "cog003_md"
+    ],
+    "19": [
+      "cog004_md"
+    ],
+    "20": [
+      "cog005_md"
+    ],
+    "21": [
+      "footwear_blueprint"
+    ],
+    "22": [
+      "footwear_ontology"
+    ],
+    "23": [
+      "jewelry_blueprint"
+    ],
+    "24": [
+      "jewelry_ontology"
+    ],
+    "25": [
+      "res_003_iteration_4"
+    ],
+    "26": [
+      "res_004_iteration_4"
+    ],
+    "27": [
+      "sarees_blueprint"
+    ],
+    "28": [
+      "sarees_ontology"
+    ],
+    "29": [
+      "spec001_knowledge_specification"
+    ],
+    "30": [
+      "spec002_reasoning_specification"
+    ],
+    "31": [
+      "spec003_memory_specification"
+    ],
+    "32": [
+      "spec004_collaboration_specification"
+    ],
+    "33": [
+      "vio_005_garment_taxonomy"
+    ],
+    "34": [
+      "vio_006_textile_construction"
+    ],
+    "35": [
+      "vio_007_styling_presentation"
+    ],
+    "36": [
+      "vio_012_interaction_ontology"
+    ],
+    "37": [
+      "visual_intelligence_research_logs_res_001"
+    ],
+    "38": [
+      "visual_intelligence_research_logs_res_002"
+    ],
+    "39": [
+      "visual_intelligence_research_logs_res_003"
+    ],
+    "40": [
+      "visual_intelligence_research_logs_res_004"
+    ],
+    "41": [
+      "visual_intelligence_research_logs_res_005"
+    ],
+    "42": [
+      "visual_intelligence_research_logs_res_006"
+    ],
+    "43": [
+      "visual_intelligence_research_logs_res_007"
+    ],
+    "44": [
+      "visual_intelligence_research_logs_res_008"
+    ],
+    "45": [
+      "visual_intelligence_research_logs_res_009"
+    ]
+  },
+  "cohesion": {
+    "0": 0.24444444444444444,
+    "1": 0.4722222222222222,
+    "2": 0.47619047619047616,
+    "3": 0.6666666666666666,
+    "4": 0.6666666666666666,
+    "5": 0.6666666666666666,
+    "6": 1.0,
+    "7": 0.6666666666666666,
+    "8": 0.6666666666666666,
+    "9": 1.0,
+    "10": 1.0,
+    "11": 1.0,
+    "12": 1.0,
+    "13": 1.0,
+    "14": 1.0,
+    "15": 1.0,
+    "16": 1.0,
+    "17": 1.0,
+    "18": 1.0,
+    "19": 1.0,
+    "20": 1.0,
+    "21": 1.0,
+    "22": 1.0,
+    "23": 1.0,
+    "24": 1.0,
+    "25": 1.0,
+    "26": 1.0,
+    "27": 1.0,
+    "28": 1.0,
+    "29": 1.0,
+    "30": 1.0,
+    "31": 1.0,
+    "32": 1.0,
+    "33": 1.0,
+    "34": 1.0,
+    "35": 1.0,
+    "36": 1.0,
+    "37": 1.0,
+    "38": 1.0,
+    "39": 1.0,
+    "40": 1.0,
+    "41": 1.0,
+    "42": 1.0,
+    "43": 1.0,
+    "44": 1.0,
+    "45": 1.0
+  },
+  "gods": [
+    {
+      "id": "epl_001_expert_pattern_library",
+      "label": "Expert Pattern Library (EPL-001)",
+      "degree": 9
+    },
+    {
+      "id": "obsidian_garments_textiles_moc",
+      "label": "Garments & Textiles MOC",
+      "degree": 7
+    },
+    {
+      "id": "pdb_001_pose_motion_database",
+      "label": "Pose & Motion Database (PDB-001)",
+      "degree": 6
+    },
+    {
+      "id": "fdb_001_fabric_physics_database",
+      "label": "Indian Fabric Physics Database (FDB-001)",
+      "degree": 5
+    },
+    {
+      "id": "sdb_001_studio_environment_database",
+      "label": "Studio & Environment Database (SDB-001)",
+      "degree": 5
+    },
+    {
+      "id": "vio_001_visual_intelligence_ontology",
+      "label": "Visual Intelligence Ontology (VIO-001)",
+      "degree": 5
+    },
+    {
+      "id": "vio_004_creative_semantic_model",
+      "label": "Creative Semantic Model (VIO-004)",
+      "degree": 4
+    },
+    {
+      "id": "vio_006_domain_fashion",
+      "label": "Domain Ontology - Fashion & Textiles (VIO-006)",
+      "degree": 4
+    },
+    {
+      "id": "vla_001_visual_library_analysis",
+      "label": "Visual Library Analysis (VLA-001)",
+      "degree": 4
+    },
+    {
+      "id": "vio_002_entity_model",
+      "label": "Entity Model (VIO-002)",
+      "degree": 3
+    }
+  ],
+  "surprises": [
+    {
+      "source": "SPEC-005 Autonomy Specification",
+      "target": "LAW-005 Laws of Autonomy",
+      "source_files": [
+        "System Specs/SPEC-005.md",
+        "System Laws/LAW-005.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "references",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "ARC-005 Autonomy Architecture",
+      "target": "LAW-005 Laws of Autonomy",
+      "source_files": [
+        "System Architecture/ARC-005.md",
+        "System Laws/LAW-005.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories"
+    },
+    {
+      "source": "Fabric & Styling Database (FDB-001)",
+      "target": "Pose & Motion Database (PDB-001)",
+      "source_files": [
+        "Ontology/FDB-001-fabric-styling-database.md",
+        "Ontology/PDB-001-pose-motion-database.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "bridges separate communities; peripheral node `Fabric & Styling Database (FDB-001)` unexpectedly reaches hub `Pose & Motion Database (PDB-001)`"
+    },
+    {
+      "source": "ARC-001 Knowledge Architecture",
+      "target": "LAW-001 Laws of Knowledge",
+      "source_files": [
+        "System Architecture/ARC-001.md",
+        "System Laws/LAW-001.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories"
+    },
+    {
+      "source": "ARC-002 Reasoning Architecture",
+      "target": "LAW-002 Laws of Reasoning",
+      "source_files": [
+        "System Architecture/ARC-002.md",
+        "System Laws/LAW-002.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories"
+    }
+  ],
+  "tokens": {
+    "input": 139573,
+    "output": 16149
+  }
+}

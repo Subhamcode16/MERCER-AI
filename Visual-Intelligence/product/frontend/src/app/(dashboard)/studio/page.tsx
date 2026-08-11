@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback, useContext } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Plus, ArrowLeft, Edit2, Trash2, Upload } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   listCampaigns,
@@ -27,6 +28,7 @@ import { PhysicalViolationAlert } from "@/components/studio/PhysicalViolationAle
 import { HeuristicRecommendation } from "@/components/studio/HeuristicRecommendation";
 import { CREBentoGrid, type CREScores } from "@/components/studio/CREBentoGrid";
 import { PromptInputBox } from "@/components/ui/ai-prompt-box";
+import { WorkflowTimeline } from "@/components/studio/WorkflowTimeline";
 
 // --- Sidebar Context ---
 import { SidebarContext } from "../layout";
@@ -80,6 +82,9 @@ export default function CampaignStudio() {
   const [isUploading, setIsUploading] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadedFileInfo, setUploadedFileInfo] = useState<{ name: string; size: string } | null>(null);
+  const uploadProgressRef = useRef<NodeJS.Timeout | null>(null);
 
   // --- Sidebar & Layout Overrides ---
   const { setIsInWorkspace } = useContext(SidebarContext);
@@ -288,13 +293,50 @@ export default function CampaignStudio() {
   };
 
   // --- File Upload Handler ---
+  const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif', 'image/tiff'];
+  const MAX_FILE_BYTES = 25 * 1024 * 1024; // 25 MB
+
   const handleFileDrop = async (file: File) => {
     if (!activeCampaign) return;
+
+    // --- Frontend validation ---
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      alert(`Unsupported file type: "${file.type || 'unknown'}". Please upload a JPEG, PNG, WEBP, HEIC, or TIFF image.`);
+      return;
+    }
+    if (file.size > MAX_FILE_BYTES) {
+      alert(`File is too large (${(file.size / (1024 * 1024)).toFixed(1)} MB). Maximum allowed size is 25 MB.`);
+      return;
+    }
+    // ---------------------------
+
     setIsUploading(true);
+
+    setUploadProgress(0);
+    setUploadedFileInfo({
+      name: file.name,
+      size: file.size < 1024 * 1024
+        ? `${(file.size / 1024).toFixed(0)} KB`
+        : `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+    });
+    // Simulate progress with intervals
+    let progress = 0;
+    uploadProgressRef.current = setInterval(() => {
+      progress += Math.random() * 8 + 2;
+      if (progress >= 92) {
+        if (uploadProgressRef.current) clearInterval(uploadProgressRef.current);
+        progress = 92;
+      }
+      setUploadProgress(Math.min(92, Math.round(progress)));
+    }, 200);
     try {
       await uploadMaterial(activeCampaign.id, file);
+      if (uploadProgressRef.current) clearInterval(uploadProgressRef.current);
+      setUploadProgress(96);
       // Immediately trigger analysis
       await analyzeMaterial(activeCampaign.id);
+      setUploadProgress(100);
+      await new Promise(r => setTimeout(r, 600));
       // Clear step override since we have new material
       setStepOverride(null);
       // Refresh campaign state and start polling for results
@@ -303,9 +345,12 @@ export default function CampaignStudio() {
       setCampaigns(prev => prev.map(c => c.id === activeCampaign.id ? { ...c, has_material: true } : c));
       startPolling(activeCampaign.id);
     } catch (e) {
+      if (uploadProgressRef.current) clearInterval(uploadProgressRef.current);
       console.error("Upload/analyze failed:", e);
     } finally {
       setIsUploading(false);
+      setUploadedFileInfo(null);
+      setUploadProgress(0);
     }
   };
 
@@ -526,49 +571,211 @@ export default function CampaignStudio() {
 
           {/* STATE 3: Inside Campaign */}
           {activeCampaignId !== null && (
-            <div className="flex-1 flex items-center justify-center -mt-16">
+            <div className="flex-1 flex flex-col min-h-0">
               {isLoadingCampaign ? (
                 <div className="text-white/30 text-sm animate-pulse">Loading workspace...</div>
               ) : activeCampaign && currentStep === 'dropzone' ? (
-                // Dropzone
-                <div
-                  onDragOver={(e) => { e.preventDefault(); setIsDraggingOver(true); }}
-                  onDragLeave={() => setIsDraggingOver(false)}
-                  onDrop={onDrop}
-                  onClick={() => fileInputRef.current?.click()}
-                  className={`w-full max-w-2xl aspect-[4/3] border border-dashed flex flex-col items-center justify-center gap-6 cursor-pointer transition-all duration-500 rounded-xl ${
-                    isDraggingOver
-                      ? 'border-[#E1D4C0] bg-[#E1D4C0]/10'
-                      : 'border-white/10 bg-white/5 hover:border-[#E1D4C0]/50 hover:bg-[#E1D4C0]/5'
-                  }`}
-                >
+                // Dropzone — Glassmorphic Upload Zone
+                <div className="flex-1 flex items-center justify-center w-full min-h-0">
+                  {/* Horizon Arc Glow — bottom of screen */}
+                  <AnimatePresence>
+                    {isUploading && (
+                      <motion.div
+                        key="arc-glow"
+                        className="absolute bottom-0 left-0 w-full h-48 pointer-events-none z-0"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.8 }}
+                      >
+                        <div className="absolute inset-0" style={{
+                          background: 'radial-gradient(ellipse 70% 60% at 50% 130%, rgba(99,80,220,0.45) 0%, rgba(225,212,192,0.08) 55%, transparent 80%)'
+                        }} />
+                        <motion.div
+                          className="absolute inset-0"
+                          animate={{ opacity: [0.6, 1, 0.6] }}
+                          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                          style={{
+                            background: 'radial-gradient(ellipse 50% 40% at 50% 120%, rgba(130,100,255,0.3) 0%, transparent 70%)'
+                          }}
+                        />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
                   <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={onDropZoneChange} />
-                  {isUploading ? (
-                     <div className="flex flex-col items-center gap-3 animate-pulse">
-                       <div className="w-10 h-10 rounded-full border border-[#E1D4C0]/40 flex items-center justify-center">
-                         <Upload size={18} className="text-[#E1D4C0]" />
-                       </div>
-                       <div className="text-[13px] text-[#E1D4C0]/70 tracking-wide font-light">Uploading & analyzing...</div>
-                     </div>
-                  ) : (
-                    <>
-                      <div className="w-16 h-16 rounded-full border border-white/20 flex items-center justify-center text-white/40">
-                        <Plus size={24} strokeWidth={1} />
-                      </div>
-                      <div className="text-center">
-                        <div className="text-[13px] tracking-wide text-white/50 font-light mb-1">
-                          Upload material or mood image
+
+                  <AnimatePresence mode="wait">
+                    {isUploading && uploadedFileInfo ? (
+                      // --- ACTIVE STATE: Glassmorphic Progress Card ---
+                      <motion.div
+                        key="upload-progress"
+                        className="relative z-10 w-full max-w-md"
+                        initial={{ opacity: 0, scale: 0.92, y: 12 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.92, y: -8 }}
+                        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                      >
+                        {/* Card Outer — double-bezel blue-violet glass */}
+                        <div
+                          className="relative rounded-[2rem] p-[1.5px] overflow-hidden"
+                          style={{ background: 'linear-gradient(135deg, rgba(130,100,255,0.5) 0%, rgba(60,40,160,0.2) 40%, rgba(225,212,192,0.12) 100%)' }}
+                        >
+                          {/* Outer glow bloom */}
+                          <div className="absolute -inset-8 pointer-events-none" style={{ background: 'radial-gradient(ellipse 70% 50% at 50% 50%, rgba(80,60,200,0.35) 0%, transparent 70%)', filter: 'blur(24px)', zIndex: -1 }} />
+                          
+                          <div
+                            className="relative rounded-[1.9rem] px-7 py-7"
+                            style={{ background: 'linear-gradient(145deg, rgba(18,16,42,0.92) 0%, rgba(10,8,28,0.96) 100%)', backdropFilter: 'blur(24px)' }}
+                          >
+                            {/* Close/cancel button */}
+                            <button
+                              onClick={(e) => { e.stopPropagation(); if (uploadProgressRef.current) clearInterval(uploadProgressRef.current); setIsUploading(false); setUploadedFileInfo(null); setUploadProgress(0); }}
+                              className="absolute top-5 right-5 w-8 h-8 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all"
+                            >
+                              <svg viewBox="0 0 16 16" className="w-3 h-3 fill-current"><path d="M3.22 3.22a.75.75 0 011.06 0L8 6.94l3.72-3.72a.75.75 0 111.06 1.06L9.06 8l3.72 3.72a.75.75 0 11-1.06 1.06L8 9.06l-3.72 3.72a.75.75 0 01-1.06-1.06L6.94 8 3.22 4.28a.75.75 0 010-1.06z"/></svg>
+                            </button>
+
+                            {/* Specimen Icon + File Info */}
+                            <div className="flex items-center gap-5 mb-7">
+                              {/* Glassmorphic Specimen Icon */}
+                              <div
+                                className="w-20 h-20 rounded-2xl flex-shrink-0 flex flex-col items-center justify-center relative overflow-hidden"
+                                style={{ background: 'linear-gradient(145deg, rgba(80,60,200,0.4) 0%, rgba(40,30,120,0.6) 100%)', border: '1px solid rgba(130,100,255,0.3)' }}
+                              >
+                                {/* Fabric/weave grid lines */}
+                                <svg viewBox="0 0 40 40" className="w-12 h-12 opacity-90">
+                                  <defs>
+                                    <pattern id="weave" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+                                      <line x1="4" y1="0" x2="4" y2="8" stroke="rgba(225,212,192,0.6)" strokeWidth="0.8"/>
+                                      <line x1="0" y1="4" x2="8" y2="4" stroke="rgba(225,212,192,0.4)" strokeWidth="0.5"/>
+                                    </pattern>
+                                  </defs>
+                                  <rect width="40" height="40" fill="url(#weave)" rx="2"/>
+                                  <rect x="8" y="8" width="24" height="24" fill="none" stroke="rgba(225,212,192,0.8)" strokeWidth="1" rx="2"/>
+                                  <circle cx="20" cy="20" r="5" fill="none" stroke="rgba(225,212,192,0.9)" strokeWidth="1"/>
+                                </svg>
+                                {/* Glass shine */}
+                                <div className="absolute top-0 left-0 right-0 h-1/2" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 100%)', borderRadius: '16px 16px 0 0' }} />
+                              </div>
+
+                              {/* File metadata */}
+                              <div className="flex flex-col gap-1.5 text-left min-w-0">
+                                <div className="inline-flex items-center gap-2">
+                                  <span className="text-[9px] tracking-[0.2em] uppercase font-mono px-2 py-0.5 rounded-full" style={{ background: 'rgba(130,100,255,0.25)', border: '1px solid rgba(130,100,255,0.4)', color: '#c4b5fd' }}>IMAGE / SPECIMEN</span>
+                                </div>
+                                <p className="text-[15px] font-medium tracking-tight text-[#E1D4C0] leading-tight truncate max-w-[200px]">{uploadedFileInfo.name.replace(/\.[^.]+$/, '')}</p>
+                                <p className="text-[12px] text-white/40 font-mono">{uploadedFileInfo.size}</p>
+                              </div>
+                            </div>
+
+                            {/* Progress Bar Area */}
+                            <div
+                              className="rounded-2xl px-5 py-4"
+                              style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.06)' }}
+                            >
+                              <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-2.5">
+                                  <motion.div
+                                    className="w-4 h-4 rounded-full border-2"
+                                    style={{ borderColor: 'rgba(130,100,255,0.8)', borderTopColor: 'rgba(225,212,192,0.9)' }}
+                                    animate={{ rotate: 360 }}
+                                    transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
+                                  />
+                                  <span className="text-[13px] text-white/60 font-light tracking-wide">
+                                    {uploadProgress < 96 ? 'Uploading...' : uploadProgress < 100 ? 'Analyzing DNA...' : 'Complete'}
+                                  </span>
+                                </div>
+                                <motion.span
+                                  className="text-[22px] font-bold tracking-tight"
+                                  style={{ color: '#E1D4C0' }}
+                                  key={uploadProgress}
+                                >
+                                  {uploadProgress}%
+                                </motion.span>
+                              </div>
+                              {/* Progress bar track */}
+                              <div className="relative h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                                <motion.div
+                                  className="absolute inset-y-0 left-0 rounded-full"
+                                  style={{ background: 'linear-gradient(90deg, rgba(80,60,180,0.9) 0%, rgba(225,212,192,1) 100%)' }}
+                                  animate={{ width: `${uploadProgress}%` }}
+                                  transition={{ duration: 0.3, ease: 'easeOut' }}
+                                />
+                                {/* Glow on bar edge */}
+                                <motion.div
+                                  className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full blur-sm"
+                                  style={{ background: '#E1D4C0', left: `${uploadProgress}%`, transform: 'translate(-50%, -50%)' }}
+                                  animate={{ left: `${uploadProgress}%` }}
+                                  transition={{ duration: 0.3, ease: 'easeOut' }}
+                                />
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        <div className="text-[11px] text-white/20">
-                          Drag & drop or click to browse
+                      </motion.div>
+                    ) : (
+                      // --- DEFAULT STATE: Dashed Double-Bezel Dropzone ---
+                      <motion.div
+                        key="dropzone-idle"
+                        initial={{ opacity: 0, scale: 0.96 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.96 }}
+                        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                        className="relative z-10 w-full max-w-xl"
+                      >
+                        {/* Outer bezel ring */}
+                        <div
+                          onDragOver={(e) => { e.preventDefault(); setIsDraggingOver(true); }}
+                          onDragLeave={() => setIsDraggingOver(false)}
+                          onDrop={onDrop}
+                          onClick={() => fileInputRef.current?.click()}
+                          className={`group relative cursor-pointer transition-all duration-500 rounded-[2.5rem] p-[1px] ${
+                            isDraggingOver ? 'scale-[1.02]' : ''
+                          }`}
+                          style={{
+                            background: isDraggingOver
+                              ? 'linear-gradient(135deg, rgba(225,212,192,0.5) 0%, rgba(130,100,255,0.4) 100%)'
+                              : 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)'
+                          }}
+                        >
+                          {/* Inner core */}
+                          <div
+                            className="rounded-[2.45rem] px-16 py-20 flex flex-col items-center gap-7 transition-all duration-500"
+                            style={{
+                              background: isDraggingOver
+                                ? 'rgba(225,212,192,0.04)'
+                                : 'rgba(255,255,255,0.02)',
+                              border: `1.5px dashed ${isDraggingOver ? 'rgba(225,212,192,0.5)' : 'rgba(255,255,255,0.1)'}`,
+                            }}
+                          >
+                            {/* Upload Icon Circle */}
+                            <div
+                              className="w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-105"
+                              style={{
+                                border: '1px solid rgba(255,255,255,0.15)',
+                                background: 'rgba(255,255,255,0.03)'
+                              }}
+                            >
+                              <Plus size={22} strokeWidth={1} className="text-white/30 group-hover:text-[#E1D4C0]/60 transition-colors duration-300" />
+                            </div>
+
+                            <div className="text-center space-y-1.5">
+                              <p className="text-[14px] text-[#E1D4C0]/70 tracking-wide font-light">Upload material or mood image</p>
+                              <p className="text-[11px] text-white/25 tracking-wide">
+                                {isDraggingOver ? 'Release to upload' : 'Drag & drop or click to browse'}
+                              </p>
+                              <p className="text-[9px] uppercase tracking-[0.2em] text-white/15 font-mono mt-3">JPG · PNG · WEBP · HEIC · RAW</p>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </>
-                  )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               ) : activeCampaign ? (
                 // Active Workspace
-                <div className="w-full h-full flex items-center justify-center relative p-8">
+                <div className="flex-1 flex flex-col relative min-h-0">
                   {/* Left Back Button for Process Steps */}
                   <button
                     onClick={() => {
@@ -623,7 +830,7 @@ export default function CampaignStudio() {
                     // Render Material Preview with Art Direction Panel (Split Screen)
                     <div className="w-full flex gap-10 items-stretch h-[72vh] text-left">
                       {/* Left: Material Canvas (Uncarded Specimen Panel) */}
-                      <div className="w-[35%] flex flex-col gap-6 relative justify-center">
+                       <div className="w-[33%] flex flex-col gap-6 relative justify-center">
                         <div className="rounded-[1.5rem] overflow-hidden border border-white/5 bg-zinc-950/20">
                           <img
                             src={getMaterialUrl(activeCampaign.material_path!)}
@@ -653,295 +860,253 @@ export default function CampaignStudio() {
                         </div>
                       </div>
 
-                      {/* Right: Art Direction Config Panel (Pane-2 Awwwards-tier Double-Bezel Stepper) */}
-                      <div className="w-[65%] flex flex-col">
-                        <div className="flex-1 bg-white/5 border border-white/10 p-1.5 rounded-[2rem] flex flex-col">
-                          <div className="flex-1 bg-[#0C0C0E] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] rounded-[calc(2rem-0.375rem)] p-8 flex flex-col justify-between overflow-y-auto relative min-h-0">
-                            
-                            {/* Stepper Header */}
-                            <div className="flex items-center justify-between border-b border-white/5 pb-4 mb-6">
-                              <div className="flex flex-col">
-                                <span className="text-[10px] tracking-[0.2em] uppercase text-white/40 font-mono">Step {wizardStep} of 5</span>
-                                <h3 className="font-serif text-lg text-white mt-1">
-                                  {wizardStep === 1 && "Background Environment"}
-                                  {wizardStep === 2 && "Pose & Movement"}
-                                  {wizardStep === 3 && "Cinematic Lighting"}
-                                  {wizardStep === 4 && "Review Choices"}
-                                  {wizardStep === 5 && "Generation Settings"}
-                                </h3>
+                      {/* Right: Art Direction Config Panel (Pane-2 Evolving Spatial Canvas) */}
+                       <div className="w-[67%] flex flex-col min-h-0">
+                        {activeCampaign.v3_creative_state ? (
+                          <div className="flex-1 bg-white/5 border border-white/10 p-1.5 rounded-[2rem] flex flex-col">
+                            <div className="flex-1 bg-[#0C0C0E] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] rounded-[calc(2rem-0.375rem)] p-8 flex flex-col justify-center overflow-y-auto relative min-h-0">
+                              {/* Strategy Card */}
+                              <div className="text-center space-y-6 max-w-md mx-auto">
+                                <div className="w-16 h-16 rounded-2xl bg-[#E1D4C0]/10 border border-[#E1D4C0]/20 flex items-center justify-center mx-auto text-[#E1D4C0] animate-pulse">
+                                  <svg viewBox="0 0 24 24" className="w-8 h-8 fill-none stroke-current" strokeWidth="1.5">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 21l8.904-4.473L21 9l-3.487-3.487L9.813 15.904z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 21l3-3m-3 3l-3-3m12-9l-3-3" />
+                                  </svg>
+                                </div>
+                                <div className="space-y-2">
+                                  <h4 className="font-serif text-lg text-white">Synthesizing Creative Strategy</h4>
+                                  <p className="text-[12px] text-white/50 leading-relaxed font-light">
+                                    The Director is compiling textile DNA observations and generating the campaign assets. View real-time pipeline status below.
+                                  </p>
+                                </div>
+                                  <div className="p-4 bg-white/[0.02] border border-white/5 rounded-2xl text-left space-y-3 font-mono text-[10px]">
+                                    <div className="flex justify-between">
+                                      <span className="text-white/35 uppercase">Task ID</span>
+                                      <span className="text-[#9b87f5]">{activeCampaign.id}</span>
+                                    </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-white/35 uppercase">Current State</span>
+                                    <span className="text-[#E1D4C0] uppercase tracking-wider">{activeCampaign.v3_creative_state.status}</span>
+                                  </div>
+                                </div>
                               </div>
-                              
-                              {wizardStep > 1 && (
-                                <button 
-                                  onClick={() => setWizardStep(prev => prev - 1)}
-                                  className="px-3 py-1.5 rounded-full border border-white/10 hover:border-white/30 text-white/60 hover:text-white text-[10px] font-semibold tracking-wider transition-all uppercase cursor-pointer"
-                                >
-                                  ← Back
-                                </button>
-                              )}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex-1 overflow-y-auto relative min-h-0 flex flex-col gap-6 pr-1">
+                            {/* Artistic Parameters Header */}
+                            <div className="flex items-center justify-between border-b border-white/5 pb-3 mb-2 shrink-0">
+                              <div className="flex flex-col text-left">
+                                <span className="text-[9px] tracking-[0.2em] uppercase text-white/30 font-mono">Artistic Parameters</span>
+                                <h3 className="font-serif text-lg text-white mt-0.5">Evolving Spatial Canvas</h3>
+                              </div>
                             </div>
 
-                            {/* Wizard Body Content */}
-                            <div className="flex-1 flex flex-col justify-start">
-                              {/* Level 1 Physical Violation Alert */}
+                            {/* Alert Box for Physical Violation */}
+                            {physicalViolation && (
                               <PhysicalViolationAlert 
                                 violation={physicalViolation} 
                                 onDismiss={() => setPhysicalViolation(null)} 
-                                className="mb-4"
+                                className="mb-2 shrink-0"
                               />
+                            )}
 
-                              {/* Step 1: Background */}
-                              {wizardStep === 1 && (
-                                <div className="space-y-6">
-                                  <p className="text-[12px] text-white/60 leading-relaxed font-light">Select the spatial context that surrounds the product.</p>
-                                  <div className="flex flex-col gap-3">
+                            {/* Heuristic Recommendation */}
+                            {activeRecommendation && (
+                              <HeuristicRecommendation
+                                recommendation={activeRecommendation}
+                                onAccept={(rec) => {
+                                  if (rec.affectedParameters) {
+                                    Object.entries(rec.affectedParameters).forEach(([k, v]) => {
+                                      handleOptionChange(k as "background" | "pose" | "lighting", v as string);
+                                    });
+                                  }
+                                  setActiveRecommendation(null);
+                                }}
+                                onIgnore={() => setActiveRecommendation(null)}
+                                className="mb-2 shrink-0"
+                              />
+                            )}
+
+                            {/* Bento Grid */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch pb-6">
+                              
+                              {/* Card 1: Background */}
+                              <div className="bg-white/5 border border-white/10 p-1.5 rounded-[2rem] flex flex-col">
+                                <div className="flex-1 bg-[#0C0C0E] shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[calc(2rem-0.375rem)] p-6 text-left flex flex-col gap-4">
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-[10px] tracking-[0.2em] uppercase text-[#E1D4C0] font-mono">1. Background</span>
+                                    <span className="text-[10px] text-white/40 truncate max-w-[140px] font-mono">{selectedBackground || "None"}</span>
+                                  </div>
+                                  <div className="flex flex-col gap-2 max-h-[160px] overflow-y-auto pr-1">
                                     {[
                                       { name: "Heritage Fort / Palace Corridor", preview: "/previews/heritage_fort.png" },
                                       { name: "Lush Garden", preview: "/previews/lush_garden.png" },
-                                      { name: "Nighttime Palace", preview: "/previews/nighttime_palace.png" },
-                                      { name: "Cinematic Studio", preview: "/previews/cinematic_studio.png" },
-                                      { name: "Persian Carpet Backdrop", preview: "/previews/persian_carpet.png" }
+                                      { name: "Minimalist Stone Pedestal", preview: "/previews/stone_pedestal.png", isRec: true },
+                                      { name: "Reflective Metal Surface", preview: "/previews/metal_surface.png" },
+                                      { name: "Industrial Concrete / Urban", preview: "/previews/urban_concrete.png" },
+                                      { name: "Draped Velvet Platform", preview: "/previews/velvet_platform.png" }
                                     ].map(opt => {
-                                      const bg = opt.name;
-                                      const isSelected = selectedBackground === bg;
-                                      const isRec = activeCampaign.planning?.recommendations?.background?.value === bg;
+                                      const isSelected = selectedBackground === opt.name;
+                                      const isRec = opt.isRec;
                                       return (
                                         <button
-                                          key={bg}
-                                          onMouseEnter={() => setHoveredPreview(opt.preview)}
-                                          onMouseLeave={() => setHoveredPreview(null)}
-                                          onClick={() => {
-                                            handleOptionChange('background', bg);
-                                            // Smooth auto-advance
-                                            setTimeout(() => setWizardStep(2), 250);
-                                          }}
-                                          className={`w-full text-left px-5 py-4 rounded-xl text-xs font-medium tracking-wide border transition-all duration-300 cursor-pointer flex justify-between items-center ${
-                                            isSelected
-                                              ? 'bg-[#E1D4C0] text-black border-[#E1D4C0]'
-                                              : 'bg-white/5 text-white/60 border-white/5 hover:bg-white/10 hover:text-white'
+                                          key={opt.name}
+                                          onClick={() => handleOptionChange('background', opt.name)}
+                                          className={`flex items-center justify-between w-full px-4 py-2.5 rounded-xl border text-[11px] font-light transition-all cursor-pointer ${
+                                            isSelected 
+                                              ? 'bg-[#E1D4C0] border-[#E1D4C0] text-black font-semibold' 
+                                              : 'bg-white/[0.01] border-white/5 text-white/60 hover:bg-white/[0.03] hover:text-white'
                                           }`}
                                         >
-                                          <span>{bg}</span>
-                                          {isRec && <span className={`text-[9px] tracking-widest uppercase font-mono px-2 py-1 rounded-full ${isSelected ? 'bg-black/10 text-black' : 'bg-[#9b87f5]/20 text-[#9b87f5]'}`}>✨ Rec</span>}
+                                          <span>{opt.name}</span>
+                                          {isRec && <span className={`text-[8px] font-mono tracking-widest px-1.5 py-0.5 rounded-full ${isSelected ? 'bg-black/10 text-black' : 'bg-[#9b87f5]/20 text-[#9b87f5]'}`}>✨ Rec</span>}
                                         </button>
                                       );
                                     })}
                                   </div>
-                                  
-                                  {/* Mercer AI Rec */}
-                                  {activeCampaign.planning?.recommendations?.background && (
-                                    <div className="bg-[#9b87f5]/5 border-l-2 border-[#9b87f5] p-4 rounded-r-xl">
-                                      <div className="text-[9px] tracking-[0.2em] uppercase text-[#9b87f5] font-semibold mb-1 font-mono">Mercer AI Recommendation</div>
-                                      <div className="text-[12px] font-semibold text-white mb-1">
-                                        {activeCampaign.planning.recommendations.background.value}
-                                      </div>
-                                      <p className="text-[11px] text-white/60 leading-relaxed font-light italic font-mono">
-                                        {activeCampaign.planning.recommendations.background.reason}
-                                      </p>
-                                    </div>
-                                  )}
                                 </div>
-                              )}
+                              </div>
 
-                              {/* Step 2: Pose */}
-                              {wizardStep === 2 && (
-                                <div className="space-y-6">
-                                  <p className="text-[12px] text-white/60 leading-relaxed font-light">Determine the structural folding or movement archetype for the fabric drape.</p>
-                                  <div className="flex flex-col gap-3">
-                                    {["Dynamic Fabric Spin", "Contemplative Veil Drape", "Editorial Close-Up Gaze", "The Saree Column", "Wind-Blown Toss"].map(ps => {
-                                      const isSelected = selectedPose === ps;
-                                      const isRec = activeCampaign.planning?.recommendations?.pose?.value === ps;
+                              {/* Card 2: Pose & Movement */}
+                              <div className="bg-white/5 border border-white/10 p-1.5 rounded-[2rem] flex flex-col">
+                                <div className="flex-1 bg-[#0C0C0E] shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[calc(2rem-0.375rem)] p-6 text-left flex flex-col gap-4">
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-[10px] tracking-[0.2em] uppercase text-[#E1D4C0] font-mono">2. Pose & Flow</span>
+                                    <span className="text-[10px] text-white/40 truncate max-w-[140px] font-mono">{selectedPose || "None"}</span>
+                                  </div>
+                                  <div className="flex flex-col gap-2 max-h-[160px] overflow-y-auto pr-1">
+                                    {[
+                                      { name: "Architectural Drape / Structured Fold", isRec: true },
+                                      { name: "Dynamic Fabric Spin / Wind Blown" },
+                                      { name: "Static Geometrical Placement" },
+                                      { name: "Cascading Edge / Waterflow Effect" },
+                                      { name: "Suspended / Anti-gravity Float" }
+                                    ].map(opt => {
+                                      const isSelected = selectedPose === opt.name;
+                                      const isRec = opt.isRec;
                                       return (
                                         <button
-                                          key={ps}
-                                          onClick={() => {
-                                            handleOptionChange('pose', ps);
-                                            setTimeout(() => setWizardStep(3), 250);
-                                          }}
-                                          className={`w-full text-left px-5 py-4 rounded-xl text-xs font-medium tracking-wide border transition-all duration-300 cursor-pointer flex justify-between items-center ${
-                                            isSelected
-                                              ? 'bg-[#E1D4C0] text-black border-[#E1D4C0]'
-                                              : 'bg-white/5 text-white/60 border-white/5 hover:bg-white/10 hover:text-white'
+                                          key={opt.name}
+                                          onClick={() => handleOptionChange('pose', opt.name)}
+                                          className={`flex items-center justify-between w-full px-4 py-2.5 rounded-xl border text-[11px] font-light transition-all cursor-pointer ${
+                                            isSelected 
+                                              ? 'bg-[#E1D4C0] border-[#E1D4C0] text-black font-semibold' 
+                                              : 'bg-white/[0.01] border-white/5 text-white/60 hover:bg-white/[0.03] hover:text-white'
                                           }`}
                                         >
-                                          <span>{ps}</span>
-                                          {isRec && <span className={`text-[9px] tracking-widest uppercase font-mono px-2 py-1 rounded-full ${isSelected ? 'bg-black/10 text-black' : 'bg-[#9b87f5]/20 text-[#9b87f5]'}`}>✨ Rec</span>}
+                                          <span>{opt.name}</span>
+                                          {isRec && <span className={`text-[8px] font-mono tracking-widest px-1.5 py-0.5 rounded-full ${isSelected ? 'bg-black/10 text-black' : 'bg-[#9b87f5]/20 text-[#9b87f5]'}`}>✨ Rec</span>}
                                         </button>
                                       );
                                     })}
                                   </div>
-                                  
-                                  {/* Mercer AI Rec */}
-                                  {activeCampaign.planning?.recommendations?.pose && (
-                                    <div className="bg-[#9b87f5]/5 border-l-2 border-[#9b87f5] p-4 rounded-r-xl">
-                                      <div className="text-[9px] tracking-[0.2em] uppercase text-[#9b87f5] font-semibold mb-1 font-mono">Mercer AI Recommendation</div>
-                                      <div className="text-[12px] font-semibold text-white mb-1">
-                                        {activeCampaign.planning.recommendations.pose.value}
-                                      </div>
-                                      <p className="text-[11px] text-white/60 leading-relaxed font-light italic font-mono">
-                                        {activeCampaign.planning.recommendations.pose.reason}
-                                      </p>
-                                    </div>
-                                  )}
                                 </div>
-                              )}
+                              </div>
 
-                              {/* Step 3: Lighting */}
-                              {wizardStep === 3 && (
-                                <div className="space-y-6">
-                                  <p className="text-[12px] text-white/60 leading-relaxed font-light">Set the photographic light environment to capture surface highlights.</p>
-                                  <div className="flex flex-col gap-3">
-                                    {["Golden Hour (2700K-3200K)", "Ethereal Backlight / Edge Wrap", "Soft Window Light", "High-Key Window Doorway", "Moonlight / Night Ambient", "Studio Warm Key"].map(lt => {
-                                      const isSelected = selectedLighting === lt;
-                                      const isRec = activeCampaign.planning?.recommendations?.lighting?.value === lt;
+                              {/* Card 3: Cinematic Lighting */}
+                              <div className="bg-white/5 border border-white/10 p-1.5 rounded-[2rem] flex flex-col">
+                                <div className="flex-1 bg-[#0C0C0E] shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[calc(2rem-0.375rem)] p-6 text-left flex flex-col gap-4">
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-[10px] tracking-[0.2em] uppercase text-[#E1D4C0] font-mono">3. Lighting</span>
+                                    <span className="text-[10px] text-white/40 truncate max-w-[140px] font-mono">{selectedLighting || "None"}</span>
+                                  </div>
+                                  <div className="flex flex-col gap-2 max-h-[160px] overflow-y-auto pr-1">
+                                    {[
+                                      { name: "Golden Hour Warmth / Soft Sun" },
+                                      { name: "High-contrast Chiaroscuro" },
+                                      { name: "Ethereal Backlight / Edge Wrap", isRec: true },
+                                      { name: "Moody Rim Light / Cyberpunk Glow" },
+                                      { name: "Soft Studio Diffused Light" }
+                                    ].map(opt => {
+                                      const isSelected = selectedLighting === opt.name;
+                                      const isRec = opt.isRec;
                                       return (
                                         <button
-                                          key={lt}
-                                          onClick={() => {
-                                            handleOptionChange('lighting', lt);
-                                            setTimeout(() => setWizardStep(4), 250);
-                                          }}
-                                          className={`w-full text-left px-5 py-4 rounded-xl text-xs font-medium tracking-wide border transition-all duration-300 cursor-pointer flex justify-between items-center ${
-                                            isSelected
-                                              ? 'bg-[#E1D4C0] text-black border-[#E1D4C0]'
-                                              : 'bg-white/5 text-white/60 border-white/5 hover:bg-white/10 hover:text-white'
+                                          key={opt.name}
+                                          onClick={() => handleOptionChange('lighting', opt.name)}
+                                          className={`flex items-center justify-between w-full px-4 py-2.5 rounded-xl border text-[11px] font-light transition-all cursor-pointer ${
+                                            isSelected 
+                                              ? 'bg-[#E1D4C0] border-[#E1D4C0] text-black font-semibold' 
+                                              : 'bg-white/[0.01] border-white/5 text-white/60 hover:bg-white/[0.03] hover:text-white'
                                           }`}
                                         >
-                                          <span>{lt}</span>
-                                          {isRec && <span className={`text-[9px] tracking-widest uppercase font-mono px-2 py-1 rounded-full ${isSelected ? 'bg-black/10 text-black' : 'bg-[#9b87f5]/20 text-[#9b87f5]'}`}>✨ Rec</span>}
+                                          <span>{opt.name}</span>
+                                          {isRec && <span className={`text-[8px] font-mono tracking-widest px-1.5 py-0.5 rounded-full ${isSelected ? 'bg-black/10 text-black' : 'bg-[#9b87f5]/20 text-[#9b87f5]'}`}>✨ Rec</span>}
                                         </button>
                                       );
                                     })}
                                   </div>
-                                  
-                                  {/* Mercer AI Rec */}
-                                  {activeCampaign.planning?.recommendations?.lighting && (
-                                    <div className="bg-[#9b87f5]/5 border-l-2 border-[#9b87f5] p-4 rounded-r-xl">
-                                      <div className="text-[9px] tracking-[0.2em] uppercase text-[#9b87f5] font-semibold mb-1 font-mono">Mercer AI Recommendation</div>
-                                      <div className="text-[12px] font-semibold text-white mb-1">
-                                        {activeCampaign.planning.recommendations.lighting.value}
-                                      </div>
-                                      <p className="text-[11px] text-white/60 leading-relaxed font-light italic font-mono">
-                                        {activeCampaign.planning.recommendations.lighting.reason}
-                                      </p>
-                                    </div>
-                                  )}
                                 </div>
-                              )}
+                              </div>
 
-                              {/* Step 4: Review Page */}
-                              {wizardStep === 4 && (
-                                <div className="space-y-6">
-                                  <p className="text-[12px] text-white/60 leading-relaxed font-light">Confirm the Art Direction settings. Click any block to jump back and adjust.</p>
-                                  
-                                  <div className="grid grid-cols-3 gap-4">
-                                    <button 
-                                      onClick={() => setWizardStep(1)}
-                                      className="p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-left transition-all cursor-pointer"
-                                    >
-                                      <span className="text-[9px] text-[#E1D4C0] uppercase tracking-widest block mb-1 font-mono">Background</span>
-                                      <span className="text-white text-xs font-semibold block truncate">{selectedBackground || 'Not Selected'}</span>
-                                    </button>
-                                    <button 
-                                      onClick={() => setWizardStep(2)}
-                                      className="p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-left transition-all cursor-pointer"
-                                    >
-                                      <span className="text-[9px] text-[#E1D4C0] uppercase tracking-widest block mb-1 font-mono">Pose & Drape</span>
-                                      <span className="text-white text-xs font-semibold block truncate">{selectedPose || 'Not Selected'}</span>
-                                    </button>
-                                    <button 
-                                      onClick={() => setWizardStep(3)}
-                                      className="p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-left transition-all cursor-pointer"
-                                    >
-                                      <span className="text-[9px] text-[#E1D4C0] uppercase tracking-widest block mb-1 font-mono">Lighting</span>
-                                      <span className="text-white text-xs font-semibold block truncate">{selectedLighting || 'Not Selected'}</span>
-                                    </button>
-                                  </div>
-
-                                  {/* Physical Mismatch Warning */}
-                                  {getConflictWarning() && (
-                                    <div className="bg-yellow-500/10 border border-yellow-500/20 text-yellow-200/90 text-xs px-4 py-3.5 rounded-xl flex gap-3 items-start mt-2">
-                                      <span className="text-yellow-500 mt-0.5">⚠️</span>
-                                      <div className="flex-1">
-                                        <span className="font-semibold block mb-0.5 font-mono">Fabric Physics Mismatch Warning</span>
-                                        <span className="font-light leading-relaxed">{getConflictWarning()}</span>
+                              {/* Card 4: Settings & Generate */}
+                              <div className="bg-white/5 border border-white/10 p-1.5 rounded-[2rem] flex flex-col justify-between">
+                                <div className="flex-1 bg-[#0C0C0E] shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[calc(2rem-0.375rem)] p-6 text-left flex flex-col gap-4 justify-between">
+                                  <div className="space-y-4">
+                                    <span className="text-[10px] tracking-[0.2em] uppercase text-[#E1D4C0] font-mono block">4. Synthesis Control</span>
+                                    
+                                    {/* Ratio Selector */}
+                                    <div className="space-y-1.5">
+                                      <span className="text-[9px] uppercase tracking-wider text-white/40 font-mono block">Aspect Ratio</span>
+                                      <div className="flex gap-1.5">
+                                        {['3:4', '16:9', '1:1', '4:5'].map(r => (
+                                          <button
+                                            key={r}
+                                            onClick={() => setSelectedRatio(r)}
+                                            className={`flex-1 py-1 text-[9px] font-mono rounded-lg border transition-all cursor-pointer ${
+                                              selectedRatio === r
+                                                ? 'bg-[#E1D4C0] border-[#E1D4C0] text-black font-bold'
+                                                : 'bg-white/[0.01] border-white/5 text-white/60 hover:bg-white/[0.03]'
+                                            }`}
+                                          >
+                                            {r}
+                                          </button>
+                                        ))}
                                       </div>
                                     </div>
-                                  )}
 
-                                  <button
-                                    onClick={() => setWizardStep(5)}
-                                    className="w-full mt-6 py-3 bg-[#E1D4C0] hover:bg-white text-black font-bold text-xs tracking-widest uppercase rounded-xl transition-all shadow-lg cursor-pointer"
-                                  >
-                                    Proceed to Generation Settings
-                                  </button>
-                                </div>
-                              )}
-
-                              {/* Step 5: Generation Settings */}
-                              {wizardStep === 5 && (
-                                <div className="space-y-6">
-                                  <p className="text-[12px] text-white/60 leading-relaxed font-light">Set output dimensions and quantity of moodboard asset generations.</p>
-                                  
-                                  {/* Aspect Ratio Selector (Presented as Styled Buttons) */}
-                                  <div className="space-y-2">
-                                    <label className="text-[9px] tracking-[0.2em] uppercase text-[#E1D4C0] font-mono block">Select Aspect Ratio</label>
-                                    <div className="flex gap-2">
-                                      {['3:4', '16:9', '1:1', '4:5'].map(r => (
-                                        <button
-                                          key={r}
-                                          type="button"
-                                          onClick={() => setSelectedRatio(r)}
-                                          className={`px-4 py-2.5 rounded-xl text-xs font-semibold tracking-wider border transition-all cursor-pointer ${
-                                            selectedRatio === r 
-                                              ? 'bg-[#E1D4C0] text-black border-[#E1D4C0] shadow-md' 
-                                              : 'bg-white/5 text-white/60 border-white/5 hover:bg-white/10 hover:text-white'
-                                          }`}
-                                        >
-                                          {r}
-                                        </button>
-                                      ))}
+                                    {/* Asset Count Selector */}
+                                    <div className="space-y-1.5">
+                                      <span className="text-[9px] uppercase tracking-wider text-white/40 font-mono block">Asset Quantity</span>
+                                      <div className="flex gap-1.5">
+                                        {[1, 2, 4, 8].map(cnt => (
+                                          <button
+                                            key={cnt}
+                                            onClick={() => setSelectedAssetCount(cnt)}
+                                            className={`flex-1 py-1 text-[9px] font-mono rounded-lg border transition-all cursor-pointer ${
+                                              selectedAssetCount === cnt
+                                                ? 'bg-[#E1D4C0] border-[#E1D4C0] text-black font-bold'
+                                                : 'bg-white/[0.01] border-white/5 text-white/60 hover:bg-white/[0.03]'
+                                            }`}
+                                          >
+                                            {cnt}
+                                          </button>
+                                        ))}
+                                      </div>
                                     </div>
                                   </div>
 
-                                  {/* Asset Count Selector (Presented as Styled Buttons) */}
-                                  <div className="space-y-2">
-                                    <label className="text-[9px] tracking-[0.2em] uppercase text-[#E1D4C0] font-mono block">Assets Count</label>
-                                    <div className="flex gap-2">
-                                      {[1, 2, 4, 8].map(cnt => (
-                                        <button
-                                          key={cnt}
-                                          type="button"
-                                          onClick={() => setSelectedAssetCount(cnt)}
-                                          className={`px-4 py-2.5 rounded-xl text-xs font-semibold tracking-wider border transition-all cursor-pointer ${
-                                            selectedAssetCount === cnt 
-                                              ? 'bg-[#E1D4C0] text-black border-[#E1D4C0] shadow-md' 
-                                              : 'bg-white/5 text-white/60 border-white/5 hover:bg-white/10 hover:text-white'
-                                          }`}
-                                        >
-                                          {cnt} Asset{cnt > 1 ? 's' : ''}
-                                        </button>
-                                      ))}
-                                    </div>
-                                  </div>
-
-                                  {/* final Generate campaign Button */}
+                                  {/* Generate Button with button-in-button trailing icon */}
                                   <button
                                     onClick={() => {
-                                      setWizardStep(1); // Reset wizard back to first question
+                                      setWizardStep(1); // Reset wizard state
                                       handleGenerate();
                                     }}
-                                    disabled={isGenerating || !!physicalViolation}
-                                    className="w-full mt-6 py-3.5 bg-gradient-to-r from-[#9b87f5] to-[#E1D4C0] hover:from-[#a796f6] hover:to-white text-black font-bold text-xs tracking-widest uppercase rounded-xl transition-all shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+                                    disabled={isGenerating || !!physicalViolation || !selectedBackground || !selectedPose || !selectedLighting}
+                                    className="w-full mt-4 py-3 bg-[#E1D4C0] hover:bg-white text-black font-bold text-[10px] tracking-widest uppercase rounded-xl transition-all shadow-xl disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-between px-6 cursor-pointer group"
                                   >
-                                    <span>{isGenerating ? "Synthesizing..." : `Generate Campaign Assets (${selectedAssetCount * 2} Credits)`}</span>
+                                    <span>{isGenerating ? "Synthesizing..." : `Generate (${selectedAssetCount * 2} Credits)`}</span>
+                                    <div className="w-6 h-6 rounded-full bg-black/5 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                                      <span className="text-black group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300 font-mono">↗</span>
+                                    </div>
                                   </button>
                                 </div>
-                              )}
-                            </div>
+                              </div>
 
+                            </div>
                           </div>
-                        </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -998,6 +1163,24 @@ export default function CampaignStudio() {
                   )}
                 </div>
               ) : null}
+              {activeCampaign && (
+                <div className="shrink-0 mt-4 w-full">
+                  <WorkflowTimeline
+                    status={activeCampaign.v3_creative_state?.status || 'pending'}
+                    hasMaterial={!!activeCampaign.material_path}
+                    weaveType={
+                      Array.isArray(activeCampaign.identity?.product_dna?.weaving_technique?.value)
+                        ? activeCampaign.identity.product_dna.weaving_technique.value.join(', ')
+                        : activeCampaign.identity?.product_dna?.weaving_technique?.value || 'Zari Brocade'
+                    }
+                    fiberBase={
+                      Array.isArray(activeCampaign.identity?.product_dna?.material?.value)
+                        ? activeCampaign.identity.product_dna.material.value.join(', ')
+                        : activeCampaign.identity?.product_dna?.material?.value || 'Silk'
+                    }
+                  />
+                </div>
+              )}
             </div>
           )}
         </div>

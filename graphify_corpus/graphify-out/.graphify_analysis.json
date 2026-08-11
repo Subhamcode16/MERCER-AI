@@ -1,0 +1,394 @@
+{
+  "communities": {
+    "0": [
+      "epl_001_expert_pattern_library",
+      "fdb_001_fabric_physics_database",
+      "fdb_001_fabric_styling_database",
+      "pdb_001_pose_motion_database",
+      "sdb_001_studio_environment_database",
+      "vio_004_creative_semantic_model",
+      "vio_006_domain_fashion",
+      "vio_008_commercial_semantics",
+      "vio_009_visual_craft",
+      "vio_010_material_intelligence",
+      "vio_011_cinematic_imperfections",
+      "vla_001_visual_library_analysis"
+    ],
+    "1": [
+      "cotton_concept",
+      "garment_taxonomy_concept",
+      "garments_textiles_moc",
+      "home_dashboard",
+      "pdf_textilenet_summary",
+      "pdf_traditional_indian_handlooms_summary",
+      "silk_concept",
+      "specialty_fabrics_concept",
+      "technical_ui_specs",
+      "visual_intelligence_moc"
+    ],
+    "2": [
+      "res_001",
+      "res_002",
+      "res_003",
+      "res_004",
+      "res_005",
+      "res_006",
+      "res_007",
+      "res_008",
+      "res_009",
+      "visual_intelligence_research_logs_index"
+    ],
+    "3": [
+      "cog_001_orra_loop",
+      "cog_002_pipeline",
+      "cog_004_planning_engine",
+      "glossary_001_core_concepts",
+      "glossary_002_creative_vocabulary",
+      "glossary_003_universal_ontology"
+    ],
+    "4": [
+      "cog_003_decision_engine",
+      "cog_005_agent_architecture",
+      "decision_rules_sarees_dr_saree_001",
+      "evidence_sarees_er_saree_001",
+      "knowledge_sarees_ku_saree_001"
+    ],
+    "5": [
+      "iteration1_competitive",
+      "iteration2_competitive",
+      "iteration3_competitive",
+      "iteration4_competitive"
+    ],
+    "6": [
+      "iteration1_experience",
+      "iteration2_experience",
+      "iteration3_experience",
+      "iteration4_experience"
+    ],
+    "7": [
+      "iteration1_intelligence",
+      "iteration2_intelligence",
+      "iteration3_intelligence",
+      "us_market_research"
+    ],
+    "8": [
+      "decision_rules_apparel_dr_app_001",
+      "evidence_apparel_er_app_001",
+      "knowledge_apparel_ku_app_001"
+    ],
+    "9": [
+      "decision_rules_footwear_dr_foot_001",
+      "evidence_footwear_er_foot_001",
+      "knowledge_footwear_ku_foot_001"
+    ],
+    "10": [
+      "decision_rules_jewelry_dr_jewel_001",
+      "evidence_jewelry_er_jewel_001",
+      "knowledge_jewelry_ku_jewel_001"
+    ],
+    "11": [
+      "arc_001",
+      "law_001"
+    ],
+    "12": [
+      "arc_002",
+      "law_002"
+    ],
+    "13": [
+      "arc_003",
+      "law_003"
+    ],
+    "14": [
+      "arc_004",
+      "law_004"
+    ],
+    "15": [
+      "blueprint_apparel_apparel",
+      "ontology_apparel_apparel"
+    ],
+    "16": [
+      "blueprint_footwear_footwear",
+      "ontology_footwear_footwear"
+    ],
+    "17": [
+      "blueprint_jewelry_jewelry",
+      "ontology_jewelry_jewelry"
+    ],
+    "18": [
+      "ontology_banarasi_brocade",
+      "ontology_silk"
+    ],
+    "19": [
+      "ontology_kanjeevaram",
+      "ontology_nivi"
+    ],
+    "20": [
+      "ontology_lightweight_sheer",
+      "ontology_zardosi"
+    ],
+    "21": [
+      "arc_005"
+    ],
+    "22": [
+      "blueprint_sarees_sarees"
+    ],
+    "23": [
+      "blueprint_template"
+    ],
+    "24": [
+      "decision_rule_template"
+    ],
+    "25": [
+      "evidence_record_template"
+    ],
+    "26": [
+      "final_locked_market"
+    ],
+    "27": [
+      "knowledge_unit_template"
+    ],
+    "28": [
+      "ontology_aari_work"
+    ],
+    "29": [
+      "ontology_bengali"
+    ],
+    "30": [
+      "ontology_block_print"
+    ],
+    "31": [
+      "ontology_body"
+    ],
+    "32": [
+      "ontology_border"
+    ],
+    "33": [
+      "ontology_chanderi"
+    ],
+    "34": [
+      "ontology_cotton"
+    ],
+    "35": [
+      "ontology_dupion"
+    ],
+    "36": [
+      "ontology_gota_patti"
+    ],
+    "37": [
+      "ontology_gujarati"
+    ],
+    "38": [
+      "ontology_heavy_pile"
+    ],
+    "39": [
+      "ontology_ikat"
+    ],
+    "40": [
+      "ontology_loom_type"
+    ],
+    "41": [
+      "ontology_nauvari"
+    ],
+    "42": [
+      "ontology_pallu"
+    ],
+    "43": [
+      "ontology_pleats"
+    ],
+    "44": [
+      "ontology_zari"
+    ],
+    "45": [
+      "vio_001_visual_intelligence_ontology"
+    ],
+    "46": [
+      "vio_002_entity_model"
+    ],
+    "47": [
+      "vio_003_relationship_model"
+    ],
+    "48": [
+      "vio_005_garment_taxonomy"
+    ],
+    "49": [
+      "vio_005_universal_ontology"
+    ],
+    "50": [
+      "vio_006_textile_construction"
+    ],
+    "51": [
+      "vio_007_styling_presentation"
+    ],
+    "52": [
+      "vio_012_interaction_ontology"
+    ]
+  },
+  "cohesion": {
+    "0": 0.3181818181818182,
+    "1": 0.4444444444444444,
+    "2": 0.2,
+    "3": 0.3333333333333333,
+    "4": 0.5,
+    "5": 0.5,
+    "6": 0.5,
+    "7": 0.5,
+    "8": 0.6666666666666666,
+    "9": 0.6666666666666666,
+    "10": 0.6666666666666666,
+    "11": 1.0,
+    "12": 1.0,
+    "13": 1.0,
+    "14": 1.0,
+    "15": 1.0,
+    "16": 1.0,
+    "17": 1.0,
+    "18": 1.0,
+    "19": 1.0,
+    "20": 1.0,
+    "21": 1.0,
+    "22": 1.0,
+    "23": 1.0,
+    "24": 1.0,
+    "25": 1.0,
+    "26": 1.0,
+    "27": 1.0,
+    "28": 1.0,
+    "29": 1.0,
+    "30": 1.0,
+    "31": 1.0,
+    "32": 1.0,
+    "33": 1.0,
+    "34": 1.0,
+    "35": 1.0,
+    "36": 1.0,
+    "37": 1.0,
+    "38": 1.0,
+    "39": 1.0,
+    "40": 1.0,
+    "41": 1.0,
+    "42": 1.0,
+    "43": 1.0,
+    "44": 1.0,
+    "45": 1.0,
+    "46": 1.0,
+    "47": 1.0,
+    "48": 1.0,
+    "49": 1.0,
+    "50": 1.0,
+    "51": 1.0,
+    "52": 1.0
+  },
+  "gods": [
+    {
+      "id": "visual_intelligence_research_logs_index",
+      "label": "Visual Intelligence Research Logs Index",
+      "degree": 9
+    },
+    {
+      "id": "epl_001_expert_pattern_library",
+      "label": "Expert Pattern Library",
+      "degree": 9
+    },
+    {
+      "id": "garments_textiles_moc",
+      "label": "Garments & Textiles Map of Content",
+      "degree": 7
+    },
+    {
+      "id": "pdb_001_pose_motion_database",
+      "label": "Pose & Motion Database",
+      "degree": 6
+    },
+    {
+      "id": "specialty_fabrics_concept",
+      "label": "Concept: Specialty Fabrics",
+      "degree": 6
+    },
+    {
+      "id": "fdb_001_fabric_physics_database",
+      "label": "Indian Fabric Physics Database",
+      "degree": 5
+    },
+    {
+      "id": "sdb_001_studio_environment_database",
+      "label": "Studio & Environment Database",
+      "degree": 5
+    },
+    {
+      "id": "silk_concept",
+      "label": "Concept: Silk",
+      "degree": 5
+    },
+    {
+      "id": "vla_001_visual_library_analysis",
+      "label": "Visual Library Analysis & Knowledge Gap Extension",
+      "degree": 4
+    },
+    {
+      "id": "cotton_concept",
+      "label": "Concept: Cotton",
+      "degree": 4
+    }
+  ],
+  "surprises": [
+    {
+      "source": "Core Thinking Loop (ORRA)",
+      "target": "Core Concepts Glossary",
+      "source_files": [
+        "Cognitive Architecture/COG-001.md",
+        "Glossary trilogy/GLOSSARY-001.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "conceptually_related_to",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "Knowledge Architecture (What is true?)",
+      "target": "Laws of Knowledge",
+      "source_files": [
+        "System Architecture/ARC-001.md",
+        "System Laws/LAW-001.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories"
+    },
+    {
+      "source": "Reasoning Architecture (What should be done?)",
+      "target": "Laws of Reasoning",
+      "source_files": [
+        "System Architecture/ARC-002.md",
+        "System Laws/LAW-002.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories"
+    },
+    {
+      "source": "Memory Architecture (What have we learned?)",
+      "target": "Laws of Memory",
+      "source_files": [
+        "System Architecture/ARC-003.md",
+        "System Laws/LAW-003.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories"
+    },
+    {
+      "source": "Collaboration Architecture (How do humans and AI decide together?)",
+      "target": "Laws of Collaboration",
+      "source_files": [
+        "System Architecture/ARC-004.md",
+        "System Laws/LAW-004.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories"
+    }
+  ],
+  "tokens": {
+    "input": 133786,
+    "output": 18031
+  }
+}

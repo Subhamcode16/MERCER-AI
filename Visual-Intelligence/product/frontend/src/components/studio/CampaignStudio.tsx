@@ -58,7 +58,10 @@ export function CampaignStudio() {
         )}
       </div>
       
-      <WorkflowTimeline hasUploaded={currentStep > 1} />
+      <WorkflowTimeline 
+        status={currentStep > 1 ? 'completed' : 'pending'} 
+        hasMaterial={currentStep > 1} 
+      />
     </div>
   );
 }

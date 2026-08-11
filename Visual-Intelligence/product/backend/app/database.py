@@ -26,9 +26,20 @@ async def connect_db() -> None:
         serverSelectionTimeoutMS=5000,
     )
     _db = _client[settings.mongodb_db_name]
-    await _client.admin.command("ping")   # fail fast if unreachable
-    await _ensure_indexes()
-    logger.info("MongoDB indexes verified.")
+    try:
+        await _client.admin.command("ping")   # fail fast if unreachable
+        await _ensure_indexes()
+        logger.info("MongoDB connected and indexes verified.")
+    except Exception as e:
+        logger.critical(
+            "MongoDB connection failed on startup: %s — "
+            "Ensure the URI is correct and your IP is whitelisted on Atlas.",
+            e,
+        )
+        # Re-raise so uvicorn refuses to start rather than booting with a
+        # dead database and silently returning 500 on the first real request.
+        raise RuntimeError(f"Cannot start: MongoDB unreachable — {e}") from e
+
 
 
 async def close_db() -> None:
@@ -111,6 +122,12 @@ async def _ensure_indexes() -> None:
     await db.knowledge_claims.create_index([("subject", ASCENDING)])
     await db.knowledge_claims.create_index([("predicate", ASCENDING)])
     await db.knowledge_claims.create_index([("status", ASCENDING)])
+    
+    # ── campaigns ─────────────────────────────────────────────────────────────
+    # Primary lookup by campaign.id
+    await db.campaigns.create_index([("id", ASCENDING)], unique=True)
+    # Fast retrieval of user's campaigns
+    await db.campaigns.create_index([("user_id", ASCENDING), ("created_at", DESCENDING)])
 
     # ── graph_edges (ARC-001) ─────────────────────────────────────────────────
     await db.graph_edges.create_index([("source_id", ASCENDING)])

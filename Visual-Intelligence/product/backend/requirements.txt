@@ -5,6 +5,7 @@ uvicorn[standard]==0.30.6
 # ── Database ──────────────────────────────────────────────────────────────────
 motor==3.5.1
 pymongo==4.8.0
+redis==5.0.3
 
 # ── Settings & config ─────────────────────────────────────────────────────────
 pydantic-settings==2.4.0
@@ -44,3 +45,7 @@ python-dotenv==1.0.1
 opentelemetry-api
 opentelemetry-sdk
 opentelemetry-instrumentation-fastapi
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+pytest==8.3.2
+pytest-asyncio==0.24.0

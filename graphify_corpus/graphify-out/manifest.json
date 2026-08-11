@@ -1,0 +1,32 @@
+{
+  "Ontology/data/interaction_ontology.json": {
+    "mtime": 1782933903.7966413,
+    "ast_hash": "7b5035fc5ac50544d817939c8f7c2d92",
+    "semantic_hash": "7b5035fc5ac50544d817939c8f7c2d92"
+  },
+  "Ontology/data/material_ontology.json": {
+    "mtime": 1782933817.2652383,
+    "ast_hash": "0940fa663123c6a56c6b297bf3b580ba",
+    "semantic_hash": "0940fa663123c6a56c6b297bf3b580ba"
+  },
+  "Ontology/data/physics_optics_mapping.json": {
+    "mtime": 1782933828.203917,
+    "ast_hash": "7f41ca4e00713d217b395156925e5311",
+    "semantic_hash": "7f41ca4e00713d217b395156925e5311"
+  },
+  "Ontology/data/renderer_profiles.json": {
+    "mtime": 1782933872.9288874,
+    "ast_hash": "c68295c63d234975f4265ffe5d8c4132",
+    "semantic_hash": "c68295c63d234975f4265ffe5d8c4132"
+  },
+  "Ontology/data/solver_config.json": {
+    "mtime": 1782933912.7976735,
+    "ast_hash": "2488c2affd0debbaf1d12410b14e10cb",
+    "semantic_hash": "2488c2affd0debbaf1d12410b14e10cb"
+  },
+  "Ontology/data/visual_craft_ontology.json": {
+    "mtime": 1782933861.4503112,
+    "ast_hash": "f2fe73ee3790c2e48061f5da47e63f68",
+    "semantic_hash": "f2fe73ee3790c2e48061f5da47e63f68"
+  }
+}
