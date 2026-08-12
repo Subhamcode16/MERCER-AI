@@ -1082,7 +1082,7 @@ export default function CampaignStudio() {
 
                   {/* V2 Synthesis Controls Bar Overlay (Glow themed custom input) */}
                   {showControls && (
-                    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30 w-full max-w-3xl px-4 pointer-events-auto">
+                    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30 w-full max-w-3xl px-4 pointer-events-auto transition-opacity duration-300 opacity-50 hover:opacity-85 focus-within:opacity-100">
                       <div className="absolute -inset-2 bg-gradient-to-r from-[#9b87f5]/15 via-[#E1D4C0]/10 to-[#9b87f5]/15 rounded-[36px] blur-xl -z-10 pointer-events-none" />
                       <PromptInputBox 
                         onSend={(text) => {
