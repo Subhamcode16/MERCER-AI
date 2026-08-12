@@ -57,6 +57,178 @@ const DashedFolderIcon = () => (
   </svg>
 );
 
+// --- Dynamic Composition Preview Component ---
+
+const SceneCompositionCard = ({
+  background,
+  pose,
+  lighting,
+  ratio
+}: {
+  background: string;
+  pose: string;
+  lighting: string;
+  ratio: string;
+}) => {
+  const getBgStyle = () => {
+    switch (background) {
+      case 'Heritage Fort / Palace Corridor':
+        return 'from-[#2C1E1B] via-[#4A322C] to-[#1C1210]';
+      case 'Lush Garden':
+        return 'from-[#0F1E15] via-[#1C3224] to-[#0A130E]';
+      case 'Reflective Metal Surface':
+        return 'from-[#23272A] via-[#43494F] to-[#141618]';
+      case 'Industrial Concrete / Urban':
+        return 'from-[#25282A] via-[#3E4246] to-[#16181A]';
+      case 'Draped Velvet Platform':
+        return 'from-[#1A0F2E] via-[#2F1A52] to-[#0E071C]';
+      case 'Minimalist Stone Pedestal':
+      default:
+        return 'from-[#1F2421] via-[#2A302D] to-[#111412]';
+    }
+  };
+
+  const getOverlayPattern = () => {
+    switch (background) {
+      case 'Heritage Fort / Palace Corridor':
+        return (
+          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#E1D4C0_1px,transparent_1px)] [background-size:16px_16px] flex items-center justify-center">
+            <svg viewBox="0 0 100 100" className="w-48 h-48 stroke-[#E1D4C0] fill-none stroke-[0.5]">
+              <path d="M 10 90 L 10 50 A 40 40 0 0 1 90 50 L 90 90 Z" />
+              <path d="M 20 90 L 20 50 A 30 30 0 0 1 80 50 L 80 90 Z" />
+            </svg>
+          </div>
+        );
+      case 'Lush Garden':
+        return (
+          <div className="absolute inset-0 opacity-10 flex items-center justify-center">
+            <svg viewBox="0 0 100 100" className="w-48 h-48 stroke-[#E1D4C0] fill-none stroke-[0.5]">
+              <path d="M 50 90 Q 30 60 50 20 Q 70 60 50 90 Z" />
+              <path d="M 50 75 Q 35 55 50 35 M 50 60 Q 65 45 50 25" />
+            </svg>
+          </div>
+        );
+      case 'Reflective Metal Surface':
+        return (
+          <div className="absolute inset-0 opacity-20 bg-gradient-to-tr from-transparent via-white/10 to-transparent flex items-center justify-center">
+            <div className="w-full h-full flex flex-col gap-6 transform rotate-45 scale-150">
+              <div className="h-0.5 w-full bg-[#E1D4C0]/20" />
+              <div className="h-1.5 w-full bg-[#E1D4C0]/10" />
+              <div className="h-0.5 w-full bg-[#E1D4C0]/20" />
+            </div>
+          </div>
+        );
+      case 'Industrial Concrete / Urban':
+        return (
+          <div className="absolute inset-0 opacity-10 flex items-center justify-center">
+            <svg viewBox="0 0 100 100" className="w-full h-full stroke-[#E1D4C0] stroke-[0.25]">
+              <line x1="20" y1="0" x2="20" y2="100" />
+              <line x1="50" y1="0" x2="50" y2="100" />
+              <line x1="80" y1="0" x2="80" y2="100" />
+              <line x1="0" y1="30" x2="100" y2="30" />
+              <line x1="0" y1="70" x2="100" y2="70" />
+            </svg>
+          </div>
+        );
+      case 'Draped Velvet Platform':
+        return (
+          <div className="absolute inset-0 opacity-15 flex items-center justify-center">
+            <svg viewBox="0 0 100 100" className="w-full h-full stroke-[#E1D4C0] fill-none stroke-[0.5]">
+              <path d="M -20 50 Q 20 80 50 50 T 120 50" />
+              <path d="M -20 60 Q 20 90 50 60 T 120 60" />
+              <path d="M -20 70 Q 20 100 50 70 T 120 70" />
+            </svg>
+          </div>
+        );
+      case 'Minimalist Stone Pedestal':
+      default:
+        return (
+          <div className="absolute inset-0 opacity-10 flex items-center justify-center">
+            <svg viewBox="0 0 100 100" className="w-40 h-40 stroke-[#E1D4C0] fill-none stroke-[0.5]">
+              <rect x="25" y="45" width="50" height="40" rx="2" />
+              <line x1="15" y1="45" x2="85" y2="45" />
+            </svg>
+          </div>
+        );
+    }
+  };
+
+  const getDrapeGraphic = () => {
+    switch (pose) {
+      case 'Dynamic Fabric Spin / Wind Blown':
+        return (
+          <path d="M 50 85 Q 20 65 30 35 Q 50 15 70 35 T 50 85" className="animate-[spin_20s_linear_infinite]" style={{ transformOrigin: '50px 50px' }} />
+        );
+      case 'Static Geometrical Placement':
+        return (
+          <g>
+            <path d="M 35 25 L 65 25 L 60 85 L 40 85 Z" />
+            <line x1="45" y1="25" x2="45" y2="85" />
+            <line x1="55" y1="25" x2="55" y2="85" />
+          </g>
+        );
+      case 'Cascading Edge / Waterflow Effect':
+        return (
+          <path d="M 30 30 Q 50 40 40 60 T 60 90" />
+        );
+      case 'Suspended / Anti-gravity Float':
+        return (
+          <path d="M 30 40 Q 55 25 50 55 T 70 40" className="animate-[pulse_4s_ease-in-out_infinite]" />
+        );
+      case 'Architectural Drape / Structured Fold':
+      default:
+        return (
+          <g>
+            <path d="M 40 20 Q 50 40 35 85 M 48 20 Q 50 45 48 85 M 58 20 Q 50 40 62 85" />
+            <path d="M 30 20 L 70 20 L 62 85 L 35 85 Z" className="opacity-10 fill-[#E1D4C0]" />
+          </g>
+        );
+    }
+  };
+
+  const getLightingStyle = () => {
+    switch (lighting) {
+      case 'Golden Hour Warmth / Soft Sun':
+        return 'bg-gradient-to-r from-amber-500/10 to-transparent mix-blend-screen border border-amber-500/20';
+      case 'High-contrast Chiaroscuro':
+        return 'bg-black/40 backdrop-brightness-50 border border-white/5';
+      case 'Moody Rim Light / Cyberpunk Glow':
+        return 'shadow-[inset_0_0_30px_rgba(139,92,246,0.3)] border border-violet-500/20';
+      case 'Soft Diffused Studio Light':
+        return 'bg-white/5 blur-[2px] border border-white/10';
+      case 'Ethereal Backlight / Edge Wrap':
+      default:
+        return 'shadow-[inset_0_0_20px_rgba(225,212,192,0.2)] border border-[#E1D4C0]/20';
+    }
+  };
+
+  return (
+    <div className={`relative w-full aspect-[4/3] rounded-2xl bg-gradient-to-b ${getBgStyle()} overflow-hidden border border-white/5 shadow-2xl flex items-center justify-center`}>
+      {getOverlayPattern()}
+      <div className={`absolute inset-0 ${getLightingStyle()}`} />
+      <div className="absolute inset-0 opacity-5 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.15),transparent)]" />
+      
+      <svg viewBox="0 0 100 100" className="w-24 h-24 stroke-[#E1D4C0]/85 fill-none stroke-[1.25] drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
+        {getDrapeGraphic()}
+      </svg>
+
+      <div className="absolute top-4 left-4 px-2 py-0.5 bg-black/60 backdrop-blur text-[8px] font-mono uppercase tracking-wider text-[#E1D4C0] border border-white/10 rounded">
+        {ratio}
+      </div>
+
+      <div className="absolute top-4 right-4 px-2 py-0.5 bg-black/60 backdrop-blur text-[8px] font-mono uppercase tracking-wider text-white/40 rounded border border-white/5">
+        Composition
+      </div>
+
+      <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-[8px] font-mono text-white/50 bg-black/60 backdrop-blur px-2.5 py-1.5 rounded-lg border border-white/5">
+        <span className="truncate max-w-[120px]">{background.split(' / ')[0]}</span>
+        <span className="w-1 h-1 rounded-full bg-[#E1D4C0]/60" />
+        <span className="truncate max-w-[120px]">{pose.split(' / ')[0]}</span>
+      </div>
+    </div>
+  );
+};
+
 // --- Main Component ---
 
 export default function CampaignStudio() {
@@ -104,6 +276,15 @@ export default function CampaignStudio() {
   const [decisions, setDecisions] = useState<any[]>([]);
   const [creScores, setCreScores] = useState<CREScores | null>(null);
 
+  // --- Right Panel Collapsible Drawer States ---
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [manualClose, setManualClose] = useState(false);
+
+  // --- Art Direction State Bindings ---
+  const [selectedBackground, setSelectedBackground] = useState<string>("");
+  const [selectedPose, setSelectedPose] = useState<string>("");
+  const [selectedLighting, setSelectedLighting] = useState<string>("");
+
   // --- Floating Preview State ---
   const [hoveredPreview, setHoveredPreview] = useState<string | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -144,6 +325,102 @@ export default function CampaignStudio() {
       setCreScores(null);
     }
   }, [activeCampaign]);
+
+  // Trigger drawer on selection deviation
+  useEffect(() => {
+    if (!activeCampaign) {
+      setIsDrawerOpen(false);
+      setManualClose(false);
+      return;
+    }
+
+    const hasDeviation = 
+      selectedBackground !== 'Minimalist Stone Pedestal' ||
+      selectedPose !== 'Architectural Drape / Structured Fold' ||
+      selectedLighting !== 'Ethereal Backlight / Edge Wrap';
+
+    if (hasDeviation) {
+      if (!manualClose) {
+        setIsDrawerOpen(true);
+      }
+    } else {
+      setIsDrawerOpen(false);
+      setManualClose(false);
+    }
+  }, [selectedBackground, selectedPose, selectedLighting, activeCampaign, manualClose]);
+
+  const getAgentRecommendation = () => {
+    let note = "";
+    let pairings: string[] = [];
+    let avoid: string[] = [];
+
+    // Check Background
+    if (selectedBackground !== 'Minimalist Stone Pedestal') {
+      if (selectedBackground === 'Heritage Fort / Palace Corridor') {
+        note = "Heritage Fort introduces intricate architectural motifs that can compete with high-density textile patterns like Zari weaves.";
+        pairings = ["Static Geometrical Placement", "Ethereal Backlight / Edge Wrap"];
+        avoid = ["Dynamic Fabric Spin / Wind Blown", "Golden Hour Warmth"];
+      } else if (selectedBackground === 'Lush Garden') {
+        note = "Lush Garden introduces organic green hues and highlights. Best paired with fabric-separating high-contrast lights.";
+        pairings = ["Architectural Drape / Structured Fold", "High-contrast Chiaroscuro"];
+        avoid = ["Soft Studio Diffused Light", "Suspended / Anti-gravity Float"];
+      } else if (selectedBackground === 'Reflective Metal Surface') {
+        note = "Reflective Metal creates mirror reflections. Best for modern, futuristic campaigns, but requires precise lighting control.";
+        pairings = ["Suspended / Anti-gravity Float", "Moody Rim Light / Cyberpunk Glow"];
+        avoid = ["Golden Hour Warmth", "Static Geometrical Placement"];
+      } else if (selectedBackground === 'Industrial Concrete / Urban') {
+        note = "Industrial Concrete offers a cool neutral backdrop, creating strong geometric styling.";
+        pairings = ["Static Geometrical Placement", "High-contrast Chiaroscuro"];
+        avoid = ["Ethereal Backlight / Edge Wrap", "Dynamic Fabric Spin / Wind Blown"];
+      } else if (selectedBackground === 'Draped Velvet Platform') {
+        note = "Velvet adds luxury texture. Ensure fabric draping is structured to maintain premium feel.";
+        pairings = ["Architectural Drape / Structured Fold", "Moody Rim Light / Cyberpunk Glow"];
+        avoid = ["Dynamic Fabric Spin / Wind Blown", "Soft Studio Diffused Light"];
+      }
+    }
+    // Check Pose
+    else if (selectedPose !== 'Architectural Drape / Structured Fold') {
+      if (selectedPose === 'Dynamic Fabric Spin / Wind Blown') {
+        note = "Wind Blown requires high buoyancy fabrics. If fabric is heavy silk, it may look unnatural.";
+        pairings = ["Minimalist Stone Pedestal", "Ethereal Backlight / Edge Wrap"];
+        avoid = ["Draped Velvet Platform", "Moody Rim Light / Cyberpunk Glow"];
+      } else if (selectedPose === 'Static Geometrical Placement') {
+        note = "Static placement creates rigid columns. Best paired with directional lighting.";
+        pairings = ["High-contrast Chiaroscuro", "Heritage Fort / Palace Corridor"];
+        avoid = ["Suspended / Anti-gravity Float", "Soft Studio Diffused Light"];
+      } else if (selectedPose === 'Cascading Edge / Waterflow Effect') {
+        note = "Cascading requires a platform edge to flow from.";
+        pairings = ["Minimalist Stone Pedestal", "Moody Rim Light / Cyberpunk Glow"];
+        avoid = ["Lush Garden", "Industrial Concrete / Urban"];
+      } else if (selectedPose === 'Suspended / Anti-gravity Float') {
+        note = "Suspended float introduces surreal physics. Best with soft light.";
+        pairings = ["Reflective Metal Surface", "Soft Studio Diffused Light"];
+        avoid = ["Industrial Concrete / Urban", "High-contrast Chiaroscuro"];
+      }
+    }
+    // Check Lighting
+    else if (selectedLighting !== 'Ethereal Backlight / Edge Wrap') {
+      if (selectedLighting === 'Golden Hour Warmth / Soft Sun') {
+        note = "Golden Hour introduces warm amber tones, reducing cool highlight details.";
+        pairings = ["Heritage Fort / Palace Corridor", "Architectural Drape / Structured Fold"];
+        avoid = ["Reflective Metal Surface", "Moody Rim Light / Cyberpunk Glow"];
+      } else if (selectedLighting === 'High-contrast Chiaroscuro') {
+        note = "Chiaroscuro creates deep, dramatic shadows. Perfect for showcasing heavy weave micro-contrasts.";
+        pairings = ["Minimalist Stone Pedestal", "Static Geometrical Placement"];
+        avoid = ["Soft Studio Diffused Light", "Lush Garden"];
+      } else if (selectedLighting === 'Moody Rim Light / Cyberpunk Glow') {
+        note = "Moody Rim Light creates neon highlight silhouettes, highly futuristic.";
+        pairings = ["Reflective Metal Surface", "Suspended / Anti-gravity Float"];
+        avoid = ["Lush Garden", "Golden Hour Warmth / Soft Sun"];
+      } else if (selectedLighting === 'Soft Studio Diffused Light') {
+        note = "Soft Diffused Light reduces shadow drama, creating clean commercial catalog looks.";
+        pairings = ["Minimalist Stone Pedestal", "Architectural Drape / Structured Fold"];
+        avoid = ["High-contrast Chiaroscuro", "Reflective Metal Surface"];
+      }
+    }
+
+    return { note, pairings, avoid };
+  };
 
   // --- Polling ref (to stop polling on unmount) ---
   const pollRef = useRef<NodeJS.Timeout | null>(null);
@@ -366,10 +643,7 @@ export default function CampaignStudio() {
     if (file) handleFileDrop(file);
   };
 
-  // --- Art Direction State Bindings ---
-  const [selectedBackground, setSelectedBackground] = useState<string>("");
-  const [selectedPose, setSelectedPose] = useState<string>("");
-  const [selectedLighting, setSelectedLighting] = useState<string>("");
+
 
   const handleOptionChange = async (category: 'background' | 'pose' | 'lighting', value: string) => {
     if (!activeCampaign) return;
@@ -388,6 +662,8 @@ export default function CampaignStudio() {
       setSelectedLighting(value);
       lt = value;
     }
+
+    setManualClose(false);
 
     try {
       await updateCampaignOptions(activeCampaign.id, { background: bg, pose: ps, lighting: lt });
@@ -1196,80 +1472,142 @@ export default function CampaignStudio() {
         )}
       </div>
 
-      {/* V2 Reasoning Panel */}
-      <div className="w-[420px] h-full bg-[#0D0D0D] border-l border-white/5 flex flex-col shrink-0 relative z-20">
-        <div className="h-24 px-6 flex items-end pb-6 border-b border-white/5 shrink-0 justify-between">
-          <h2 className="text-[10px] tracking-[0.2em] uppercase text-white/40 font-medium">Intelligence Engine</h2>
-          {isAnalyzing && <span className="text-[10px] uppercase text-[#E1D4C0] animate-pulse">Computing...</span>}
-        </div>
+      {/* Collapsible Art Director Drawer */}
+      <AnimatePresence>
+        {isDrawerOpen && activeCampaign && (
+          <>
+            {/* Backdrop click-shield overlay */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => {
+                setIsDrawerOpen(false);
+                setManualClose(true);
+              }}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 pointer-events-auto"
+            />
 
-        <div className="flex-1 flex flex-col gap-4 p-6 overflow-hidden">
-          {/* Default State */}
-          {activeCampaignId === null && (
-            <div className="text-[13px] text-white/30 font-light leading-relaxed">
-              Mercer AI is observing the workspace. Select or start a campaign.
-            </div>
-          )}
+            {/* Slide-in drawer container */}
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 180 }}
+              className="fixed right-0 top-0 h-screen w-[380px] bg-[#0C0C0D] border-l border-white/5 shadow-2xl z-40 flex flex-col pt-8 pb-10 px-6 overflow-hidden"
+            >
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between mb-6 shrink-0">
+                <h2 className="text-[10px] tracking-[0.25em] uppercase text-white/40 font-mono">Art Director</h2>
+                <button
+                  onClick={() => {
+                    setIsDrawerOpen(false);
+                    setManualClose(true);
+                  }}
+                  className="p-1.5 rounded-full hover:bg-white/5 text-white/40 hover:text-white transition-colors cursor-pointer"
+                >
+                  <Plus className="w-4 h-4 transform rotate-45" />
+                </button>
+              </div>
 
-          {/* Reasoning Trace Panel */}
-          {activeCampaignId !== null && (
-             <ReasoningTracePanel decisions={decisions} className="flex-1 min-h-0" />
-          )}
+              {/* Scrollable Content */}
+              <div className="flex-1 flex flex-col gap-6 overflow-y-auto pr-1 scrollbar-none">
+                {/* Scene Composition Card */}
+                <SceneCompositionCard
+                  background={selectedBackground}
+                  pose={selectedPose}
+                  lighting={selectedLighting}
+                  ratio={selectedRatio}
+                />
 
-          {/* CRE Bento Grid */}
-          {activeCampaignId !== null && creScores && (
-             <div className="shrink-0 mt-2">
-               <CREBentoGrid scores={creScores} />
-             </div>
-          )}
-          
-          {/* Creative Director Dialogue Log (Integrated Chat) */}
-          {activeCampaignId !== null && (
-            <div className="flex-1 flex flex-col gap-3 min-h-[300px] border-t border-white/5 pt-4 overflow-hidden">
-              <div className="text-[10px] tracking-widest uppercase text-[#9b87f5] font-mono mb-1 text-left">Creative Dialogue</div>
-              <div className="flex-1 flex flex-col gap-3 overflow-y-auto pr-2 scrollbar-hide">
-                {chatMessages.map(msg => (
-                  <div 
-                    key={msg.id} 
-                    className={`flex flex-col max-w-[90%] ${
-                      msg.sender === 'user' ? 'self-end items-end' : 'self-start items-start'
-                    }`}
-                  >
-                    <div 
-                      className={`p-3 rounded-2xl text-[12px] leading-relaxed font-light ${
-                        msg.sender === 'user' 
-                          ? 'border border-[#E1D4C0]/20 text-[#E1D4C0] bg-transparent rounded-br-sm' 
-                          : 'bg-white/[0.02] border border-white/5 text-white/70 rounded-bl-sm'
-                      }`}
-                    >
-                      {msg.text}
-                      {msg.tweak && (
-                        <button 
-                          onClick={() => {
-                            // Apply tweak parameters
-                            Object.entries(msg.tweak.affectedParameters).forEach(([k, v]) => {
-                              if (k === 'background') handleOptionChange('background', v as string);
-                              if (k === 'pose') handleOptionChange('pose', v as string);
-                              if (k === 'lighting') handleOptionChange('lighting', v as string);
-                            });
-                            // Remove tweak button after apply
-                            setChatMessages(prev => 
-                              prev.map(m => m.id === msg.id ? { ...m, tweak: undefined } : m)
-                            );
-                          }}
-                          className="mt-3 w-full py-1.5 rounded-sm border border-[#E1D4C0]/20 text-[#E1D4C0] text-[9px] font-mono tracking-widest uppercase hover:bg-[#E1D4C0]/10 transition-colors"
-                        >
-                          {msg.tweak.label}
-                        </button>
+                {/* Live-in Agent Recommendation feedback card (Structured render) */}
+                {(() => {
+                  const rec = getAgentRecommendation();
+                  if (!rec.note) return null;
+
+                  return (
+                    <div className="flex flex-col gap-4 border border-white/5 bg-white/[0.01] rounded-2xl p-5 relative overflow-hidden">
+                      {/* Decorative top illumination bar */}
+                      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#E1D4C0]/25 to-transparent" />
+
+                      <div>
+                        <span className="text-[8px] font-mono tracking-widest text-[#E1D4C0]/65 uppercase mb-2 block animate-pulse">Director's Note</span>
+                        <p className="text-[12px] text-white/70 font-light leading-relaxed">
+                          {rec.note}
+                        </p>
+                      </div>
+
+                      {rec.pairings.length > 0 && (
+                        <div className="border-t border-white/5 pt-3">
+                          <span className="text-[8px] font-mono tracking-widest text-white/35 uppercase mb-2 block">Optimal Pairings</span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {rec.pairings.map((p) => (
+                              <span key={p} className="text-[9px] text-[#E1D4C0]/90 bg-[#E1D4C0]/5 px-2 py-1 rounded border border-[#E1D4C0]/10 tracking-wide font-light">
+                                {p.split(' / ')[0]}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {rec.avoid.length > 0 && (
+                        <div className="border-t border-white/5 pt-3">
+                          <span className="text-[8px] font-mono tracking-widest text-red-400/40 uppercase mb-2 block">Avoid</span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {rec.avoid.map((a) => (
+                              <span key={a} className="text-[9px] text-red-400/70 bg-red-500/5 px-2 py-1 rounded border border-red-500/10 tracking-wide font-light">
+                                {a.split(' / ')[0]}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
                       )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })()}
+
+                {/* Mini status indicator */}
+                <div className="mt-auto border-t border-white/5 pt-4 text-center shrink-0">
+                  <p className="text-[8px] font-mono text-white/20 tracking-[0.2em] uppercase">
+                    Parallel Advisor Active
+                  </p>
+                </div>
               </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Floating Art Director Toggle Badge */}
+      {!isDrawerOpen && activeCampaign && (
+        (() => {
+          const hasDeviation = 
+            selectedBackground !== 'Minimalist Stone Pedestal' ||
+            selectedPose !== 'Architectural Drape / Structured Fold' ||
+            selectedLighting !== 'Ethereal Backlight / Edge Wrap';
+
+          if (!hasDeviation) return null;
+
+          return (
+            <div 
+              onClick={() => {
+                setManualClose(false);
+                setIsDrawerOpen(true);
+              }}
+              className="fixed right-0 top-1/2 -translate-y-1/2 z-30 bg-[#0C0C0D] border-l border-t border-b border-white/5 px-2 py-4 rounded-l-xl flex flex-col items-center gap-2 hover:bg-[#121213] transition-colors cursor-pointer group shadow-2xl"
+            >
+              <div className="relative">
+                <span className="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-[#E1D4C0] animate-ping" />
+                <span className="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-[#E1D4C0]" />
+                <Plus className="w-3.5 h-3.5 text-white/40 group-hover:text-white transition-colors" />
+              </div>
+              <span className="text-[6.5px] font-mono tracking-widest text-[#E1D4C0]/70 uppercase transform rotate-90 mt-4 select-none whitespace-nowrap">
+                ADVISOR
+              </span>
             </div>
-          )}
-        </div>
-      </div>
+          );
+        })()
+      )}
 
       {/* Floating Image Preview */}
       {hoveredPreview && (
