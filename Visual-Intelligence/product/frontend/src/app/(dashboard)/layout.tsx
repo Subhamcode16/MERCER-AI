@@ -47,19 +47,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <SidebarContext.Provider value={contextValue}>
-      <div className="flex min-h-[100dvh] bg-[#0A0A0A] text-white/90 font-sans font-light selection:bg-white/20">
+      <div className="flex h-screen overflow-hidden bg-[#0A0A0A] text-white/90 font-sans font-light selection:bg-white/20">
         
         {/* Architectural Navigation - Strict typography, collapsible */}
         <aside 
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          className={`flex flex-col shrink-0 py-12 border-r border-white/5 bg-[#0D0D0D] relative z-20 transition-all duration-300 ease-in-out ${
+          className={`flex flex-col shrink-0 py-8 border-r border-white/5 bg-[#0D0D0D] relative z-20 transition-all duration-300 ease-in-out ${
             isCollapsed ? "w-[80px] px-4 items-center" : "w-[280px] pl-10 pr-6"
           }`}
         >
           
           {/* Brand */}
-          <div className={`mb-16 transition-all duration-300 ${isCollapsed ? "text-center" : ""}`}>
+          <div className={`mb-10 transition-all duration-300 ${isCollapsed ? "text-center" : ""}`}>
             <Link href="/studio" className="font-serif text-2xl tracking-[0.05em] bg-gradient-to-r from-[#E1D4C0] via-[#C9B99A] to-[#8C8472] bg-clip-text text-transparent">
               {isCollapsed ? "M" : "M E R C E R   A I"}
             </Link>
@@ -71,12 +71,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
 
           {/* Primary Modules */}
-          <nav className="flex flex-col gap-10 flex-1 w-full">
+          <nav className="flex flex-col gap-6 flex-1 w-full overflow-y-auto scrollbar-none">
             <div>
               {!isCollapsed && (
-                <div className="text-[10px] tracking-[0.2em] uppercase text-white/30 mb-6 font-medium">Institution</div>
+                <div className="text-[10px] tracking-[0.2em] uppercase text-white/30 mb-3 font-medium">Institution</div>
               )}
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-1.5">
                 <NavLink href="/studio" active={pathname === '/studio'} collapsed={isCollapsed} icon={FolderGit2}>Campaign Studio</NavLink>
                 <NavLink href="/materials" active={pathname.includes('/materials')} collapsed={isCollapsed} icon={Layers}>Material Library</NavLink>
                 <NavLink href="/atlas" active={pathname.includes('/atlas')} collapsed={isCollapsed} icon={Compass}>Atlas</NavLink>
@@ -88,9 +88,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
             <div>
               {!isCollapsed && (
-                <div className="text-[10px] tracking-[0.2em] uppercase text-white/30 mb-6 font-medium">System</div>
+                <div className="text-[10px] tracking-[0.2em] uppercase text-white/30 mb-3 font-medium">System</div>
               )}
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-1.5">
                 <NavLink href="/notifications" active={pathname.includes('/notifications')} collapsed={isCollapsed} icon={Bell}>Notifications</NavLink>
                 <NavLink href="/settings" active={pathname.includes('/settings')} collapsed={isCollapsed} icon={Settings}>Settings</NavLink>
               </div>
@@ -98,7 +98,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </nav>
 
           {/* User Status */}
-          <div className={`pt-10 mt-auto border-t border-white/5 relative w-full ${isCollapsed ? "flex justify-center" : ""}`}>
+          <div className={`pt-6 mt-auto border-t border-white/5 relative w-full ${isCollapsed ? "flex justify-center" : ""}`}>
             {session && profile ? (
               <UserPopover profile={profile} logout={logout} isCollapsed={isCollapsed} />
             ) : (

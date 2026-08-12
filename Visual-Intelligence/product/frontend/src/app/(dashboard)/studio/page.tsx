@@ -828,7 +828,7 @@ export default function CampaignStudio() {
                     </div>
                   ) : (
                     // Render Material Preview with Art Direction Panel (Split Screen)
-                    <div className="w-full flex h-[75vh] text-left overflow-hidden">
+                    <div className="w-full flex flex-1 min-h-0 text-left overflow-hidden">
 
                       {/* ── LEFT: FULL-BLEED SPECIMEN PANEL ─────────────────── */}
                       <div className="relative w-[30%] h-full overflow-hidden flex-shrink-0">
