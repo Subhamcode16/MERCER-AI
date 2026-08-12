@@ -828,285 +828,254 @@ export default function CampaignStudio() {
                     </div>
                   ) : (
                     // Render Material Preview with Art Direction Panel (Split Screen)
-                    <div className="w-full flex gap-10 items-stretch h-[72vh] text-left">
-                      {/* Left: Material Canvas (Uncarded Specimen Panel) */}
-                       <div className="w-[33%] flex flex-col gap-6 relative justify-center">
-                        <div className="rounded-[1.5rem] overflow-hidden border border-white/5 bg-zinc-950/20">
-                          <img
-                            src={getMaterialUrl(activeCampaign.material_path!)}
-                            alt="Material Specimen"
-                            className="w-full object-cover aspect-[4/5] opacity-75 hover:opacity-90 transition-opacity duration-500"
-                            onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder.jpg'; }}
-                          />
-                        </div>
-                        <div className="space-y-4">
-                          <div className="rounded-full px-3 py-1 text-[9px] uppercase tracking-[0.2em] font-semibold text-[#E1D4C0] border border-[#E1D4C0]/20 w-fit bg-[#E1D4C0]/5">
-                            Fabric Specimen DNA
-                          </div>
-                          <div className="space-y-3 font-mono text-[11px]">
-                            <div className="flex justify-between border-b border-white/5 pb-1.5">
-                              <span className="text-white/40 uppercase tracking-wider">Weave Type</span>
-                              <span className="text-white font-medium">{String(activeCampaign.identity?.product_dna?.weaving_technique?.value || 'Zari')}</span>
+                    <div className="w-full flex h-[75vh] text-left overflow-hidden">
+
+                      {/* ── LEFT: FULL-BLEED SPECIMEN PANEL ─────────────────── */}
+                      <div className="relative w-[30%] h-full overflow-hidden flex-shrink-0">
+                        {/* Fabric image — bleeds full height, no border-radius on left */}
+                        <img
+                          src={getMaterialUrl(activeCampaign.material_path!)}
+                          alt="Material Specimen"
+                          className="absolute inset-0 w-full h-full object-cover transition-all duration-700"
+                          style={{ opacity: 0.72 }}
+                          onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder.jpg'; }}
+                        />
+                        {/* Bottom gradient fade */}
+                        <div className="absolute inset-0 pointer-events-none" style={{
+                          background: 'linear-gradient(to top, rgba(6,6,8,1) 0%, rgba(6,6,8,0.55) 35%, transparent 65%)'
+                        }} />
+                        {/* Right-edge vignette — blends into center */}
+                        <div className="absolute inset-y-0 right-0 w-16 pointer-events-none" style={{
+                          background: 'linear-gradient(to right, transparent, rgba(6,6,8,0.9))'
+                        }} />
+
+                        {/* DNA data overlay — floats on bottom of image */}
+                        <div className="absolute bottom-0 left-0 right-0 px-7 pb-7 pt-12">
+                          <div className="space-y-4">
+                            <div>
+                              <p className="text-[8px] tracking-[0.3em] uppercase text-white/30 font-mono mb-0.5">Specimen</p>
+                              <p className="text-[11px] tracking-[0.15em] uppercase text-[#E1D4C0]/80 font-light">
+                                {String(activeCampaign.identity?.product_dna?.material?.value || 'Banarasi Silk')}
+                              </p>
                             </div>
-                            <div className="flex justify-between border-b border-white/5 pb-1.5">
-                              <span className="text-white/40 uppercase tracking-wider">Fiber Base</span>
-                              <span className="text-white font-medium">{String(activeCampaign.identity?.product_dna?.material?.value || 'Banarasi Silk')}</span>
-                            </div>
-                            <div className="flex justify-between pb-1.5">
-                              <span className="text-white/40 uppercase tracking-wider">Drape Archetype</span>
-                              <span className="text-white font-medium">Architectural / Heavy</span>
+                            <div className="space-y-2.5">
+                              {[
+                                { label: 'Weave Type', value: String(activeCampaign.identity?.product_dna?.weaving_technique?.value || 'Zari Brocade') },
+                                { label: 'Fiber Base', value: String(activeCampaign.identity?.product_dna?.material?.value || 'Pure Silk') },
+                                { label: 'Drape Archetype', value: 'Architectural / Heavy' },
+                              ].map((row, i) => (
+                                <div key={i} className="flex justify-between items-baseline border-b pb-2" style={{ borderColor: 'rgba(225,212,192,0.08)' }}>
+                                  <span className="text-[9px] uppercase tracking-[0.2em] text-white/30 font-mono">{row.label}</span>
+                                  <span className="text-[10px] text-[#E1D4C0]/70 font-light tracking-wide">{row.value}</span>
+                                </div>
+                              ))}
                             </div>
                           </div>
                         </div>
                       </div>
 
-                      {/* Right: Art Direction Config Panel (Pane-2 Evolving Spatial Canvas) */}
-                       <div className="w-[67%] flex flex-col min-h-0">
-                        {activeCampaign.v3_creative_state ? (
-                          <div className="flex-1 bg-white/5 border border-white/10 p-1.5 rounded-[2rem] flex flex-col">
-                            <div className="flex-1 bg-[#0C0C0E] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] rounded-[calc(2rem-0.375rem)] p-8 flex flex-col justify-center overflow-y-auto relative min-h-0">
-                              {/* Strategy Card */}
-                              <div className="text-center space-y-6 max-w-md mx-auto">
-                                <div className="w-16 h-16 rounded-2xl bg-[#E1D4C0]/10 border border-[#E1D4C0]/20 flex items-center justify-center mx-auto text-[#E1D4C0] animate-pulse">
-                                  <svg viewBox="0 0 24 24" className="w-8 h-8 fill-none stroke-current" strokeWidth="1.5">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 21l8.904-4.473L21 9l-3.487-3.487L9.813 15.904z" />
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 21l3-3m-3 3l-3-3m12-9l-3-3" />
-                                  </svg>
-                                </div>
-                                <div className="space-y-2">
-                                  <h4 className="font-serif text-lg text-white">Synthesizing Creative Strategy</h4>
-                                  <p className="text-[12px] text-white/50 leading-relaxed font-light">
-                                    The Director is compiling textile DNA observations and generating the campaign assets. View real-time pipeline status below.
-                                  </p>
-                                </div>
-                                  <div className="p-4 bg-white/[0.02] border border-white/5 rounded-2xl text-left space-y-3 font-mono text-[10px]">
-                                    <div className="flex justify-between">
-                                      <span className="text-white/35 uppercase">Task ID</span>
-                                      <span className="text-[#9b87f5]">{activeCampaign.id}</span>
-                                    </div>
-                                  <div className="flex justify-between">
-                                    <span className="text-white/35 uppercase">Current State</span>
-                                    <span className="text-[#E1D4C0] uppercase tracking-wider">{activeCampaign.v3_creative_state.status}</span>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="flex-1 overflow-y-auto relative min-h-0 flex flex-col gap-6 pr-1">
-                            {/* Artistic Parameters Header */}
-                            <div className="flex items-center justify-between border-b border-white/5 pb-3 mb-2 shrink-0">
-                              <div className="flex flex-col text-left">
-                                <span className="text-[9px] tracking-[0.2em] uppercase text-white/30 font-mono">Artistic Parameters</span>
-                                <h3 className="font-serif text-lg text-white mt-0.5">Evolving Spatial Canvas</h3>
-                              </div>
-                            </div>
+                      {/* ── CENTER: EDITORIAL COMMAND COLUMNS ───────────────── */}
+                      <div className="flex-1 flex flex-col min-h-0 px-10 py-2 overflow-y-auto">
 
-                            {/* Alert Box for Physical Violation */}
+                        {/* Header */}
+                        <div className="flex items-baseline justify-between mb-8 shrink-0">
+                          <div>
+                            <p className="text-[8px] tracking-[0.35em] uppercase text-white/20 font-mono mb-1.5">Atelier / Directive</p>
+                            <h3 className="text-[13px] tracking-[0.12em] uppercase text-[#E1D4C0]/60 font-extralight">Evolving Spatial Canvas</h3>
+                          </div>
+                          <div className="flex items-center gap-2">
                             {physicalViolation && (
-                              <PhysicalViolationAlert 
-                                violation={physicalViolation} 
-                                onDismiss={() => setPhysicalViolation(null)} 
-                                className="mb-2 shrink-0"
-                              />
+                              <span className="text-[8px] font-mono tracking-wider text-red-400/70 uppercase border border-red-500/20 px-2 py-0.5 rounded">⚠ Constraint</span>
                             )}
-
-                            {/* Heuristic Recommendation */}
-                            {activeRecommendation && (
-                              <HeuristicRecommendation
-                                recommendation={activeRecommendation}
-                                onAccept={(rec) => {
-                                  if (rec.affectedParameters) {
-                                    Object.entries(rec.affectedParameters).forEach(([k, v]) => {
-                                      handleOptionChange(k as "background" | "pose" | "lighting", v as string);
-                                    });
-                                  }
-                                  setActiveRecommendation(null);
-                                }}
-                                onIgnore={() => setActiveRecommendation(null)}
-                                className="mb-2 shrink-0"
-                              />
-                            )}
-
-                            {/* Bento Grid */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch pb-6">
-                              
-                              {/* Card 1: Background */}
-                              <div className="bg-white/5 border border-white/10 p-1.5 rounded-[2rem] flex flex-col">
-                                <div className="flex-1 bg-[#0C0C0E] shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[calc(2rem-0.375rem)] p-6 text-left flex flex-col gap-4">
-                                  <div className="flex items-center justify-between">
-                                    <span className="text-[10px] tracking-[0.2em] uppercase text-[#E1D4C0] font-mono">1. Background</span>
-                                    <span className="text-[10px] text-white/40 truncate max-w-[140px] font-mono">{selectedBackground || "None"}</span>
-                                  </div>
-                                  <div className="flex flex-col gap-2 max-h-[160px] overflow-y-auto pr-1">
-                                    {[
-                                      { name: "Heritage Fort / Palace Corridor", preview: "/previews/heritage_fort.png" },
-                                      { name: "Lush Garden", preview: "/previews/lush_garden.png" },
-                                      { name: "Minimalist Stone Pedestal", preview: "/previews/stone_pedestal.png", isRec: true },
-                                      { name: "Reflective Metal Surface", preview: "/previews/metal_surface.png" },
-                                      { name: "Industrial Concrete / Urban", preview: "/previews/urban_concrete.png" },
-                                      { name: "Draped Velvet Platform", preview: "/previews/velvet_platform.png" }
-                                    ].map(opt => {
-                                      const isSelected = selectedBackground === opt.name;
-                                      const isRec = opt.isRec;
-                                      return (
-                                        <button
-                                          key={opt.name}
-                                          onClick={() => handleOptionChange('background', opt.name)}
-                                          className={`flex items-center justify-between w-full px-4 py-2.5 rounded-xl border text-[11px] font-light transition-all cursor-pointer ${
-                                            isSelected 
-                                              ? 'bg-[#E1D4C0] border-[#E1D4C0] text-black font-semibold' 
-                                              : 'bg-white/[0.01] border-white/5 text-white/60 hover:bg-white/[0.03] hover:text-white'
-                                          }`}
-                                        >
-                                          <span>{opt.name}</span>
-                                          {isRec && <span className={`text-[8px] font-mono tracking-widest px-1.5 py-0.5 rounded-full ${isSelected ? 'bg-black/10 text-black' : 'bg-[#9b87f5]/20 text-[#9b87f5]'}`}>✨ Rec</span>}
-                                        </button>
-                                      );
-                                    })}
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* Card 2: Pose & Movement */}
-                              <div className="bg-white/5 border border-white/10 p-1.5 rounded-[2rem] flex flex-col">
-                                <div className="flex-1 bg-[#0C0C0E] shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[calc(2rem-0.375rem)] p-6 text-left flex flex-col gap-4">
-                                  <div className="flex items-center justify-between">
-                                    <span className="text-[10px] tracking-[0.2em] uppercase text-[#E1D4C0] font-mono">2. Pose & Flow</span>
-                                    <span className="text-[10px] text-white/40 truncate max-w-[140px] font-mono">{selectedPose || "None"}</span>
-                                  </div>
-                                  <div className="flex flex-col gap-2 max-h-[160px] overflow-y-auto pr-1">
-                                    {[
-                                      { name: "Architectural Drape / Structured Fold", isRec: true },
-                                      { name: "Dynamic Fabric Spin / Wind Blown" },
-                                      { name: "Static Geometrical Placement" },
-                                      { name: "Cascading Edge / Waterflow Effect" },
-                                      { name: "Suspended / Anti-gravity Float" }
-                                    ].map(opt => {
-                                      const isSelected = selectedPose === opt.name;
-                                      const isRec = opt.isRec;
-                                      return (
-                                        <button
-                                          key={opt.name}
-                                          onClick={() => handleOptionChange('pose', opt.name)}
-                                          className={`flex items-center justify-between w-full px-4 py-2.5 rounded-xl border text-[11px] font-light transition-all cursor-pointer ${
-                                            isSelected 
-                                              ? 'bg-[#E1D4C0] border-[#E1D4C0] text-black font-semibold' 
-                                              : 'bg-white/[0.01] border-white/5 text-white/60 hover:bg-white/[0.03] hover:text-white'
-                                          }`}
-                                        >
-                                          <span>{opt.name}</span>
-                                          {isRec && <span className={`text-[8px] font-mono tracking-widest px-1.5 py-0.5 rounded-full ${isSelected ? 'bg-black/10 text-black' : 'bg-[#9b87f5]/20 text-[#9b87f5]'}`}>✨ Rec</span>}
-                                        </button>
-                                      );
-                                    })}
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* Card 3: Cinematic Lighting */}
-                              <div className="bg-white/5 border border-white/10 p-1.5 rounded-[2rem] flex flex-col">
-                                <div className="flex-1 bg-[#0C0C0E] shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[calc(2rem-0.375rem)] p-6 text-left flex flex-col gap-4">
-                                  <div className="flex items-center justify-between">
-                                    <span className="text-[10px] tracking-[0.2em] uppercase text-[#E1D4C0] font-mono">3. Lighting</span>
-                                    <span className="text-[10px] text-white/40 truncate max-w-[140px] font-mono">{selectedLighting || "None"}</span>
-                                  </div>
-                                  <div className="flex flex-col gap-2 max-h-[160px] overflow-y-auto pr-1">
-                                    {[
-                                      { name: "Golden Hour Warmth / Soft Sun" },
-                                      { name: "High-contrast Chiaroscuro" },
-                                      { name: "Ethereal Backlight / Edge Wrap", isRec: true },
-                                      { name: "Moody Rim Light / Cyberpunk Glow" },
-                                      { name: "Soft Studio Diffused Light" }
-                                    ].map(opt => {
-                                      const isSelected = selectedLighting === opt.name;
-                                      const isRec = opt.isRec;
-                                      return (
-                                        <button
-                                          key={opt.name}
-                                          onClick={() => handleOptionChange('lighting', opt.name)}
-                                          className={`flex items-center justify-between w-full px-4 py-2.5 rounded-xl border text-[11px] font-light transition-all cursor-pointer ${
-                                            isSelected 
-                                              ? 'bg-[#E1D4C0] border-[#E1D4C0] text-black font-semibold' 
-                                              : 'bg-white/[0.01] border-white/5 text-white/60 hover:bg-white/[0.03] hover:text-white'
-                                          }`}
-                                        >
-                                          <span>{opt.name}</span>
-                                          {isRec && <span className={`text-[8px] font-mono tracking-widest px-1.5 py-0.5 rounded-full ${isSelected ? 'bg-black/10 text-black' : 'bg-[#9b87f5]/20 text-[#9b87f5]'}`}>✨ Rec</span>}
-                                        </button>
-                                      );
-                                    })}
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* Card 4: Settings & Generate */}
-                              <div className="bg-white/5 border border-white/10 p-1.5 rounded-[2rem] flex flex-col justify-between">
-                                <div className="flex-1 bg-[#0C0C0E] shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] rounded-[calc(2rem-0.375rem)] p-6 text-left flex flex-col gap-4 justify-between">
-                                  <div className="space-y-4">
-                                    <span className="text-[10px] tracking-[0.2em] uppercase text-[#E1D4C0] font-mono block">4. Synthesis Control</span>
-                                    
-                                    {/* Ratio Selector */}
-                                    <div className="space-y-1.5">
-                                      <span className="text-[9px] uppercase tracking-wider text-white/40 font-mono block">Aspect Ratio</span>
-                                      <div className="flex gap-1.5">
-                                        {['3:4', '16:9', '1:1', '4:5'].map(r => (
-                                          <button
-                                            key={r}
-                                            onClick={() => setSelectedRatio(r)}
-                                            className={`flex-1 py-1 text-[9px] font-mono rounded-lg border transition-all cursor-pointer ${
-                                              selectedRatio === r
-                                                ? 'bg-[#E1D4C0] border-[#E1D4C0] text-black font-bold'
-                                                : 'bg-white/[0.01] border-white/5 text-white/60 hover:bg-white/[0.03]'
-                                            }`}
-                                          >
-                                            {r}
-                                          </button>
-                                        ))}
-                                      </div>
-                                    </div>
-
-                                    {/* Asset Count Selector */}
-                                    <div className="space-y-1.5">
-                                      <span className="text-[9px] uppercase tracking-wider text-white/40 font-mono block">Asset Quantity</span>
-                                      <div className="flex gap-1.5">
-                                        {[1, 2, 4, 8].map(cnt => (
-                                          <button
-                                            key={cnt}
-                                            onClick={() => setSelectedAssetCount(cnt)}
-                                            className={`flex-1 py-1 text-[9px] font-mono rounded-lg border transition-all cursor-pointer ${
-                                              selectedAssetCount === cnt
-                                                ? 'bg-[#E1D4C0] border-[#E1D4C0] text-black font-bold'
-                                                : 'bg-white/[0.01] border-white/5 text-white/60 hover:bg-white/[0.03]'
-                                            }`}
-                                          >
-                                            {cnt}
-                                          </button>
-                                        ))}
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  {/* Generate Button with button-in-button trailing icon */}
-                                  <button
-                                    onClick={() => {
-                                      setWizardStep(1); // Reset wizard state
-                                      handleGenerate();
-                                    }}
-                                    disabled={isGenerating || !!physicalViolation || !selectedBackground || !selectedPose || !selectedLighting}
-                                    className="w-full mt-4 py-3 bg-[#E1D4C0] hover:bg-white text-black font-bold text-[10px] tracking-widest uppercase rounded-xl transition-all shadow-xl disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-between px-6 cursor-pointer group"
-                                  >
-                                    <span>{isGenerating ? "Synthesizing..." : `Generate (${selectedAssetCount * 2} Credits)`}</span>
-                                    <div className="w-6 h-6 rounded-full bg-black/5 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-                                      <span className="text-black group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300 font-mono">↗</span>
-                                    </div>
-                                  </button>
-                                </div>
-                              </div>
-
-                            </div>
                           </div>
+                        </div>
+
+                        {/* Alert / Recommendation strip */}
+                        {physicalViolation && (
+                          <PhysicalViolationAlert
+                            violation={physicalViolation}
+                            onDismiss={() => setPhysicalViolation(null)}
+                            className="mb-6 shrink-0"
+                          />
                         )}
+                        {activeRecommendation && (
+                          <HeuristicRecommendation
+                            recommendation={activeRecommendation}
+                            onAccept={(rec) => {
+                              if (rec.affectedParameters) {
+                                Object.entries(rec.affectedParameters).forEach(([k, v]) => {
+                                  handleOptionChange(k as "background" | "pose" | "lighting", v as string);
+                                });
+                              }
+                              setActiveRecommendation(null);
+                            }}
+                            onIgnore={() => setActiveRecommendation(null)}
+                            className="mb-6 shrink-0"
+                          />
+                        )}
+
+                        {/* ── 2-column editorial grid ────────────────────────── */}
+                        <div className="grid grid-cols-2 gap-x-8 gap-y-0 flex-1">
+
+                          {[
+                            {
+                              index: '01',
+                              label: 'Background',
+                              key: 'background' as const,
+                              selected: selectedBackground,
+                              options: [
+                                { name: 'Heritage Fort / Palace Corridor', isRec: false },
+                                { name: 'Lush Garden', isRec: false },
+                                { name: 'Minimalist Stone Pedestal', isRec: true },
+                                { name: 'Reflective Metal Surface', isRec: false },
+                                { name: 'Industrial Concrete / Urban', isRec: false },
+                                { name: 'Draped Velvet Platform', isRec: false },
+                              ]
+                            },
+                            {
+                              index: '02',
+                              label: 'Pose & Flow',
+                              key: 'pose' as const,
+                              selected: selectedPose,
+                              options: [
+                                { name: 'Architectural Drape / Structured Fold', isRec: true },
+                                { name: 'Dynamic Fabric Spin / Wind Blown', isRec: false },
+                                { name: 'Static Geometrical Placement', isRec: false },
+                                { name: 'Cascading Edge / Waterflow Effect', isRec: false },
+                                { name: 'Suspended / Anti-gravity Float', isRec: false },
+                              ]
+                            },
+                            {
+                              index: '03',
+                              label: 'Lighting',
+                              key: 'lighting' as const,
+                              selected: selectedLighting,
+                              options: [
+                                { name: 'Golden Hour Warmth / Soft Sun', isRec: false },
+                                { name: 'High-contrast Chiaroscuro', isRec: false },
+                                { name: 'Ethereal Backlight / Edge Wrap', isRec: true },
+                                { name: 'Moody Rim Light / Cyberpunk Glow', isRec: false },
+                                { name: 'Soft Studio Diffused Light', isRec: false },
+                              ]
+                            },
+                            {
+                              index: '04',
+                              label: 'Synthesis',
+                              key: null,
+                              selected: null,
+                              options: []
+                            }
+                          ].map((col) => (
+                            <div key={col.index} className="flex flex-col border-t py-5" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+                              {/* Column header */}
+                              <div className="flex items-baseline gap-3 mb-5">
+                                <span className="text-[8px] font-mono text-white/15">{col.index}</span>
+                                <span className="text-[9px] tracking-[0.25em] uppercase text-white/35 font-mono">{col.label}</span>
+                                {col.selected && (
+                                  <span className="text-[8px] font-mono text-[#9b87f5]/60 ml-auto truncate max-w-[100px]">✓ set</span>
+                                )}
+                              </div>
+
+                              {col.key ? (
+                                // Option list
+                                <div className="space-y-0.5 flex-1">
+                                  {col.options.map((opt) => {
+                                    const isSelected = col.selected === opt.name;
+                                    return (
+                                      <button
+                                        key={opt.name}
+                                        onClick={() => handleOptionChange(col.key!, opt.name)}
+                                        className="group w-full text-left py-2.5 px-0 flex items-baseline gap-2.5 transition-all duration-200 cursor-pointer"
+                                        style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}
+                                      >
+                                        {/* Active indicator bar */}
+                                        <span
+                                          className="shrink-0 w-0.5 self-stretch rounded-full transition-all duration-300"
+                                          style={{
+                                            background: isSelected ? '#E1D4C0' : 'transparent',
+                                            minHeight: '14px'
+                                          }}
+                                        />
+                                        <span
+                                          className={`text-[11px] leading-snug transition-all duration-200 ${
+                                            isSelected
+                                              ? 'text-[#E1D4C0] font-medium tracking-wide'
+                                              : 'text-white/30 font-light group-hover:text-white/55'
+                                          }`}
+                                          style={{ fontStyle: isSelected ? 'italic' : 'normal', fontFamily: isSelected ? 'Georgia, serif' : 'inherit' }}
+                                        >
+                                          {opt.name}
+                                        </span>
+                                        {opt.isRec && !isSelected && (
+                                          <span className="ml-auto shrink-0 text-[7px] font-mono tracking-widest text-[#9b87f5]/50 uppercase">Rec</span>
+                                        )}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              ) : (
+                                // Synthesis controls
+                                <div className="space-y-4 flex-1">
+                                  <div className="space-y-2">
+                                    <p className="text-[8px] uppercase tracking-[0.2em] text-white/20 font-mono">Aspect Ratio</p>
+                                    <div className="flex gap-1.5">
+                                      {['3:4', '16:9', '1:1', '4:5'].map(r => (
+                                        <button
+                                          key={r}
+                                          onClick={() => setSelectedRatio(r)}
+                                          className={`flex-1 py-1.5 text-[9px] font-mono rounded-md border transition-all cursor-pointer ${
+                                            selectedRatio === r
+                                              ? 'border-[#E1D4C0]/50 text-[#E1D4C0] bg-[#E1D4C0]/5'
+                                              : 'border-white/5 text-white/25 hover:border-white/15 hover:text-white/50'
+                                          }`}
+                                        >
+                                          {r}
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                  <div className="space-y-2">
+                                    <p className="text-[8px] uppercase tracking-[0.2em] text-white/20 font-mono">Asset Quantity</p>
+                                    <div className="flex gap-1.5">
+                                      {[1, 2, 4, 8].map(cnt => (
+                                        <button
+                                          key={cnt}
+                                          onClick={() => setSelectedAssetCount(cnt)}
+                                          className={`flex-1 py-1.5 text-[9px] font-mono rounded-md border transition-all cursor-pointer ${
+                                            selectedAssetCount === cnt
+                                              ? 'border-[#E1D4C0]/50 text-[#E1D4C0] bg-[#E1D4C0]/5'
+                                              : 'border-white/5 text-white/25 hover:border-white/15 hover:text-white/50'
+                                          }`}
+                                        >
+                                          {cnt}
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* ── GENERATE BAR — full-width editorial CTA ────────── */}
+                        <div className="shrink-0 mt-6 mb-2">
+                          <button
+                            onClick={() => { setWizardStep(1); handleGenerate(); }}
+                            disabled={isGenerating || !!physicalViolation || !selectedBackground || !selectedPose || !selectedLighting}
+                            className="w-full py-4 flex items-center justify-between px-7 transition-all duration-300 group disabled:opacity-25 disabled:cursor-not-allowed cursor-pointer"
+                            style={{
+                              background: 'rgba(225,212,192,1)',
+                              borderRadius: '0.75rem',
+                              boxShadow: '0 0 40px rgba(225,212,192,0.12), 0 1px 3px rgba(0,0,0,0.4)'
+                            }}
+                          >
+                            <span className="text-[10px] font-bold tracking-[0.25em] uppercase text-black">
+                              {isGenerating ? 'Synthesizing Campaign...' : `Synthesize Campaign  ·  ${selectedAssetCount * 2} credits`}
+                            </span>
+                            <span className="text-black text-[13px] font-light group-hover:translate-x-0.5 transition-transform duration-200">→</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   )}
