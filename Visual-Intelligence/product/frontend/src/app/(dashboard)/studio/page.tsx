@@ -875,7 +875,7 @@ export default function CampaignStudio() {
                       </div>
 
                       {/* ── CENTER: EDITORIAL COMMAND COLUMNS ───────────────── */}
-                      <div className="flex-1 flex flex-col min-h-0 px-10 py-2 overflow-y-auto">
+                      <div className="flex-1 flex flex-col min-h-0 px-10 pt-2 pb-36 overflow-y-auto">
 
                         {/* Header */}
                         <div className="flex items-baseline justify-between mb-8 shrink-0">
