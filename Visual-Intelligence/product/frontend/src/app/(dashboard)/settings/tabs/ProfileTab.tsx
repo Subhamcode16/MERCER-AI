@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { User, Mail, Shield, Camera } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/lib/supabase";
 
 export default function ProfileTab() {
   const { session, profile } = useAuth();
@@ -12,9 +13,18 @@ export default function ProfileTab() {
   // Fake update state for UI UX
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     setIsUpdating(true);
-    setTimeout(() => setIsUpdating(false), 800);
+    try {
+      const { error } = await supabase.auth.updateUser({
+        data: { full_name: name }
+      });
+      if (error) throw error;
+    } catch (err) {
+      console.error("Failed to update profile name:", err);
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   return (

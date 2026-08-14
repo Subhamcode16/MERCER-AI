@@ -720,7 +720,7 @@ export default function CampaignStudio() {
       <div className="absolute top-[-10%] right-[10%] w-[600px] h-[600px] bg-emerald-900/10 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Workspace */}
-      <div className="flex-1 h-full flex flex-col relative z-10 px-8 py-8">
+      <div className="flex-1 h-full flex flex-col relative z-10 px-8 py-8 min-h-0">
 
         {/* Header */}
         <div className="flex items-center w-full">
@@ -758,7 +758,7 @@ export default function CampaignStudio() {
         </div>
 
         {/* Canvas */}
-        <div className="flex-1 flex flex-col mt-8">
+        <div className="flex-1 flex flex-col mt-8 min-h-0">
 
           {/* STATE 1: No campaigns */}
           {!isLoadingList && campaigns.length === 0 && activeCampaignId === null && (
@@ -777,6 +777,22 @@ export default function CampaignStudio() {
                 >
                   Start a campaign
                 </button>
+              </div>
+            </div>
+          )}
+
+          {/* STATE 1.5: Loading Skeleton Grid */}
+          {isLoadingList && activeCampaignId === null && (
+            <div className="flex-1 flex items-start justify-start p-12 mt-12">
+              <div className="flex flex-wrap gap-12">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex flex-col items-center gap-4 animate-pulse">
+                    <div className="w-36 h-36 bg-white/[0.03] border border-white/5 rounded-3xl relative overflow-hidden flex items-center justify-center shimmer-gradient">
+                      <div className="w-12 h-10 bg-white/5 rounded-lg" />
+                    </div>
+                    <div className="h-3 w-20 bg-white/10 rounded-full" />
+                  </div>
+                ))}
               </div>
             </div>
           )}
@@ -849,7 +865,25 @@ export default function CampaignStudio() {
           {activeCampaignId !== null && (
             <div className="flex-1 flex flex-col min-h-0">
               {isLoadingCampaign ? (
-                <div className="text-white/30 text-sm animate-pulse">Loading workspace...</div>
+                <div className="flex-1 flex gap-12 p-8 animate-pulse max-w-5xl mx-auto w-full">
+                  {/* Left Column: Specimen Image Skeleton */}
+                  <div className="w-[45%] aspect-[3/4] bg-white/[0.02] border border-white/5 rounded-3xl shimmer-gradient flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-white/5" />
+                  </div>
+                  {/* Right Column: Workflow Settings Skeleton */}
+                  <div className="flex-1 flex flex-col gap-8">
+                    <div className="space-y-3">
+                      <div className="h-6 w-1/3 bg-white/10 rounded-full" />
+                      <div className="h-3 w-1/4 bg-white/5 rounded-full" />
+                    </div>
+                    <div className="h-44 w-full bg-white/[0.01] border border-white/5 rounded-2xl p-6 flex flex-col gap-4 justify-between shimmer-gradient">
+                      <div className="h-4 w-1/2 bg-white/10 rounded-full" />
+                      <div className="h-3 w-3/4 bg-white/5 rounded-full" />
+                      <div className="h-3 w-2/3 bg-white/5 rounded-full" />
+                    </div>
+                    <div className="h-14 w-full bg-[#E1D4C0]/5 border border-white/10 rounded-full" />
+                  </div>
+                </div>
               ) : activeCampaign && currentStep === 'dropzone' ? (
                 // Dropzone — Glassmorphic Upload Zone
                 <div className="flex-1 flex items-center justify-center w-full min-h-0">
@@ -1352,80 +1386,51 @@ export default function CampaignStudio() {
                             <span className="text-black text-[13px] font-light group-hover:translate-x-0.5 transition-transform duration-200">→</span>
                           </button>
                         </div>
+                        
+                        {/* ── TELEMETRY DOCK ────────── */}
+                        <div className="shrink-0 mt-8 mb-4 w-full">
+                          <WorkflowTimeline
+                            status={activeCampaign.v3_creative_state?.status || 'pending'}
+                            hasMaterial={!!activeCampaign.material_path}
+                            weaveType={
+                              Array.isArray(activeCampaign.identity?.product_dna?.weaving_technique?.value)
+                                ? activeCampaign.identity.product_dna.weaving_technique.value.join(', ')
+                                : activeCampaign.identity?.product_dna?.weaving_technique?.value || 'Zari Brocade'
+                            }
+                            fiberBase={
+                              Array.isArray(activeCampaign.identity?.product_dna?.material?.value)
+                                ? activeCampaign.identity.product_dna.material.value.join(', ')
+                                : activeCampaign.identity?.product_dna?.material?.value || 'Silk'
+                            }
+                          />
+                        </div>
                       </div>
                     </div>
                   )}
 
-                  {/* V2 Synthesis Controls Bar Overlay (Glow themed custom input) */}
+                  {/* Repurposed Team Mode Transition CTA Box */}
                   {showControls && (
-                    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30 w-full max-w-3xl px-4 pointer-events-auto transition-opacity duration-300 opacity-50 hover:opacity-85 focus-within:opacity-100">
-                      <div className="absolute -inset-2 bg-gradient-to-r from-[#9b87f5]/15 via-[#E1D4C0]/10 to-[#9b87f5]/15 rounded-[36px] blur-xl -z-10 pointer-events-none" />
-                      <PromptInputBox 
-                        onSend={(text) => {
-                          // Add User Message
-                          const userMsg = { id: Date.now().toString(), sender: 'user', text };
-                          setChatMessages(prev => [...prev, userMsg]);
-
-                          // Analyze keywords to toggle configs or trigger generation
-                          const lower = text.toLowerCase();
-                          if (lower.includes('lighting') || lower.includes('bright') || lower.includes('dark')) {
-                            setTimeout(() => {
-                              setChatMessages(prev => [...prev, {
-                                id: (Date.now()+1).toString(),
-                                sender: 'director',
-                                text: "Regarding lighting: High-key setups will flatten the metallic highlights of the Zari brocade. I recommend 'Ethereal Backlight / Edge Wrap' to wrap the edges and preserve texture details. Would you like to apply it?",
-                                tweak: { label: "Apply Ethereal Backlight", affectedParameters: { lighting: "Ethereal Backlight / Edge Wrap" } }
-                              }]);
-                            }, 1000);
-                          } else if (lower.includes('pose') || lower.includes('motion') || lower.includes('toss')) {
-                            setTimeout(() => {
-                              setChatMessages(prev => [...prev, {
-                                id: (Date.now()+1).toString(),
-                                sender: 'director',
-                                text: "For poses: Stiff Banarasi silk drape requires architectural alignment. A wind-blown toss will look forced. I recommend 'Dynamic Fabric Spin' to leverage fabric weight. Let's switch it?",
-                                tweak: { label: "Apply Dynamic Fabric Spin", affectedParameters: { pose: "Dynamic Fabric Spin" } }
-                              }]);
-                            }, 1000);
-                          } else if (lower.includes('background') || lower.includes('palace') || lower.includes('garden')) {
-                            setTimeout(() => {
-                              setChatMessages(prev => [...prev, {
-                                id: (Date.now()+1).toString(),
-                                sender: 'director',
-                                text: "For the backdrop, heritage corridor frames accentuate the Zari weave profile. I suggest 'Nighttime Palace'. Apply it?",
-                                tweak: { label: "Apply Nighttime Palace", affectedParameters: { background: "Nighttime Palace" } }
-                              }]);
-                            }, 1000);
-                          } else {
-                            // Trigger generation
-                            handleGenerate();
-                          }
-                        }}
-                        isLoading={isGenerating}
-                        placeholder="Discuss changes with Director, or type a prompt to generate..."
-                        className="bg-black/30 border-white/10 shadow-[0_0_50px_rgba(155,135,245,0.15),0_0_30px_rgba(225,212,192,0.08)] backdrop-blur-xl"
-                      />
+                    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30 w-max pointer-events-auto transition-all duration-300 hover:scale-[1.02]">
+                      <div className="absolute -inset-2 bg-gradient-to-r from-[#E1D4C0]/15 via-[#C9B99A]/10 to-[#E1D4C0]/15 rounded-full blur-xl -z-10 pointer-events-none" />
+                      <Link 
+                        href="/team" 
+                        className="flex items-center justify-center gap-6 bg-[#0D0D0E]/80 border border-[#E1D4C0]/25 hover:border-[#E1D4C0]/65 pl-10 pr-8 py-4 rounded-full shadow-[0_0_40px_rgba(225,212,192,0.15)] backdrop-blur-xl transition-all cursor-pointer group text-center"
+                      >
+                        <div className="flex flex-col items-center justify-center gap-1">
+                          <span className="text-[11px] font-serif tracking-[0.2em] uppercase text-[#E1D4C0] font-medium flex items-center justify-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#E1D4C0] animate-pulse" />
+                            ✦ Enter Team Mode
+                          </span>
+                          <span className="text-[9px] font-sans text-white/40 group-hover:text-white/60 transition-colors tracking-wide font-light">
+                            Assemble 8 specialist agents to orchestrate campaign end-to-end
+                          </span>
+                        </div>
+                        <span className="text-[#E1D4C0]/60 group-hover:text-[#E1D4C0] group-hover:translate-x-1 transition-all duration-300 font-light text-[15px]">→</span>
+                      </Link>
                     </div>
                   )}
                 </div>
               ) : null}
-              {activeCampaign && (
-                <div className="shrink-0 mt-4 w-full">
-                  <WorkflowTimeline
-                    status={activeCampaign.v3_creative_state?.status || 'pending'}
-                    hasMaterial={!!activeCampaign.material_path}
-                    weaveType={
-                      Array.isArray(activeCampaign.identity?.product_dna?.weaving_technique?.value)
-                        ? activeCampaign.identity.product_dna.weaving_technique.value.join(', ')
-                        : activeCampaign.identity?.product_dna?.weaving_technique?.value || 'Zari Brocade'
-                    }
-                    fiberBase={
-                      Array.isArray(activeCampaign.identity?.product_dna?.material?.value)
-                        ? activeCampaign.identity.product_dna.material.value.join(', ')
-                        : activeCampaign.identity?.product_dna?.material?.value || 'Silk'
-                    }
-                  />
-                </div>
-              )}
             </div>
           )}
         </div>

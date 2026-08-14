@@ -2,7 +2,7 @@
 
 @theme {
   --color-warm-ivory: #E1D4C0;
-  --font-sans: var(--font-neue-haas), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-nohemi), var(--font-neue-haas), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-cormorant-garamond), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   --font-butler: var(--font-butler), ui-serif, Georgia, serif;
   
@@ -31,7 +31,7 @@ body {
   min-height: 100vh;
   background-color: #000;
   color: var(--color-warm-ivory);
-  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -160,4 +160,63 @@ body {
 * {
   scrollbar-width: thin;
   scrollbar-color: rgba(225, 212, 192, 0.12) transparent;
+}
+
+@keyframes pixel-on {
+  0%, 100% {
+    opacity: 0.12;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer-text {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Skeleton UI Custom Placeholder Utilities & Shimmer Sweep */
+@utility placeholder {
+  background-color: rgba(225, 212, 192, 0.06);
+  border-radius: var(--radius-xl, 0.75rem);
+}
+
+@utility placeholder-circle {
+  aspect-ratio: 1 / 1;
+  background-color: rgba(225, 212, 192, 0.06);
+  border-radius: 9999px;
+}
+
+@keyframes shimmer-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.shimmer-gradient {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-gradient::after {
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(225, 212, 192, 0.03) 20%,
+    rgba(225, 212, 192, 0.06) 60%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer-sweep 2s infinite;
+  content: '';
 }

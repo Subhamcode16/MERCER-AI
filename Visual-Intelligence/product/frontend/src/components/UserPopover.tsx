@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { Sparkles, User, Settings, HelpCircle, LogOut, ChevronUp, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface UserProfile {
   email?: string;
@@ -39,14 +40,15 @@ function AnimatedNumber({ value }: { value: number }) {
 }
 
 export function UserPopover({ profile, logout, isCollapsed }: UserPopoverProps) {
+  const { session } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
 
-  // Extract short username from email
-  const userId = profile.email ? profile.email.split('@')[0] : "Director";
+  // Extract short username from metadata full name or email
+  const userFullName = session?.user?.user_metadata?.full_name || (profile.email ? profile.email.split('@')[0] : "Director");
   
   // Create initials for the avatar
-  const initials = userId.substring(0, 2).toUpperCase();
+  const initials = userFullName.substring(0, 2).toUpperCase();
 
   // Close when clicking outside
   useEffect(() => {
@@ -87,7 +89,7 @@ export function UserPopover({ profile, logout, isCollapsed }: UserPopoverProps) 
                 </div>
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-[13px] text-white font-medium truncate tracking-wide">{userId}</div>
+                <div className="text-[13px] text-white font-medium truncate tracking-wide">{userFullName}</div>
                 <div className="text-[10px] tracking-wide text-white/40 mt-0.5 uppercase">{profile.tier === 'FREE' ? 'Free Plan' : profile.tier}</div>
               </div>
             </div>
@@ -182,7 +184,7 @@ export function UserPopover({ profile, logout, isCollapsed }: UserPopoverProps) 
         {!isCollapsed && (
           <>
             <div className="flex-1 text-left min-w-0 animate-in fade-in duration-300">
-              <div className="text-[12px] text-white font-medium truncate tracking-wide">{userId}</div>
+              <div className="text-[12px] text-white font-medium truncate tracking-wide">{userFullName}</div>
               <div className="text-[10px] tracking-wide text-white/40 uppercase truncate mt-0.5 flex gap-1 items-center">
                 {profile.tier === 'FREE' ? 'Free Plan' : profile.tier}
               </div>

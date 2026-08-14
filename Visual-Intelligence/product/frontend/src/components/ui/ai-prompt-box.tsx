@@ -3,6 +3,7 @@ import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { ArrowUp, Paperclip, Square, X, StopCircle, Mic, Globe, BrainCog, FolderCode } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import LoadingState from "./loading-state";
 
 // Utility function for className merging
 const cn = (...classes: (string | undefined | null | false)[]) => classes.filter(Boolean).join(" ");
@@ -252,7 +253,7 @@ const ImageViewDialog: React.FC<ImageViewDialogProps> = ({ imageUrl, onClose }) 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ duration: 0.2, ease: "easeOut" }}
+          transition={{ type: "spring", stiffness: 350, damping: 25 }}
           className="relative bg-[#1F2023] rounded-2xl overflow-hidden shadow-2xl"
         >
           <img
@@ -325,7 +326,7 @@ const PromptInput = React.forwardRef<HTMLDivElement, PromptInputProps>(
       onValueChange?.(newValue);
     };
     return (
-      <TooltipProvider>
+      <TooltipProvider delayDuration={200}>
         <PromptInputContext.Provider
           value={{
             isLoading,
@@ -339,7 +340,7 @@ const PromptInput = React.forwardRef<HTMLDivElement, PromptInputProps>(
           <div
             ref={ref}
             className={cn(
-              "relative rounded-3xl p-[1px] shadow-[0_8px_30px_rgba(0,0,0,0.24)] transition-all duration-300 overflow-hidden z-0",
+              "relative rounded-3xl p-[1px] shadow-[0_8px_30px_rgba(0,0,0,0.24)] transition-all duration-300 overflow-hidden z-0 focus-within:ring-1 focus-within:ring-[#E1D4C0]/40 focus-within:shadow-[0_0_40px_rgba(225,212,192,0.15)]",
               className
             )}
             onDragOver={onDragOver}
@@ -463,10 +464,30 @@ interface PromptInputBoxProps {
   isLoading?: boolean;
   placeholder?: string;
   className?: string;
+  value?: string;
+  onValueChange?: (value: string) => void;
+  onCanvasClick?: () => void;
+  isCanvasActive?: boolean;
+  activeCampaignName?: string;
 }
 export const PromptInputBox = React.forwardRef((props: PromptInputBoxProps, ref: React.Ref<HTMLDivElement>) => {
-  const { onSend = () => {}, isLoading = false, placeholder = "Type your message here...", className } = props;
-  const [input, setInput] = React.useState("");
+  const { 
+    onSend = () => {}, 
+    isLoading = false, 
+    placeholder = "Type your message here...", 
+    className, 
+    value, 
+    onValueChange,
+    onCanvasClick,
+    isCanvasActive = false,
+    activeCampaignName = "Select Campaign"
+  } = props;
+  const [internalInput, setInternalInput] = React.useState("");
+  const input = value !== undefined ? value : internalInput;
+  const setInput = (newValue: string) => {
+    if (value === undefined) setInternalInput(newValue);
+    onValueChange?.(newValue);
+  };
   const [files, setFiles] = React.useState<File[]>([]);
   const [filePreviews, setFilePreviews] = React.useState<{ [key: string]: string }>({});
   const [selectedImage, setSelectedImage] = React.useState<string | null>(null);
@@ -630,18 +651,24 @@ export const PromptInputBox = React.forwardRef((props: PromptInputBoxProps, ref:
             isRecording ? "h-0 overflow-hidden opacity-0" : "opacity-100"
           )}
         >
-          <PromptInputTextarea
-            placeholder={
-              showSearch
-                ? "Search the web..."
-                : showThink
-                ? "Think deeply..."
-                : showCanvas
-                ? "Create on canvas..."
-                : placeholder
-            }
-            className="text-base"
-          />
+          {isLoading ? (
+            <div className="flex h-[44px] items-center px-3">
+              <LoadingState label="Synthesizing visual assets" variant="Drive" />
+            </div>
+          ) : (
+            <PromptInputTextarea
+              placeholder={
+                showSearch
+                  ? "Search the web..."
+                  : showThink
+                  ? "Think deeply..."
+                  : showCanvas
+                  ? "Create on canvas..."
+                  : placeholder
+              }
+              className="text-base"
+            />
+          )}
         </div>
 
         {isRecording && (
@@ -653,19 +680,15 @@ export const PromptInputBox = React.forwardRef((props: PromptInputBoxProps, ref:
         )}
 
         <PromptInputActions className="flex items-center justify-between gap-2 p-0 pt-2">
-          <div
-            className={cn(
-              "flex items-center gap-1 transition-opacity duration-300",
-              isRecording ? "opacity-0 invisible h-0" : "opacity-100 visible"
-            )}
-          >
-            <PromptInputAction tooltip="Upload image">
+          <div className="flex items-center gap-1.5 transition-opacity duration-300">
+            {/* Upload Reference Pill */}
+            <PromptInputAction tooltip="Upload reference photo">
               <button
                 onClick={() => uploadInputRef.current?.click()}
-                className="flex h-8 w-8 text-[#9CA3AF] cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-gray-600/30 hover:text-[#D1D5DB]"
-                disabled={isRecording}
+                className="flex h-8 px-3 text-[#9CA3AF] hover:text-[#D1D5DB] cursor-pointer items-center gap-1.5 rounded-full transition-all border border-white/15 bg-white/[0.02] hover:bg-white/10 shrink-0"
               >
-                <Paperclip className="h-5 w-5 transition-colors" />
+                <Paperclip className="h-3.5 w-3.5 transition-colors" />
+                <span className="text-[9.5px] font-mono tracking-wider uppercase font-semibold">Upload Reference</span>
                 <input
                   ref={uploadInputRef}
                   type="file"
@@ -679,113 +702,21 @@ export const PromptInputBox = React.forwardRef((props: PromptInputBoxProps, ref:
               </button>
             </PromptInputAction>
 
-            <div className="flex items-center">
+            {/* Canvas Folder Toggle */}
+            <PromptInputAction tooltip={`Campaign Directory: ${activeCampaignName}`}>
               <button
-                type="button"
-                onClick={() => handleToggleChange("search")}
+                onClick={onCanvasClick}
                 className={cn(
-                  "rounded-full transition-all flex items-center gap-1 px-2 py-1 border h-8",
-                  showSearch
-                    ? "bg-[#1EAEDB]/15 border-[#1EAEDB] text-[#1EAEDB]"
-                    : "bg-transparent border-transparent text-[#9CA3AF] hover:text-[#D1D5DB]"
+                  "flex h-8 px-3 cursor-pointer items-center gap-1.5 rounded-full transition-all border shrink-0",
+                  isCanvasActive
+                    ? "bg-[#E1D4C0]/15 border-[#E1D4C0]/35 text-[#E1D4C0]"
+                    : "border-white/15 bg-white/[0.02] text-[#9CA3AF] hover:text-[#D1D5DB] hover:bg-white/10"
                 )}
               >
-                <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">
-                  <motion.div
-                    animate={{ rotate: showSearch ? 360 : 0, scale: showSearch ? 1.1 : 1 }}
-                    whileHover={{ rotate: showSearch ? 360 : 15, scale: 1.1, transition: { type: "spring", stiffness: 300, damping: 10 } }}
-                    transition={{ type: "spring", stiffness: 260, damping: 25 }}
-                  >
-                    <Globe className={cn("w-4 h-4", showSearch ? "text-[#1EAEDB]" : "text-inherit")} />
-                  </motion.div>
-                </div>
-                <AnimatePresence>
-                  {showSearch && (
-                    <motion.span
-                      initial={{ width: 0, opacity: 0 }}
-                      animate={{ width: "auto", opacity: 1 }}
-                      exit={{ width: 0, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="text-xs overflow-hidden whitespace-nowrap text-[#1EAEDB] flex-shrink-0"
-                    >
-                      Search
-                    </motion.span>
-                  )}
-                </AnimatePresence>
+                <FolderCode className="h-4 w-4" />
+                <span className="text-[9.5px] font-mono tracking-wider uppercase font-semibold">Canvas</span>
               </button>
-
-              <CustomDivider />
-
-              <button
-                type="button"
-                onClick={() => handleToggleChange("think")}
-                className={cn(
-                  "rounded-full transition-all flex items-center gap-1 px-2 py-1 border h-8",
-                  showThink
-                    ? "bg-[#8B5CF6]/15 border-[#8B5CF6] text-[#8B5CF6]"
-                    : "bg-transparent border-transparent text-[#9CA3AF] hover:text-[#D1D5DB]"
-                )}
-              >
-                <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">
-                  <motion.div
-                    animate={{ rotate: showThink ? 360 : 0, scale: showThink ? 1.1 : 1 }}
-                    whileHover={{ rotate: showThink ? 360 : 15, scale: 1.1, transition: { type: "spring", stiffness: 300, damping: 10 } }}
-                    transition={{ type: "spring", stiffness: 260, damping: 25 }}
-                  >
-                    <BrainCog className={cn("w-4 h-4", showThink ? "text-[#8B5CF6]" : "text-inherit")} />
-                  </motion.div>
-                </div>
-                <AnimatePresence>
-                  {showThink && (
-                    <motion.span
-                      initial={{ width: 0, opacity: 0 }}
-                      animate={{ width: "auto", opacity: 1 }}
-                      exit={{ width: 0, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="text-xs overflow-hidden whitespace-nowrap text-[#8B5CF6] flex-shrink-0"
-                    >
-                      Think
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </button>
-
-              <CustomDivider />
-
-              <button
-                type="button"
-                onClick={handleCanvasToggle}
-                className={cn(
-                  "rounded-full transition-all flex items-center gap-1 px-2 py-1 border h-8",
-                  showCanvas
-                    ? "bg-[#F97316]/15 border-[#F97316] text-[#F97316]"
-                    : "bg-transparent border-transparent text-[#9CA3AF] hover:text-[#D1D5DB]"
-                )}
-              >
-                <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">
-                  <motion.div
-                    animate={{ rotate: showCanvas ? 360 : 0, scale: showCanvas ? 1.1 : 1 }}
-                    whileHover={{ rotate: showCanvas ? 360 : 15, scale: 1.1, transition: { type: "spring", stiffness: 300, damping: 10 } }}
-                    transition={{ type: "spring", stiffness: 260, damping: 25 }}
-                  >
-                    <FolderCode className={cn("w-4 h-4", showCanvas ? "text-[#F97316]" : "text-inherit")} />
-                  </motion.div>
-                </div>
-                <AnimatePresence>
-                  {showCanvas && (
-                    <motion.span
-                      initial={{ width: 0, opacity: 0 }}
-                      animate={{ width: "auto", opacity: 1 }}
-                      exit={{ width: 0, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="text-xs overflow-hidden whitespace-nowrap text-[#F97316] flex-shrink-0"
-                    >
-                      Canvas
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </button>
-            </div>
+            </PromptInputAction>
           </div>
 
           <PromptInputAction
@@ -818,13 +749,13 @@ export const PromptInputBox = React.forwardRef((props: PromptInputBoxProps, ref:
               disabled={isLoading && !hasContent}
             >
               {isLoading ? (
-                <Square className="h-4 w-4 fill-[#1F2023] animate-pulse" />
+                <Square className="h-3 w-3 fill-[#1F2023]" />
               ) : isRecording ? (
-                <StopCircle className="h-5 w-5 text-red-500" />
+                <StopCircle className="h-5 w-5 text-red-500 animate-pulse" />
               ) : hasContent ? (
                 <ArrowUp className="h-4 w-4 text-[#1F2023]" />
               ) : (
-                <Mic className="h-5 w-5 text-[#1F2023] transition-colors" />
+                <Mic className="h-4 w-4 text-inherit transition-colors" />
               )}
             </Button>
           </PromptInputAction>

@@ -10,6 +10,7 @@ import { Frame08 } from '@/components/Frame08';
 import { PricingSection } from '@/components/PricingSection';
 import { ContactSection } from '@/components/ContactSection';
 import { Footer } from '@/components/Footer';
+import { FAQSection } from '@/components/FAQSection';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -679,6 +680,7 @@ export default function Home() {
     {/* Standard Scrolling Content */}
     <div className="relative w-full z-[200] bg-black">
       <PricingSection />
+      <FAQSection />
       <ContactSection />
       <Footer />
     </div>

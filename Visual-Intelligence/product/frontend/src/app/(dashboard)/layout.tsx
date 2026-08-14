@@ -14,7 +14,9 @@ import {
   Archive, 
   Bell, 
   Settings,
-  Menu
+  Menu,
+  Users,
+  HelpCircle
 } from "lucide-react";
 
 // Sidebar context to allow children (like studio page) to toggle collapse state
@@ -78,6 +80,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               )}
               <div className="flex flex-col gap-1.5">
                 <NavLink href="/studio" active={pathname === '/studio'} collapsed={isCollapsed} icon={FolderGit2}>Campaign Studio</NavLink>
+                <NavLink href="/team" active={pathname === '/team'} collapsed={isCollapsed} icon={Users}>Team Mode</NavLink>
                 <NavLink href="/materials" active={pathname.includes('/materials')} collapsed={isCollapsed} icon={Layers}>Material Library</NavLink>
                 <NavLink href="/atlas" active={pathname.includes('/atlas')} collapsed={isCollapsed} icon={Compass}>Atlas</NavLink>
                 <NavLink href="/research" active={pathname.includes('/research')} collapsed={isCollapsed} icon={BookOpen}>Research</NavLink>
@@ -93,6 +96,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <div className="flex flex-col gap-1.5">
                 <NavLink href="/notifications" active={pathname.includes('/notifications')} collapsed={isCollapsed} icon={Bell}>Notifications</NavLink>
                 <NavLink href="/settings" active={pathname.includes('/settings')} collapsed={isCollapsed} icon={Settings}>Settings</NavLink>
+                <NavLink href="/faq" active={pathname.includes('/faq')} collapsed={isCollapsed} icon={HelpCircle}>FAQ</NavLink>
               </div>
             </div>
           </nav>
@@ -121,7 +125,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </aside>
 
         {/* Main Architectural Workspace */}
-        <main className="flex-1 relative flex flex-col min-w-0 bg-[#0A0A0A]">
+        <main className="flex-1 h-full min-h-0 relative flex flex-col min-w-0 bg-[#0A0A0A] overflow-hidden">
           {children}
         </main>
 
