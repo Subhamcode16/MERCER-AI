@@ -33,7 +33,7 @@ powershell -Command "try { $r = Invoke-WebRequest -Uri http://127.0.0.1:8000/hea
 if %ERRORLEVEL% EQU 0 goto BACKEND_READY
 
 <nul set /p "=."
-timeout /t 1 /nobreak >nul
+ping -n 2 127.0.0.1 >nul
 goto WAIT_LOOP
 
 :BACKEND_READY

@@ -1,4 +1,42 @@
+# Environment & Secrets
 .env
-*.log
+.env.local
+.env.*
+credentials.txt
+*.pem
+*.key
+
+# Python & Virtual Environments
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
+.venv/
+env/
+venv/
+ENV/
+.pytest_cache/
+*.log
+planner_debug.log
+jwt_debug.log
+backend.log
+
+# Node & Frontend
+node_modules/
+dist/
+build/
+.next/
+out/
+
+# Local data & ledgers
+data/phase*_ledger/
+data/phase*_checkpoints/
+data/phase*_feedback/
+data/phase*_studio_ledger/
+data/phase*_production_ledger/
+
+# Media binaries / screen recordings
+*.mp4
+screenrec/
+original-*.mp4
