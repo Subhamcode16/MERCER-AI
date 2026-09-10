@@ -1,0 +1,38 @@
+# Phase 30: Security Threat Model & Mitigations (35 Threats)
+
+## Complete Threat Mitigation Matrix
+- **T30-001 (Unauthorized Objective Mutation)**: Rejects AI-only objective creation/mutation; enforces human cryptographic/actor token.
+- **T30-002 (Strategic Authority Escalation)**: Blocks workers and automated jobs from assuming decision-maker authority.
+- **T30-003 (Recommendation-to-Execution Escalation)**: Prevents strategic recommendation from executing without explicit human approval.
+- **T30-004 (Routine-to-Authorization Escalation)**: Scheduled cadence preparation cannot alter or authorize initiatives.
+- **T30-005 (Portfolio-to-Budget Escalation)**: Portfolio ranking does not grant financial or compute budget.
+- **T30-006 (Stale Decision Resurrection)**: Expired/superseded decisions fail execution checks.
+- **T30-007 (Decision-Memory Tampering)**: Append-only hash-chained storage prevents in-place tampering.
+- **T30-008 (Assumption Poisoning)**: Unvalidated external claims cannot overwrite verified assumptions.
+- **T30-009 (False Strategic Signal Injection)**: Untrusted signals quarantined until verified.
+- **T30-010 (Strategic Drift Suppression)**: Drift detector runs independently of worker recommendations.
+- **T30-011 (Contradiction Suppression)**: Contradictory evidence is forced to surface in Strategic Reviews.
+- **T30-012 (Unknown-State Collapse)**: Ensures `UNKNOWN` state cannot be coerced into false certainty.
+- **T30-013 (False Causality Propagation)**: Enforces separation between correlation and proven causal outcome.
+- **T30-014 (Model-Confidence Confusion)**: Distinguishes LLM token confidence from empirical evidence confidence.
+- **T30-015 (External Prompt Injection)**: Sanitizes and isolates external intelligence inputs.
+- **T30-016 (Malicious Strategic Content)**: Content scanning and strict schema validation for external data.
+- **T30-017 (Cross-Tenant Contamination)**: Strict tenant-partitioned retrieval; prevents cross-client context bleed.
+- **T30-018 (Semantic Leakage)**: Scrubbing and abstraction filters on aggregated learning outputs.
+- **T30-019 (Unauthorized Worker Escalation)**: Worker permission matrix blocks out-of-scope tasks.
+- **T30-020 (Scheduled-Task Escalation)**: Automated cron/timers restricted strictly to read/derive actions.
+- **T30-021 (Human Approval Spoofing)**: Human decision boundary checks authentic actor signatures.
+- **T30-022 (Stale Approval Replay)**: Timestamp and nonces prevent replaying expired approvals.
+- **T30-023 (Unauthorized Initiative Modification)**: Scope mutations require authorized human revision.
+- **T30-024 (Initiative Dependency Manipulation)**: Cyclic or false dependency injection detected and rejected.
+- **T30-025 (Recommendation Tampering)**: Recommendation payloads are hashed upon generation.
+- **T30-026 (Evidence Substitution)**: Evidence items must validate against source hash and provenance record.
+- **T30-027 (Provenance Forgery)**: Rejects memories or evidence lacking verified provenance chains.
+- **T30-028 (Feedback-Loop Amplification)**: Damping factors prevent self-reinforcing model hallucinations.
+- **T30-029 (Confirmation-Bias Amplification)**: Actively queries contradictory memory stores during synthesis.
+- **T30-030 (Strategic Narrative Manipulation)**: Forces tabular evidence presentation alongside narrative text.
+- **T30-031 (Resource-Authority Confusion)**: Resource requests routed to external human-governed budget layers.
+- **T30-032 (Rollback Bypass)**: Invalidated recommendations/assumptions immediately halt dependent pipelines.
+- **T30-033 (Invalidated-Decision Replay)**: Superseded decisions permanently marked inactive in portfolio.
+- **T30-034 (Policy/Memory Confusion)**: Clear segregation between descriptive historical memory and normative policy.
+- **T30-035 (Recovery-Authority Escalation)**: Recovery/failover routines cannot grant elevated operational privileges.
