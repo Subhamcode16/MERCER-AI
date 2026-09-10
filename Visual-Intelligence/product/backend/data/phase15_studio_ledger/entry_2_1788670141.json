@@ -1,0 +1,12 @@
+{
+  "entry_id": "entry_2_1788670141",
+  "previous_hash": "d5e7c72bf10555471830bd92afb694776af559513ac3b6dd466e6ba3468c7d99",
+  "client_id": "client_nocap",
+  "event_type": "BRAND_BOUND",
+  "payload": {
+    "brand_id": "brand_nocap",
+    "name": "NOCAP"
+  },
+  "timestamp": "2026-09-06T04:49:01.408728+00:00",
+  "current_hash": "6051f9d001667130aa247f7c5b2f2d114b325b58725437553d8d000a49891940"
+}

@@ -28,6 +28,7 @@ export function CanvasFolderPopover({
   onClose,
 }: CanvasFolderPopoverProps) {
   const [expandedId, setExpandedId] = useState<string>(activeCampaignId);
+  const popoverRef = useRef<HTMLDivElement>(null);
   
   // Inline edit state
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
@@ -46,7 +47,25 @@ export function CanvasFolderPopover({
     }
   }, [editingSessionId]);
 
-  // Click outside to close menu
+  // Click outside to close entire popover
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (popoverRef.current && !popoverRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+
+    const timer = setTimeout(() => {
+      document.addEventListener("mousedown", handleClickOutside);
+    }, 0);
+
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onClose]);
+
+  // Click outside to close 3-dot session menu
   useEffect(() => {
     if (!openMenuId) return;
     const handleClick = () => setOpenMenuId(null);
@@ -60,6 +79,7 @@ export function CanvasFolderPopover({
 
   return (
     <motion.div
+      ref={popoverRef}
       initial={{ opacity: 0, y: 15, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 15, scale: 0.95 }}

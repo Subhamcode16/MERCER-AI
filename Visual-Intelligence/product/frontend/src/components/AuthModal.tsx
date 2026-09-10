@@ -150,6 +150,8 @@ export function AuthModal({ isOpen, onClose, initialView = "login", onSuccess }:
                 <label className="block text-[11px] uppercase tracking-widest text-zinc-500 mb-1">Email</label>
                 <input 
                   type="email" 
+                  name="email"
+                  autoComplete="username"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -168,6 +170,8 @@ export function AuthModal({ isOpen, onClose, initialView = "login", onSuccess }:
                 <div className="relative w-full">
                   <input 
                     type={showPassword ? "text" : "password"} 
+                    name="password"
+                    autoComplete={view === "login" ? "current-password" : "new-password"}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -190,6 +194,8 @@ export function AuthModal({ isOpen, onClose, initialView = "login", onSuccess }:
                   <div className="relative w-full">
                     <input 
                       type={showPassword ? "text" : "password"} 
+                      name="confirmPassword"
+                      autoComplete="new-password"
                       required
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}

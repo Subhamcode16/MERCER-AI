@@ -1,0 +1,23 @@
+{
+  "checkpoint_id": "chk_mission_nocap_product_launch_0001",
+  "mission_id": "mission_nocap_product_launch",
+  "step_number": 1,
+  "mission_state": "RUNNING",
+  "graph_state": {
+    "nodes": [
+      "task_launch_strat"
+    ]
+  },
+  "completed_task_ids": [
+    "task_launch_strat"
+  ],
+  "executed_action_ids": [],
+  "learning_references": [
+    "wf_launch_01"
+  ],
+  "authorization_token_id": null,
+  "policy_version": "v1.0",
+  "timestamp": "2026-09-07T13:39:24.721952+00:00",
+  "previous_checkpoint_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "digest": "d40aaaccfde6599cbb863f009a4059fcd2aa79b25678d5285382b7dbd6cc13b8"
+}

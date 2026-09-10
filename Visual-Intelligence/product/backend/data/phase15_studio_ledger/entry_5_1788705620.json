@@ -1,0 +1,12 @@
+{
+  "entry_id": "entry_5_1788705620",
+  "previous_hash": "41b4a7aba1bd1f7c8d6a0a34960707e48e4b9f0a987db693eca4e36a9a2b8c34",
+  "client_id": "client_a",
+  "event_type": "CAMPAIGN_LAUNCHED",
+  "payload": {
+    "campaign_id": "ca",
+    "title": "Camp A"
+  },
+  "timestamp": "2026-09-06T14:40:20.356271+00:00",
+  "current_hash": "e5e37372578ad0b1955b27b8be7373a954075e5bb8115edfc1c3b27e0d402935"
+}

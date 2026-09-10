@@ -1,0 +1,18 @@
+{
+  "execution_id": "exec_290b1145",
+  "action_id": "act_nocap_draft_01",
+  "workflow_id": "wf_nocap_01",
+  "authorization_id": "auth_req_september_launch",
+  "capability": "CREATE_DRAFT",
+  "resource_scope": "campaign:nocap:september_2026",
+  "decision_reference": "DEC_APPROVE_SEPTEMBER",
+  "start_time": "2026-09-05T12:48:30.328280+00:00",
+  "end_time": "2026-09-05T12:48:30.328379+00:00",
+  "status": "SUCCESS",
+  "output_summary": {
+    "draft_id": "sandbox_draft_1",
+    "status": "DRAFT_CREATED"
+  },
+  "error_message": null,
+  "payload_hash": "3a96d6a5301e3c7fa8bf2421c18dba4b95a4c84f7c4230132be64528e8ee4922"
+}

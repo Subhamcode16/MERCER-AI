@@ -1,0 +1,12 @@
+{
+  "entry_id": "entry_2_1788638416",
+  "previous_hash": "fcbf5e101413d64641ab3bc3dfb13d49ce26b6c98bb5fca1f2c2d050ba4e9387",
+  "client_id": "client_nocap",
+  "event_type": "BRAND_BOUND",
+  "payload": {
+    "brand_id": "brand_nocap",
+    "name": "NOCAP Streetwear"
+  },
+  "timestamp": "2026-09-05T20:00:16.163846+00:00",
+  "current_hash": "f5836a11b48f4b6558b3fdadd942083992f5ed198a133e932d5112d1b1392ddf"
+}

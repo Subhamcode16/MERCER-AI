@@ -1,0 +1,18 @@
+{
+  "execution_id": "exec_520e3d19",
+  "action_id": "act_drop_announce_01",
+  "workflow_id": "wf_launch_01",
+  "authorization_id": "auth_req_launch_drop_auth",
+  "capability": "CREATE_DRAFT",
+  "resource_scope": "campaign:nocap:capsule_drop",
+  "decision_reference": "DEC_APPROVE_FALL_DROP",
+  "start_time": "2026-09-06T18:06:02.855832+00:00",
+  "end_time": "2026-09-06T18:06:02.855917+00:00",
+  "status": "SUCCESS",
+  "output_summary": {
+    "draft_id": "sandbox_draft_1",
+    "status": "DRAFT_CREATED"
+  },
+  "error_message": null,
+  "payload_hash": "4ff8dd912333ea9be580a3e369d72947afbe6fa8d266254932726fe5bad3ecd9"
+}

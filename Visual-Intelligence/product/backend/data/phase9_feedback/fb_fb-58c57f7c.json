@@ -1,0 +1,11 @@
+{
+  "feedback_id": "fb-58c57f7c",
+  "workflow_id": "wf-fb-1",
+  "source": "USER",
+  "category": "REVISION_SUGGESTION",
+  "target_role": "DESIGNER",
+  "rating": 0.8,
+  "comments": "Visual contrast needs improvement.",
+  "defect_code": null,
+  "timestamp": "2026-09-06T18:08:51.946508+00:00"
+}

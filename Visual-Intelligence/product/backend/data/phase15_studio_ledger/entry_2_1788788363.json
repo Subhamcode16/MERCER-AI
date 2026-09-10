@@ -1,0 +1,12 @@
+{
+  "entry_id": "entry_2_1788788363",
+  "previous_hash": "1ea7e8a3e966ec4a922476723de595dc78b3b99e06b07bfacda7c4f84ce1fe3e",
+  "client_id": "client_a",
+  "event_type": "APPROVAL_ENQUEUED",
+  "payload": {
+    "approval_id": "appr_exp",
+    "deliverable_id": "d1"
+  },
+  "timestamp": "2026-09-07T13:39:23.913552+00:00",
+  "current_hash": "fc28af3ad4eff2be4acdbcabec750e3c2ea86f5c21f6b06ffb8642d7cfb13653"
+}

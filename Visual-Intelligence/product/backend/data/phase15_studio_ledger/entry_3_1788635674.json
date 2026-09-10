@@ -1,0 +1,12 @@
+{
+  "entry_id": "entry_3_1788635674",
+  "previous_hash": "84c55f90a775db92c8f9adfd0d7909d8b93eedd204e10efb6788b1eb9afd3e71",
+  "client_id": "client_nocap",
+  "event_type": "CAMPAIGN_LAUNCHED",
+  "payload": {
+    "campaign_id": "camp_001",
+    "title": "September Drop"
+  },
+  "timestamp": "2026-09-05T19:14:34.836109+00:00",
+  "current_hash": "0b11debe08143f8523b317cf737e92086f927cb6f546cbd5476fe43bfb87e525"
+}

@@ -1,0 +1,23 @@
+{
+  "checkpoint_id": "chk_m_conc_1_0001",
+  "mission_id": "m_conc_1",
+  "step_number": 1,
+  "mission_state": "RUNNING",
+  "graph_state": {
+    "nodes": [
+      "t1"
+    ]
+  },
+  "completed_task_ids": [
+    "t1"
+  ],
+  "executed_action_ids": [],
+  "learning_references": [
+    "wf_1"
+  ],
+  "authorization_token_id": null,
+  "policy_version": "v1.0",
+  "timestamp": "2026-09-07T13:39:29.306004+00:00",
+  "previous_checkpoint_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "digest": "a130b72b6951d4aea9792094051f98d6cc962f3934a5f5324394e952004f55c5"
+}

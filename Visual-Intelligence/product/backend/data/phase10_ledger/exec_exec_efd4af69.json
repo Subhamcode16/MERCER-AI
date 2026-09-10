@@ -1,0 +1,18 @@
+{
+  "execution_id": "exec_efd4af69",
+  "action_id": "act_1",
+  "workflow_id": "wf_01",
+  "authorization_id": "auth_req_replay",
+  "capability": "PUBLISH_CONTENT",
+  "resource_scope": "brand:aura",
+  "decision_reference": "REF_01",
+  "start_time": "2026-09-05T12:09:00.957431+00:00",
+  "end_time": "2026-09-05T12:09:00.957484+00:00",
+  "status": "SUCCESS",
+  "output_summary": {
+    "post_id": "sandbox_post_1",
+    "status": "PUBLISHED"
+  },
+  "error_message": null,
+  "payload_hash": "d36024fa191a961e29c0c95ec660ae4d13d7c321520e5c4426e846b090f66569"
+}

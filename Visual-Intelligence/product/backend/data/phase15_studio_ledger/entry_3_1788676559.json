@@ -1,0 +1,12 @@
+{
+  "entry_id": "entry_3_1788676559",
+  "previous_hash": "69e5beefc0baf24559a61f7d33b2274755638600cd26b8fd59a74e3e7c861d90",
+  "client_id": "client_a",
+  "event_type": "CAMPAIGN_LAUNCHED",
+  "payload": {
+    "campaign_id": "c1",
+    "title": "Cap"
+  },
+  "timestamp": "2026-09-06T06:35:59.134730+00:00",
+  "current_hash": "f887fc1dec232b249beed3b9fb48e2bf5aa8de5fe972fa545059430e6045e028"
+}

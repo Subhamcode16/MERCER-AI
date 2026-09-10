@@ -17,66 +17,77 @@ export class MockOrchestrator {
     const { prompt, onTyping, onMessage, onTaskUpdate, onTriggerApproval } = options;
     const lower = prompt.toLowerCase();
 
-    // Check which specific agents are mentioned using @
+    // Department level mentions
+    const isDeptStrategy = lower.includes("@strategy");
+    const isDeptCreative = lower.includes("@creative");
+    const isDeptIntelligence = lower.includes("@intelligence");
+    const isDeptContent = lower.includes("@content");
+    const isDeptQuality = lower.includes("@quality");
+
+    // Specific agent handle mentions
     const isMaterialMentioned = lower.includes("@material-dna");
-    const isVisualMentioned = lower.includes("@visual-dna");
-    const isArtMentioned = lower.includes("@art-director");
-    const isStrategistMentioned = lower.includes("@campaign-strategist");
+    const isVisualMentioned = lower.includes("@visual-dna") || lower.includes("@visual_dna_analyst_01");
+    const isArtMentioned = lower.includes("@art-director") || lower.includes("@art_director_01") || lower.includes("@creative_director_01");
+    const isStrategistMentioned = lower.includes("@campaign-strategist") || lower.includes("@campaign_strategist_01") || lower.includes("@brand_strategist_01");
     const isBrandMentioned = lower.includes("@brand-dna");
+    const isTrendMentioned = lower.includes("@trend_researcher_01");
+    const isCriticMentioned = lower.includes("@creative_critic_01") || lower.includes("@independent_reviewer_01");
     const isRendererMentioned = lower.includes("@synthesizer");
     const isValidatorMentioned = lower.includes("@quality-validator");
-    const isCopywriterMentioned = lower.includes("@creative-copywriter");
+    const isCopywriterMentioned = lower.includes("@creative-copywriter") || lower.includes("@copywriter_01") || lower.includes("@scriptwriter_01");
 
     const hasSpecificMention =
+      isDeptStrategy ||
+      isDeptCreative ||
+      isDeptIntelligence ||
+      isDeptContent ||
+      isDeptQuality ||
       isMaterialMentioned ||
       isVisualMentioned ||
       isArtMentioned ||
       isStrategistMentioned ||
       isBrandMentioned ||
+      isTrendMentioned ||
+      isCriticMentioned ||
       isRendererMentioned ||
       isValidatorMentioned ||
       isCopywriterMentioned;
 
-    // SCENARIO 1: SPECIFIC AGENT TAGGED
+    // SCENARIO 1: SPECIFIC DEPARTMENT OR AGENT TAGGED
     if (hasSpecificMention) {
-      if (isBrandMentioned) {
+      if (isDeptStrategy || isBrandMentioned || isStrategistMentioned) {
         await this.runBrandDnaAgent(onTyping, onMessage, onTaskUpdate, prompt);
       }
-      if (isMaterialMentioned) {
+      if (isDeptIntelligence || isMaterialMentioned || isTrendMentioned) {
         await this.runMaterialDnaAgent(onTyping, onMessage, onTaskUpdate, prompt);
       }
-      if (isVisualMentioned) {
+      if (isDeptIntelligence || isVisualMentioned) {
         await this.runVisualDnaAgent(onTyping, onMessage, onTaskUpdate, prompt);
       }
-      if (isArtMentioned) {
+      if (isDeptCreative || isArtMentioned) {
         await this.runArtDirectorAgent(onTyping, onMessage, onTaskUpdate, prompt, onTriggerApproval);
       }
-      if (isStrategistMentioned) {
-        await this.runStrategistAgent(onTyping, onMessage, onTaskUpdate, prompt);
+      if (isDeptContent || isCopywriterMentioned) {
+        await this.runCopywriterAgent(onTyping, onMessage, onTaskUpdate);
+      }
+      if (isDeptQuality || isValidatorMentioned || isCriticMentioned) {
+        await this.runValidatorAgent(onTyping, onMessage, onTaskUpdate);
       }
       if (isRendererMentioned) {
         await this.runSynthesizerAgent(onTyping, onMessage, onTaskUpdate);
       }
-      if (isValidatorMentioned) {
-        await this.runValidatorAgent(onTyping, onMessage, onTaskUpdate);
-      }
-      if (isCopywriterMentioned) {
-        await this.runCopywriterAgent(onTyping, onMessage, onTaskUpdate);
-      }
       return;
     }
 
-    // SCENARIO 2: GENERAL PROMPT (Runs full multi-agent pipeline cascade)
-    // 1. @Brand-DNA
+    // SCENARIO 2: GOVERNED 5-PHASE PIPELINE CASCADE
+    // Phase 1: Strategy Department (Brand & Campaign Positioning)
     await this.runBrandDnaAgent(onTyping, onMessage, onTaskUpdate, prompt);
     
-    // 2. @Material-DNA
+    // Phase 2: Intelligence Department (Trend & Visual DNA Extraction)
     await this.runMaterialDnaAgent(onTyping, onMessage, onTaskUpdate, prompt);
-
-    // 3. @Visual-DNA
     await this.runVisualDnaAgent(onTyping, onMessage, onTaskUpdate, prompt);
 
-    // 4. @Art-Director (Triggers approval gate)
+    // Phase 3: Creative Department (Art & Creative Directives - triggers approval gate)
     await this.runArtDirectorAgent(onTyping, onMessage, onTaskUpdate, prompt, onTriggerApproval);
   }
 

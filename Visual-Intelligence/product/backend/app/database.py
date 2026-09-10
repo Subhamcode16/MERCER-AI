@@ -36,9 +36,12 @@ async def connect_db() -> None:
             "Ensure the URI is correct and your IP is whitelisted on Atlas.",
             e,
         )
-        # Re-raise so uvicorn refuses to start rather than booting with a
-        # dead database and silently returning 500 on the first real request.
-        raise RuntimeError(f"Cannot start: MongoDB unreachable — {e}") from e
+        if settings.environment == "development":
+            logger.warning("Development mode: starting server without active MongoDB connection.")
+        else:
+            # Re-raise so uvicorn refuses to start rather than booting with a
+            # dead database and silently returning 500 on the first real request.
+            raise RuntimeError(f"Cannot start: MongoDB unreachable — {e}") from e
 
 
 

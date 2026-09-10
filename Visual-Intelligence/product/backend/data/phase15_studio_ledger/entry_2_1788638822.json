@@ -1,0 +1,12 @@
+{
+  "entry_id": "entry_2_1788638822",
+  "previous_hash": "e59b8a21dadc950e8217e7c24a3a76471ffea11f1532693bb2602b75a16db17e",
+  "client_id": "client_a",
+  "event_type": "BRAND_BOUND",
+  "payload": {
+    "brand_id": "b1",
+    "name": "Brand 1"
+  },
+  "timestamp": "2026-09-05T20:07:02.289808+00:00",
+  "current_hash": "b007d4c8ed3237b4a880e196013fba2359bdb0ce55ff3840a96fe6dbe4b6ed56"
+}

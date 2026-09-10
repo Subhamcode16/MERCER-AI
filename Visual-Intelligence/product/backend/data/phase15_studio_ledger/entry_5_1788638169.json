@@ -1,0 +1,12 @@
+{
+  "entry_id": "entry_5_1788638169",
+  "previous_hash": "3be858924841049dbef33da0e61455410903f3f233d1fff02b9320548355a859",
+  "client_id": "client_beta",
+  "event_type": "BRAND_BOUND",
+  "payload": {
+    "brand_id": "brand_beta",
+    "name": "Beta Audio"
+  },
+  "timestamp": "2026-09-05T19:56:09.977843+00:00",
+  "current_hash": "1698fbc20849dfc2951d890360eadcde1337d75d60abb7cbada2a183ce3b2f56"
+}

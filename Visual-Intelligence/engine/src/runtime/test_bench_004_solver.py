@@ -20,7 +20,7 @@ def run_test():
     ]
     dna_1 = de.synthesize_dna(claims_1)
     patterns_1 = de.retrieve_patterns("Luxury Bridal", dna_1["Product_DNA"])
-    prompt_1 = compiler.compile(dna_1, patterns_1)
+    prompt_1, trace_1 = compiler.compile(dna_1, patterns_1)
     
     print(f"Explanation: {patterns_1['Solver_Explanation']}")
     print(f"Key Light: {patterns_1['Pattern_Rules']['Lighting']['KeyLight']}")
@@ -41,7 +41,7 @@ def run_test():
     ]
     dna_2 = de.synthesize_dna(claims_2)
     patterns_2 = de.retrieve_patterns("Contemporary Editorial", dna_2["Product_DNA"])
-    prompt_2 = compiler.compile(dna_2, patterns_2)
+    prompt_2, trace_2 = compiler.compile(dna_2, patterns_2)
     
     print(f"Explanation: {patterns_2['Solver_Explanation']}")
     print(f"Satisfied Rules: {patterns_2['Solver_Trace']['satisfied']}\n")
@@ -60,7 +60,7 @@ def run_test():
     ]
     dna_3 = de.synthesize_dna(claims_3)
     patterns_3 = de.retrieve_patterns("E-Commerce", dna_3["Product_DNA"])
-    prompt_3 = compiler.compile(dna_3, patterns_3)
+    prompt_3, trace_3 = compiler.compile(dna_3, patterns_3)
     
     print(f"Explanation: {patterns_3['Solver_Explanation']}")
     print(f"Satisfied Rules: {patterns_3['Solver_Trace']['satisfied']}\n")
@@ -78,7 +78,7 @@ def run_test():
     ]
     dna_4 = de.synthesize_dna(claims_4)
     patterns_4 = de.retrieve_patterns("Macro Detail", dna_4["Product_DNA"])
-    prompt_4 = compiler.compile(dna_4, patterns_4)
+    prompt_4, trace_4 = compiler.compile(dna_4, patterns_4)
     
     print(f"Explanation: {patterns_4['Solver_Explanation']}")
     print(f"Camera Lens: {patterns_4['Pattern_Rules']['Camera']['Lens']}")

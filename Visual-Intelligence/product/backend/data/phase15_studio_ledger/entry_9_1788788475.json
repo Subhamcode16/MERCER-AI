@@ -1,0 +1,13 @@
+{
+  "entry_id": "entry_9_1788788475",
+  "previous_hash": "e7d4555084d8eafd8b95ff9871fcfd7f0e71c21cd5f81458d0998cce284afad0",
+  "client_id": "client_nocap",
+  "event_type": "HUMAN_DECISION_RECORDED",
+  "payload": {
+    "approval_id": "appr_work_req_nocap_01_1",
+    "approved": true,
+    "authorizer_id": "user_owner_nocap"
+  },
+  "timestamp": "2026-09-07T13:41:15.714127+00:00",
+  "current_hash": "fc2be5185958abe447c8c4a8646599cdf4967224da80954444f7a36ab00d1b60"
+}

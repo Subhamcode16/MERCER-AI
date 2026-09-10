@@ -152,7 +152,7 @@ export default function TeamMode() {
   const [typingAgent, setTypingAgent] = useState<AgentId | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isAwaitingApproval, setIsAwaitingApproval] = useState(false);
-  const [agentTasks, setAgentTasks] = useState<Record<AgentId, AgentTaskInfo>>({
+  const [agentTasks, setAgentTasks] = useState<Partial<Record<AgentId, AgentTaskInfo>>>({
     'brand-dna': { status: 'idle' },
     'material-dna': { status: 'idle' },
     'image-decomposer': { status: 'idle' },

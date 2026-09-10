@@ -1,0 +1,29 @@
+{
+  "checkpoint_id": "chk_mission_nocap_september_2026_0004",
+  "mission_id": "mission_nocap_september_2026",
+  "step_number": 4,
+  "mission_state": "RUNNING",
+  "graph_state": {
+    "nodes": [
+      "task_research",
+      "task_visual_dir",
+      "task_content_prod"
+    ]
+  },
+  "completed_task_ids": [
+    "task_research",
+    "task_visual_dir",
+    "task_content_prod"
+  ],
+  "executed_action_ids": [
+    "act_nocap_draft_01"
+  ],
+  "learning_references": [
+    "wf_nocap_01"
+  ],
+  "authorization_token_id": "auth_req_september_launch",
+  "policy_version": "v1.0",
+  "timestamp": "2026-09-07T13:39:29.597638+00:00",
+  "previous_checkpoint_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "digest": "c364433c458107a46a83f0d805ea3333114536733437a4c7ea46448d3513ec16"
+}

@@ -97,3 +97,25 @@ async def approve_team_session(session_id: str, background_tasks: BackgroundTask
     except Exception as e:
         logger.error("Failed to approve team session: %s", e)
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/workforce/dossiers")
+async def get_workforce_dossiers():
+    """
+    Returns all registered workforce staff dossiers with skills,
+    knowledge domains, system instructions, and tool bindings.
+    """
+    from src.creative_workforce.dossiers import list_dossiers
+    dossiers = list_dossiers()
+    return {"dossiers": [d.to_dict() for d in dossiers]}
+
+@router.get("/workforce/dossiers/{staff_id}")
+async def get_workforce_dossier_by_id(staff_id: str):
+    """
+    Returns the specific staff dossier for a requested staff identity.
+    """
+    from src.creative_workforce.dossiers import get_dossier
+    dossier = get_dossier(staff_id)
+    if not dossier:
+        raise HTTPException(status_code=404, detail=f"Dossier for staff member '{staff_id}' not found")
+    return {"dossier": dossier.to_dict()}
+

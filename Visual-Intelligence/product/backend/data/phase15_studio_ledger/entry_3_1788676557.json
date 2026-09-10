@@ -1,0 +1,12 @@
+{
+  "entry_id": "entry_3_1788676557",
+  "previous_hash": "687db5a39251dcdf9df8fe9d8d48e19edc981bc3a835fd1d5ca1b6da9ba7b697",
+  "client_id": "client_nocap",
+  "event_type": "CAMPAIGN_LAUNCHED",
+  "payload": {
+    "campaign_id": "camp_nocap_sept",
+    "title": "NOCAP September Fall Drop"
+  },
+  "timestamp": "2026-09-06T06:35:57.767071+00:00",
+  "current_hash": "019a267b65a6e17dcb71acef9a1681bd57b3c6cbfb43117d75a009e230d82a25"
+}

@@ -1,0 +1,12 @@
+{
+  "entry_id": "entry_8_1788638518",
+  "previous_hash": "02b0b8ff0c23a7d52d337de39726e0a272a524e12e84eb9c69284566fe9018fe",
+  "client_id": "client_nocap",
+  "event_type": "APPROVAL_ENQUEUED",
+  "payload": {
+    "approval_id": "appr_work_req_nocap_01_1",
+    "deliverable_id": "del_req_nocap_01"
+  },
+  "timestamp": "2026-09-05T20:01:58.865308+00:00",
+  "current_hash": "4aae91096327469d92c9eb50f7460adc6ae6b6ebc38697449a3b96e335ed1e08"
+}

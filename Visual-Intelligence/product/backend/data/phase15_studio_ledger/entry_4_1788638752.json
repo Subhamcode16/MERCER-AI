@@ -1,0 +1,12 @@
+{
+  "entry_id": "entry_4_1788638752",
+  "previous_hash": "9f2089f25b9c72ac58a1a4b90b1292aa09a394bd50056d7a72b91bd055f13e77",
+  "client_id": "client_b",
+  "event_type": "BRAND_BOUND",
+  "payload": {
+    "brand_id": "b2",
+    "name": "Beta Brand"
+  },
+  "timestamp": "2026-09-05T20:05:52.952538+00:00",
+  "current_hash": "f4ce77b53e03eac8f2b0af5d191a654f7096dad7757b306a53f0fe0f652dd686"
+}

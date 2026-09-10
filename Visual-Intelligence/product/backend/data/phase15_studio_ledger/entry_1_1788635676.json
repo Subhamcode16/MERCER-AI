@@ -1,0 +1,12 @@
+{
+  "entry_id": "entry_1_1788635676",
+  "previous_hash": "GENESIS_HASH_00000000000000000000000000000000000000000000000000000000",
+  "client_id": "client_a",
+  "event_type": "CLIENT_REGISTERED",
+  "payload": {
+    "client_id": "client_a",
+    "name": "Alpha"
+  },
+  "timestamp": "2026-09-05T19:14:36.928537+00:00",
+  "current_hash": "e6f4bb0a95249b3dd2895da607b98d0a256a5cf1d4b26b270594efb49fd0f243"
+}

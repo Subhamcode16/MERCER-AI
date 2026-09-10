@@ -115,8 +115,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${neueHaas.variable} ${cormorantGaramond.variable} ${butler.variable} ${nohemi.variable}`}>
-      <body className={`font-sans font-medium antialiased`}>
+    <html lang="en" suppressHydrationWarning className={`${neueHaas.variable} ${cormorantGaramond.variable} ${butler.variable} ${nohemi.variable}`}>
+      <body suppressHydrationWarning className={`font-sans font-medium antialiased`}>
         <AuthProvider>
           {children}
           <div className="film-grain" />

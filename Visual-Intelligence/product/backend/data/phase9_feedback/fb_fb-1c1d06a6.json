@@ -1,0 +1,11 @@
+{
+  "feedback_id": "fb-1c1d06a6",
+  "workflow_id": "wf-9c920403",
+  "source": "USER",
+  "category": "REVISION_SUGGESTION",
+  "target_role": "DESIGNER",
+  "rating": 0.8,
+  "comments": "visual direction too generic",
+  "defect_code": null,
+  "timestamp": "2026-09-05T12:56:01.871943+00:00"
+}

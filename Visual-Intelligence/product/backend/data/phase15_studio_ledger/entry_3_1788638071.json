@@ -1,0 +1,12 @@
+{
+  "entry_id": "entry_3_1788638071",
+  "previous_hash": "ed05eb4103cc46adf1818d42e6361b2542dba6fb5c144b31e86062de075c0614",
+  "client_id": "client_a",
+  "event_type": "BRAND_BOUND",
+  "payload": {
+    "brand_id": "b1",
+    "name": "Alpha Brand"
+  },
+  "timestamp": "2026-09-05T19:54:31.836724+00:00",
+  "current_hash": "07062301c009b91ed8a39f10c3d0ad53fc1b98dc8c82eaeb586587b0b8b16963"
+}

@@ -1,7 +1,7 @@
 import React from "react";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { ArrowUp, Paperclip, Square, X, StopCircle, Mic, Globe, BrainCog, FolderCode } from "lucide-react";
+import { ArrowUp, Paperclip, Square, X, StopCircle, Mic, Globe, BrainCog, FolderCode, Cpu, Image as ImageIcon, ChevronDown, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import LoadingState from "./loading-state";
 
@@ -340,18 +340,20 @@ const PromptInput = React.forwardRef<HTMLDivElement, PromptInputProps>(
           <div
             ref={ref}
             className={cn(
-              "relative rounded-3xl p-[1px] shadow-[0_8px_30px_rgba(0,0,0,0.24)] transition-all duration-300 overflow-hidden z-0 focus-within:ring-1 focus-within:ring-[#E1D4C0]/40 focus-within:shadow-[0_0_40px_rgba(225,212,192,0.15)]",
+              "relative rounded-3xl p-[1px] shadow-[0_8px_30px_rgba(0,0,0,0.24)] transition-all duration-300 z-0 focus-within:ring-1 focus-within:ring-[#E1D4C0]/40 focus-within:shadow-[0_0_40px_rgba(225,212,192,0.15)]",
               className
             )}
             onDragOver={onDragOver}
             onDragLeave={onDragLeave}
             onDrop={onDrop}
           >
-            {/* Base border fallback for areas without the beam */}
-            <div className="absolute inset-0 rounded-3xl bg-[#444444] z-[-2] pointer-events-none" />
-
-            {/* Moving colorful light beam */}
-            <div className="absolute inset-[-100%] z-[-1] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,transparent_75%,#4facfe,#f093fb,#f5576c,transparent_100%)] pointer-events-none" />
+            {/* Spinning beam wrapper with overflow-hidden */}
+            <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none z-[-1]">
+              {/* Base border fallback for areas without the beam */}
+              <div className="absolute inset-0 rounded-3xl bg-[#444444] z-[-2]" />
+              {/* Moving colorful light beam */}
+              <div className="absolute inset-[-100%] z-[-1] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,transparent_75%,#4facfe,#f093fb,#f5576c,transparent_100%)]" />
+            </div>
 
             {/* Inner background container */}
             <div className={cn(
@@ -469,6 +471,10 @@ interface PromptInputBoxProps {
   onCanvasClick?: () => void;
   isCanvasActive?: boolean;
   activeCampaignName?: string;
+  selectedLlmModel?: string;
+  onLlmModelChange?: (model: string) => void;
+  selectedImageModel?: string;
+  onImageModelChange?: (model: string) => void;
 }
 export const PromptInputBox = React.forwardRef((props: PromptInputBoxProps, ref: React.Ref<HTMLDivElement>) => {
   const { 
@@ -497,6 +503,51 @@ export const PromptInputBox = React.forwardRef((props: PromptInputBoxProps, ref:
   const [showCanvas, setShowCanvas] = React.useState(false);
   const uploadInputRef = React.useRef<HTMLInputElement>(null);
   const promptBoxRef = React.useRef<HTMLDivElement>(null);
+
+  // Model Selector States
+  const [selectedLlm, setSelectedLlm] = React.useState(props.selectedLlmModel || "Gemini 2.5 Flash");
+  const [selectedImageModel, setSelectedImageModel] = React.useState(props.selectedImageModel || "Nano Banana 2");
+  const [isLlmMenuOpen, setIsLlmMenuOpen] = React.useState(false);
+  const [isImageMenuOpen, setIsImageMenuOpen] = React.useState(false);
+
+  const llmContainerRef = React.useRef<HTMLDivElement>(null);
+  const imageContainerRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (!isLlmMenuOpen && !isImageMenuOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isLlmMenuOpen && llmContainerRef.current && !llmContainerRef.current.contains(event.target as Node)) {
+        setIsLlmMenuOpen(false);
+      }
+      if (isImageMenuOpen && imageContainerRef.current && !imageContainerRef.current.contains(event.target as Node)) {
+        setIsImageMenuOpen(false);
+      }
+    };
+
+    const timer = setTimeout(() => {
+      document.addEventListener("mousedown", handleClickOutside);
+    }, 0);
+
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isLlmMenuOpen, isImageMenuOpen]);
+
+  const llmOptions = [
+    { id: "gemini-2.5-flash", name: "Gemini 2.5 Flash", provider: "Google AI" },
+    { id: "gemini-1.5-pro", name: "Gemini 1.5 Pro", provider: "Google AI" },
+    { id: "gpt-4o", name: "GPT-4o", provider: "OpenAI" },
+    { id: "claude-3.5-sonnet", name: "Claude 3.5 Sonnet", provider: "Anthropic" },
+  ];
+
+  const imageModelOptions = [
+    { id: "nb2", name: "Nano Banana 2", provider: "Gemini 3.1 Flash Image" },
+    { id: "nb-pro", name: "NB Pro (Imagen 3)", provider: "Google DeepMind" },
+    { id: "dall-e-3", name: "DALL-E 3", provider: "OpenAI" },
+    { id: "midjourney-v6", name: "Midjourney v6", provider: "Midjourney" },
+  ];
 
   const handleToggleChange = (value: string) => {
     if (value === "search") {
@@ -717,6 +768,120 @@ export const PromptInputBox = React.forwardRef((props: PromptInputBoxProps, ref:
                 <span className="text-[9.5px] font-mono tracking-wider uppercase font-semibold">Canvas</span>
               </button>
             </PromptInputAction>
+
+            {/* LLM Model Selector Dropdown */}
+            <div ref={llmContainerRef} className="relative">
+              <PromptInputAction tooltip={`LLM Engine: ${selectedLlm}`}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsLlmMenuOpen((prev) => !prev);
+                    setIsImageMenuOpen(false);
+                  }}
+                  className={cn(
+                    "flex h-8 px-3 cursor-pointer items-center gap-1.5 rounded-full transition-all border shrink-0",
+                    isLlmMenuOpen
+                      ? "bg-[#E1D4C0]/20 border-[#E1D4C0]/40 text-[#E1D4C0]"
+                      : "border-white/15 bg-white/[0.02] text-[#9CA3AF] hover:text-[#D1D5DB] hover:bg-white/10"
+                  )}
+                >
+                  <Cpu className="h-3.5 w-3.5 text-[#E1D4C0]" />
+                  <span className="text-[9.5px] font-mono tracking-wider uppercase font-semibold">
+                    {selectedLlm.split(" ")[0]} {selectedLlm.split(" ")[1] || ""}
+                  </span>
+                  <ChevronDown className="h-3 w-3 opacity-60" />
+                </button>
+              </PromptInputAction>
+
+              {isLlmMenuOpen && (
+                <div className="absolute bottom-full mb-3 left-0 w-60 bg-[#141416]/95 border border-[#E1D4C0]/30 rounded-2xl p-2 shadow-[0_20px_50px_rgba(0,0,0,0.8)] z-50 flex flex-col gap-1 backdrop-blur-2xl animate-in fade-in-0 zoom-in-95">
+                  <div className="px-2.5 py-1.5 text-[9px] font-mono uppercase tracking-widest text-[#E1D4C0] border-b border-white/10 mb-1 flex items-center justify-between">
+                    <span>LLM Engine</span>
+                    <Cpu className="w-3 h-3 text-[#E1D4C0]" />
+                  </div>
+                  {llmOptions.map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedLlm(opt.name);
+                        props.onLlmModelChange?.(opt.name);
+                        setIsLlmMenuOpen(false);
+                      }}
+                      className={cn(
+                        "flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono transition-all text-left w-full cursor-pointer",
+                        selectedLlm === opt.name
+                          ? "bg-[#E1D4C0]/20 text-[#E1D4C0] font-semibold border border-[#E1D4C0]/30 shadow-md"
+                          : "text-white/70 hover:bg-white/10 hover:text-white border border-transparent"
+                      )}
+                    >
+                      <div className="flex flex-col">
+                        <span className="font-medium">{opt.name}</span>
+                        <span className="text-[9px] text-white/40">{opt.provider}</span>
+                      </div>
+                      {selectedLlm === opt.name && <Check className="h-3.5 w-3.5 text-[#E1D4C0]" />}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Image Gen Model Selector Dropdown */}
+            <div ref={imageContainerRef} className="relative">
+              <PromptInputAction tooltip={`Image Gen Engine: ${selectedImageModel}`}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsImageMenuOpen((prev) => !prev);
+                    setIsLlmMenuOpen(false);
+                  }}
+                  className={cn(
+                    "flex h-8 px-3 cursor-pointer items-center gap-1.5 rounded-full transition-all border shrink-0",
+                    isImageMenuOpen
+                      ? "bg-purple-500/20 border-purple-400/40 text-purple-300"
+                      : "border-white/15 bg-white/[0.02] text-[#9CA3AF] hover:text-[#D1D5DB] hover:bg-white/10"
+                  )}
+                >
+                  <ImageIcon className="h-3.5 w-3.5 text-purple-400" />
+                  <span className="text-[9.5px] font-mono tracking-wider uppercase font-semibold">
+                    {selectedImageModel.split(" ")[0]} {selectedImageModel.split(" ")[1] || ""}
+                  </span>
+                  <ChevronDown className="h-3 w-3 opacity-60" />
+                </button>
+              </PromptInputAction>
+
+              {isImageMenuOpen && (
+                <div className="absolute bottom-full mb-3 left-0 w-64 bg-[#141416]/95 border border-purple-500/30 rounded-2xl p-2 shadow-[0_20px_50px_rgba(0,0,0,0.8)] z-50 flex flex-col gap-1 backdrop-blur-2xl animate-in fade-in-0 zoom-in-95">
+                  <div className="px-2.5 py-1.5 text-[9px] font-mono uppercase tracking-widest text-purple-300 border-b border-white/10 mb-1 flex items-center justify-between">
+                    <span>Image Generation Engine</span>
+                    <ImageIcon className="w-3 h-3 text-purple-400" />
+                  </div>
+                  {imageModelOptions.map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedImageModel(opt.name);
+                        props.onImageModelChange?.(opt.name);
+                        setIsImageMenuOpen(false);
+                      }}
+                      className={cn(
+                        "flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono transition-all text-left w-full cursor-pointer",
+                        selectedImageModel === opt.name
+                          ? "bg-purple-500/20 text-purple-300 font-semibold border border-purple-400/30 shadow-md"
+                          : "text-white/70 hover:bg-white/10 hover:text-white border border-transparent"
+                      )}
+                    >
+                      <div className="flex flex-col">
+                        <span className="font-medium">{opt.name}</span>
+                        <span className="text-[9px] text-white/40">{opt.provider}</span>
+                      </div>
+                      {selectedImageModel === opt.name && <Check className="h-3.5 w-3.5 text-purple-300" />}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           <PromptInputAction

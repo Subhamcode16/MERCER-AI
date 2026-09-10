@@ -16,7 +16,9 @@ import {
   Settings,
   Menu,
   Users,
-  HelpCircle
+  HelpCircle,
+  Target,
+  Sparkles
 } from "lucide-react";
 
 // Sidebar context to allow children (like studio page) to toggle collapse state
@@ -76,6 +78,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <nav className="flex flex-col gap-6 flex-1 w-full overflow-y-auto scrollbar-none">
             <div>
               {!isCollapsed && (
+                <div className="text-[10px] tracking-[0.2em] uppercase text-white/30 mb-3 font-medium">Strategic Network</div>
+              )}
+              <div className="flex flex-col gap-1.5">
+                <NavLink href="/observatory" active={pathname.includes('/observatory')} collapsed={isCollapsed} icon={Compass}>Observatory</NavLink>
+                <NavLink href="/foresight" active={pathname.includes('/foresight')} collapsed={isCollapsed} icon={Sparkles}>Foresight Matrix</NavLink>
+                <NavLink href="/attribution" active={pathname.includes('/attribution')} collapsed={isCollapsed} icon={Target}>Attribution & Radar</NavLink>
+              </div>
+            </div>
+
+            <div>
+              {!isCollapsed && (
                 <div className="text-[10px] tracking-[0.2em] uppercase text-white/30 mb-3 font-medium">Institution</div>
               )}
               <div className="flex flex-col gap-1.5">
@@ -91,9 +104,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
             <div>
               {!isCollapsed && (
-                <div className="text-[10px] tracking-[0.2em] uppercase text-white/30 mb-3 font-medium">System</div>
+                <div className="text-[10px] tracking-[0.2em] uppercase text-white/30 mb-3 font-medium">System & Control</div>
               )}
               <div className="flex flex-col gap-1.5">
+                <NavLink href="/gateways" active={pathname.includes('/gateways')} collapsed={isCollapsed} icon={Layers}>Model & MCP Gateways</NavLink>
                 <NavLink href="/notifications" active={pathname.includes('/notifications')} collapsed={isCollapsed} icon={Bell}>Notifications</NavLink>
                 <NavLink href="/settings" active={pathname.includes('/settings')} collapsed={isCollapsed} icon={Settings}>Settings</NavLink>
                 <NavLink href="/faq" active={pathname.includes('/faq')} collapsed={isCollapsed} icon={HelpCircle}>FAQ</NavLink>
@@ -150,18 +164,18 @@ function NavLink({
   return (
     <Link 
       href={href}
-      className={`text-[13px] tracking-wide transition-all duration-300 flex items-center rounded-md ${
-        collapsed ? "justify-center p-2.5" : "gap-4 px-3 py-2 -ml-3"
+      className={`text-[13px] tracking-wide transition-all duration-200 flex items-center rounded-lg ${
+        collapsed ? "justify-center p-2.5" : "gap-3.5 px-3.5 py-2.5"
       } ${
         active 
-          ? 'bg-[#E1D4C0] text-[#0A0A0A] font-medium shadow-md' 
+          ? 'bg-[#E1D4C0] text-[#0A0A0A] font-semibold shadow-sm' 
           : 'text-white/40 hover:bg-[#E1D4C0]/10 hover:text-white font-light'
       }`}
     >
-      <Icon className={`w-4 h-4 shrink-0 transition-transform duration-300 ${active ? "scale-105" : ""}`} />
+      <Icon className={`w-4 h-4 shrink-0 transition-transform duration-200 ${active ? "scale-105" : ""}`} />
       
       {!collapsed && (
-        <span className="animate-in fade-in duration-300 truncate">{children}</span>
+        <span className="truncate">{children}</span>
       )}
     </Link>
   );

@@ -1,0 +1,12 @@
+{
+  "entry_id": "entry_2_1788638820",
+  "previous_hash": "69e712b652add797ff82fa997415c07872863471d98bc4c152133b08ef925f46",
+  "client_id": "client_b",
+  "event_type": "CLIENT_REGISTERED",
+  "payload": {
+    "client_id": "client_b",
+    "name": "Beta"
+  },
+  "timestamp": "2026-09-05T20:07:00.977717+00:00",
+  "current_hash": "d52afedce02a2747ec3c83d9b17b9b98b5723e5ab9ef2cd49ce5b0865e1d1678"
+}

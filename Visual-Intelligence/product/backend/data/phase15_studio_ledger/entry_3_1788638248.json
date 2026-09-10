@@ -1,0 +1,12 @@
+{
+  "entry_id": "entry_3_1788638248",
+  "previous_hash": "9537e18aa1db383b36f2f6438e2b053c1a04274d5b3f9dc57a407a8b107898f8",
+  "client_id": "client_nocap",
+  "event_type": "CAMPAIGN_LAUNCHED",
+  "payload": {
+    "campaign_id": "camp_nocap_sep",
+    "title": "Fall Drop 2026"
+  },
+  "timestamp": "2026-09-05T19:57:28.846852+00:00",
+  "current_hash": "d342296bf54cd43d395dd8fe38f0dc2ba6637d3c087cabcdcf4801766a132283"
+}

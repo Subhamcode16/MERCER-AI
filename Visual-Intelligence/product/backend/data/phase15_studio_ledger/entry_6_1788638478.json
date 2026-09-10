@@ -1,0 +1,12 @@
+{
+  "entry_id": "entry_6_1788638478",
+  "previous_hash": "45e4a2d6f8b50b55f8ee829ccca6de98b4c90eab8a8e015359e6a929ced2ba65",
+  "client_id": "client_beta",
+  "event_type": "CAMPAIGN_LAUNCHED",
+  "payload": {
+    "campaign_id": "camp_beta_sep",
+    "title": "Wireless Headphones"
+  },
+  "timestamp": "2026-09-05T20:01:18.642186+00:00",
+  "current_hash": "488caff012aa5e791d00452b4e2a96a12f5bac472c0d3f244b85a07dd9d6e3d3"
+}

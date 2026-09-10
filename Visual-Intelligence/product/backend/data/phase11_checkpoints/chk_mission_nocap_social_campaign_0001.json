@@ -1,0 +1,23 @@
+{
+  "checkpoint_id": "chk_mission_nocap_social_campaign_0001",
+  "mission_id": "mission_nocap_social_campaign",
+  "step_number": 1,
+  "mission_state": "RUNNING",
+  "graph_state": {
+    "nodes": [
+      "task_soc_research"
+    ]
+  },
+  "completed_task_ids": [
+    "task_soc_research"
+  ],
+  "executed_action_ids": [],
+  "learning_references": [
+    "wf_social_01"
+  ],
+  "authorization_token_id": null,
+  "policy_version": "v1.0",
+  "timestamp": "2026-09-07T13:39:24.714347+00:00",
+  "previous_checkpoint_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "digest": "60e8d8523dc8731f029cb8360777818fa55246c4c566ba4ec9a0f7796be27042"
+}

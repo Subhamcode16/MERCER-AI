@@ -1,0 +1,12 @@
+{
+  "entry_id": "entry_1_1788635475",
+  "previous_hash": "GENESIS_HASH_00000000000000000000000000000000000000000000000000000000",
+  "client_id": "client_nocap",
+  "event_type": "CLIENT_REGISTERED",
+  "payload": {
+    "client_id": "client_nocap",
+    "name": "NOCAP Studio"
+  },
+  "timestamp": "2026-09-05T19:11:15.315484+00:00",
+  "current_hash": "e95b958f1287ce84c28c44dfbe18bfa348862fb55472f82cb4d2c82f58e061d1"
+}
