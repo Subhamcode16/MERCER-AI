@@ -1,0 +1,1621 @@
+# II-009 — Creative Search & Knowledge Retrieval Contract
+
+**Status:** Engineering Specification — Draft / Under Review  
+**Phase:** II — From Ratified Principles to Engineering Specification  
+**Scope:** Retrieval, ranking, validation, provenance, and controlled incorporation of knowledge and creative references into the Campaign Intelligence Layer
+
+---
+
+## 1. Purpose
+
+II-009 defines how the intelligence layer retrieves information, references, examples, patterns, and supporting knowledge without allowing retrieved material to silently become authoritative campaign truth.
+
+The Retrieval Layer answers:
+
+> **What external or internal knowledge should the intelligence system retrieve, how should it assess that knowledge, and how may retrieved information legitimately influence campaign reasoning?**
+
+The core problem is not retrieval itself.
+
+The problem is **epistemic control**.
+
+A retrieved result may be:
+
+```text
+FACTUAL
+RELEVANT
+INSPIRATIONAL
+SPECULATIVE
+OUTDATED
+CONTRADICTORY
+LOW-QUALITY
+OR CONTEXTUALLY IRRELEVANT
+```
+
+Therefore:
+
+```text
+RETRIEVED
+≠
+TRUSTED
+≠
+AUTHORITATIVE
+```
+
+---
+
+# 2. Core Principle
+
+> **Retrieval supplies candidates for knowledge and inspiration; it does not automatically establish truth, authority, or campaign strategy.**
+
+The retrieval system must preserve the distinction between:
+
+```text
+SOURCE
+RETRIEVAL
+RELEVANCE
+EVIDENCE
+KNOWLEDGE
+AUTHORITY
+DECISION
+```
+
+These are different semantic states.
+
+---
+
+# 3. Canonical Retrieval Chain
+
+```text
+KNOWLEDGE NEED
+        ↓
+QUERY FORMULATION
+        ↓
+RETRIEVAL
+        ↓
+CANDIDATE SOURCES
+        ↓
+SOURCE EVALUATION
+        ↓
+CONTENT EXTRACTION
+        ↓
+CLAIM EXTRACTION
+        ↓
+CROSS-SOURCE VALIDATION
+        ↓
+PROVENANCE ATTACHMENT
+        ↓
+KNOWLEDGE / REFERENCE RECORD
+        ↓
+INTELLIGENCE LAYER
+```
+
+The retrieval process terminates in a **validated knowledge or reference record**, not directly in a campaign decision.
+
+---
+
+# 4. Knowledge Need
+
+Retrieval should begin with an explicit:
+
+```text
+KNOWLEDGE NEED
+```
+
+rather than an unconstrained search.
+
+Examples:
+
+```text
+Need:
+Determine whether a material is traditionally produced
+using a particular construction technique.
+
+Need:
+Find visual references showing authentic material behavior.
+
+Need:
+Understand common editorial conventions for presenting
+a specific product category.
+
+Need:
+Identify cultural context relevant to a campaign claim.
+```
+
+A knowledge need should identify why the information is required.
+
+---
+
+# 5. Retrieval Need Types
+
+Potential retrieval need classes include:
+
+```text
+FACTUAL
+TECHNICAL
+CULTURAL
+MARKET
+AUDIENCE
+VISUAL
+EDITORIAL
+PRODUCTION
+COMPETITIVE
+HISTORICAL
+INSPIRATIONAL
+VALIDATION
+```
+
+This vocabulary remains extensible.
+
+The retrieval system should know what type of need it is servicing because different source and validation standards may apply.
+
+---
+
+# 6. Retrieval vs Knowledge Authority
+
+The system must preserve:
+
+```text
+RETRIEVAL RESULT
+        ↓
+CANDIDATE KNOWLEDGE
+        ↓
+VALIDATED KNOWLEDGE
+        ↓
+AUTHORITATIVE KNOWLEDGE
+```
+
+Not every retrieved item should progress through all states.
+
+For example:
+
+```text
+Pinterest reference
+→ visual inspiration
+
+Manufacturer specification
+→ potentially strong product fact
+
+Academic / institutional source
+→ potentially strong factual evidence
+
+Anonymous social post
+→ low-authority candidate
+```
+
+Source type alone does not automatically establish truth, but it informs validation.
+
+---
+
+# 7. Source Classes
+
+Sources may be classified conceptually as:
+
+```text
+PRIMARY
+SECONDARY
+EXPERT
+INSTITUTIONAL
+COMMERCIAL
+COMMUNITY
+EDITORIAL
+SOCIAL
+USER-PROVIDED
+GENERATED
+```
+
+The exact hierarchy is not frozen.
+
+The classification exists to inform validation and provenance.
+
+---
+
+# 8. Source Authority vs Claim Authority
+
+A source may be authoritative for one claim and weak for another.
+
+Therefore:
+
+```text
+SOURCE AUTHORITY
+≠
+CLAIM AUTHORITY
+```
+
+Example:
+
+A retailer may be authoritative for:
+
+```text
+its own listed product specification
+```
+
+but not necessarily for:
+
+```text
+historical cultural claims
+```
+
+Likewise, a visual editorial publication may be useful for:
+
+```text
+visual convention
+```
+
+without being authoritative for:
+
+```text
+material science
+```
+
+Authority must therefore be evaluated at the **claim level**.
+
+---
+
+# 9. Claim Extraction
+
+Retrieved content should be decomposed into claims where factual reasoning is required.
+
+Conceptually:
+
+```text
+SOURCE
+   ↓
+CONTENT
+   ↓
+CLAIM
+```
+
+Each claim should preserve:
+
+```text
+claim_id
+statement
+source
+location
+source_type
+authority_assessment
+confidence
+date
+context
+```
+
+The exact schema remains deferred.
+
+---
+
+# 10. Claim Provenance
+
+Every factual claim entering the intelligence layer should be traceable to its source.
+
+The system should be able to answer:
+
+> Where did this information come from?
+
+and:
+
+> What exact source supports this claim?
+
+A retrospective explanation generated by an LLM is not sufficient provenance.
+
+The provenance must exist as structured data.
+
+---
+
+# 11. Retrieval Confidence
+
+Confidence reflects the system's assessment of support.
+
+It must remain separate from authority.
+
+```text
+CONFIDENCE
+=
+How strongly the available evidence supports the claim.
+
+AUTHORITY
+=
+Whether this source / claim is entitled to influence a decision
+within the relevant semantic domain.
+```
+
+Therefore:
+
+```text
+HIGH CONFIDENCE
++
+LOW AUTHORITY
+```
+
+does not automatically become:
+
+```text
+AUTHORITATIVE
+```
+
+---
+
+# 12. Relevance vs Truth
+
+A result may be highly relevant but incorrect.
+
+Example:
+
+```text
+Search result:
+Highly relevant to "traditional textile technique"
+
+Assessment:
+Relevant = HIGH
+Truth confidence = LOW
+```
+
+Likewise:
+
+```text
+Source:
+Highly authoritative
+
+Content:
+Irrelevant to the current campaign question
+
+Assessment:
+Authority = HIGH
+Relevance = LOW
+```
+
+Retrieval ranking must therefore not collapse all dimensions into one opaque score.
+
+---
+
+# 13. Retrieval Ranking Dimensions
+
+Candidate sources may be ranked using:
+
+```text
+RELEVANCE
+SOURCE QUALITY
+CLAIM AUTHORITY
+RECENCY
+DIRECTNESS
+CORROBORATION
+CONTEXTUAL FIT
+COMPLETENESS
+```
+
+The final ranking function remains deferred.
+
+The important requirement is that the dimensions remain inspectable.
+
+---
+
+# 14. Retrieval Result States
+
+A retrieved result may be classified as:
+
+```text
+CANDIDATE
+RELEVANT
+SUPPORTED
+VALIDATED
+AUTHORITATIVE
+INSPIRATIONAL
+CONTRADICTORY
+STALE
+REJECTED
+```
+
+These are semantic states, not necessarily a strict linear pipeline.
+
+A source may be:
+
+```text
+VALIDATED FOR VISUAL INSPIRATION
+```
+
+without being:
+
+```text
+AUTHORITATIVE FOR FACTUAL CLAIMS
+```
+
+---
+
+# 15. Creative Reference vs Factual Evidence
+
+This distinction is mandatory.
+
+## Factual Evidence
+
+Supports a claim about:
+
+```text
+product
+material
+history
+culture
+production
+audience
+market
+```
+
+## Creative Reference
+
+Provides:
+
+```text
+visual direction
+composition ideas
+styling references
+editorial conventions
+mood
+creative patterns
+```
+
+A creative reference must not be silently promoted to factual evidence.
+
+For example:
+
+```text
+Luxury campaign image
+```
+
+may demonstrate:
+
+```text
+editorial convention
+```
+
+but does not prove:
+
+```text
+material authenticity
+```
+
+---
+
+# 16. Creative Reference Object
+
+A creative reference may conceptually contain:
+
+```text
+reference_id
+source
+reference_type
+visual_characteristics
+relevant_attributes
+applicable_context
+inspiration_scope
+provenance
+confidence
+authority_scope
+```
+
+It should answer:
+
+> What exactly are we borrowing or learning from this reference?
+
+Possible attributes:
+
+```text
+composition
+lighting
+styling
+camera language
+color relationship
+material presentation
+negative space
+typography
+motion
+pacing
+```
+
+---
+
+# 17. Reference Abstraction
+
+The system should avoid copying a reference blindly.
+
+Instead:
+
+```text
+REFERENCE
+   ↓
+ABSTRACT PATTERN
+   ↓
+CAMPAIGN-APPROPRIATE APPLICATION
+```
+
+Example:
+
+```text
+Reference:
+Editorial portrait with side lighting.
+
+Abstracted pattern:
+Directional modeling that reveals surface structure.
+
+Application:
+Use as a potential material-reveal strategy.
+```
+
+This prevents the intelligence layer from treating references as templates to reproduce literally.
+
+---
+
+# 18. Reference Scope
+
+A creative reference must specify its intended scope.
+
+Examples:
+
+```text
+COMPOSITION_ONLY
+LIGHTING_ONLY
+MATERIAL_PRESENTATION
+STYLING
+COLOR
+NARRATIVE
+EDITORIAL_TONE
+MOTION
+TYPOGRAPHY
+```
+
+This prevents unrelated characteristics from being imported accidentally.
+
+---
+
+# 19. Reference Contamination
+
+A reference should not silently transfer:
+
+```text
+brand identity
+product claims
+cultural assumptions
+audience assumptions
+strategic objectives
+```
+
+into the current campaign.
+
+For example:
+
+```text
+Reference Brand:
+Luxury positioning
+
+Current Campaign:
+Mass-market positioning
+```
+
+The visual reference may still inform:
+
+```text
+composition
+```
+
+but must not automatically transfer:
+
+```text
+luxury strategy
+```
+
+---
+
+# 20. Retrieval Context
+
+Every retrieval operation should preserve:
+
+```text
+query
+knowledge_need
+campaign_context
+timestamp
+source_set
+filters
+retrieval_method
+```
+
+This enables reproducibility.
+
+The system should be able to answer:
+
+> What did we search for when this knowledge entered the campaign?
+
+---
+
+# 21. Query Formation
+
+Queries should be derived from the Knowledge Need.
+
+Conceptually:
+
+```text
+KNOWLEDGE NEED
+        ↓
+QUERY PLAN
+        ↓
+QUERY
+```
+
+The query planner may produce multiple queries when required:
+
+```text
+DIRECT QUERY
+SYNONYM QUERY
+CONTRADICTION QUERY
+SOURCE-SPECIFIC QUERY
+VALIDATION QUERY
+```
+
+This is preferable to relying on one retrieval query.
+
+---
+
+# 22. Contradiction Search
+
+For consequential claims, the retrieval system should be capable of actively searching for disagreement.
+
+Example:
+
+```text
+CLAIM:
+Technique X is traditional to region Y.
+
+VALIDATION:
+Search supporting sources.
+
+ADVERSARIAL SEARCH:
+Search evidence that contradicts or qualifies
+the claim.
+```
+
+This is a major mechanism for reducing confirmation bias.
+
+---
+
+# 23. Cross-Source Corroboration
+
+For claims where corroboration matters:
+
+```text
+SOURCE A
++
+SOURCE B
++
+SOURCE C
+        ↓
+CLAIM SUPPORT
+```
+
+Corroboration should not be treated as:
+
+```text
+three websites say it
+→ therefore true
+```
+
+The system must account for:
+
+```text
+source independence
+shared origin
+citation copying
+authority
+claim specificity
+```
+
+---
+
+# 24. Source Independence
+
+Ten sources repeating the same original claim may represent one evidence lineage.
+
+Conceptually:
+
+```text
+SOURCE A
+    ↓
+SOURCE B
+    ↓
+SOURCE C
+```
+
+does not equal:
+
+```text
+SOURCE A
+SOURCE B
+SOURCE C
+```
+
+as three independent confirmations.
+
+The retrieval system should attempt to identify duplicated or derivative sourcing when consequential claims are involved.
+
+---
+
+# 25. Temporal Validity
+
+Knowledge may change.
+
+The system should track:
+
+```text
+publication_date
+updated_date
+retrieval_date
+validity_context
+```
+
+Recency requirements depend on the knowledge type.
+
+For example:
+
+```text
+Historical fact
+→ recency may be low priority.
+
+Platform specification
+→ recency may be critical.
+```
+
+The retrieval layer should therefore avoid one universal freshness rule.
+
+---
+
+# 26. Contextual Validity
+
+A true statement may be invalid in the current campaign context.
+
+Example:
+
+```text
+Fact:
+A material can be produced using technique X.
+
+Campaign Product:
+Uses technique Y.
+
+```
+
+The fact is true but irrelevant to the current product.
+
+Therefore:
+
+```text
+TRUTH
++
+CONTEXT
+=
+USABLE KNOWLEDGE
+```
+
+---
+
+# 27. Knowledge Incorporation Boundary
+
+Validated retrieval results may become:
+
+```text
+KNOWLEDGE RECORD
+```
+
+but they should not automatically become:
+
+```text
+CAMPAIGN DECISION
+```
+
+The chain remains:
+
+```text
+RETRIEVED KNOWLEDGE
+        ↓
+VALIDATED KNOWLEDGE
+        ↓
+INTELLIGENCE REASONING
+        ↓
+DECISION
+```
+
+This protects strategic authority.
+
+---
+
+# 28. Knowledge Claim Types
+
+A retrieved claim may be classified as:
+
+```text
+FACT
+OBSERVATION
+EXPERT_ASSERTION
+INTERPRETATION
+HYPOTHESIS
+INSPIRATION
+PREFERENCE
+MARKET_SIGNAL
+AUDIENCE_SIGNAL
+```
+
+These types must not be silently interchangeable.
+
+---
+
+# 29. User-Provided Knowledge
+
+User-provided information may carry high campaign authority even when external corroboration is absent.
+
+For example:
+
+```text
+User:
+"This garment is handwoven by our partner artisans."
+```
+
+This may become an explicit campaign fact if the user's authority covers the product.
+
+However:
+
+```text
+USER CLAIM
+≠
+UNIVERSAL FACT
+```
+
+The scope of authority must remain explicit.
+
+---
+
+# 30. Retrieval and Campaign Authority
+
+The retrieval system must never use retrieved knowledge to silently override:
+
+```text
+EXPLICIT USER DIRECTION
+LOCKED CAMPAIGN INTENT
+PRODUCT TRUTH
+HARD BRAND CONSTRAINT
+```
+
+If retrieved knowledge conflicts with an authoritative campaign fact:
+
+```text
+CONFLICT
+        ↓
+CHALLENGE / ESCALATION
+```
+
+not silent replacement.
+
+---
+
+# 31. Knowledge Conflict
+
+Potential conflicts include:
+
+```text
+SOURCE ↔ SOURCE
+SOURCE ↔ USER KNOWLEDGE
+SOURCE ↔ PRODUCT TRUTH
+SOURCE ↔ CAMPAIGN INTENT
+```
+
+The system should classify:
+
+```text
+MINOR_DISAGREEMENT
+CONTEXTUAL_DIFFERENCE
+MATERIAL_CONFLICT
+HARD_CONFLICT
+```
+
+The appropriate authority mechanism determines resolution.
+
+---
+
+# 32. Retrieval Failure States
+
+The system should distinguish:
+
+```text
+NO_RESULTS
+```
+
+from:
+
+```text
+INSUFFICIENT_RESULTS
+```
+
+from:
+
+```text
+CONFLICTING_RESULTS
+```
+
+from:
+
+```text
+LOW_AUTHORITY_RESULTS
+```
+
+from:
+
+```text
+STALE_RESULTS
+```
+
+from:
+
+```text
+UNRESOLVED_KNOWLEDGE_GAP
+```
+
+Absence of retrieval evidence must not automatically become evidence of absence.
+
+---
+
+# 33. Search Stopping Criteria
+
+Retrieval should stop when the knowledge need is sufficiently resolved.
+
+Stopping conditions may include:
+
+```text
+required confidence achieved
+sufficient independent support
+required source class found
+contradiction resolved
+evidence threshold met
+additional results have low marginal information value
+```
+
+The exact threshold model remains deferred.
+
+---
+
+# 34. Retrieval Marginal Value
+
+Additional sources should be evaluated by:
+
+> **What new information does this source add?**
+
+If ten retrieved sources repeat the same claim without adding independent support or context, their marginal value declines.
+
+This parallels the asset marginal-value principle.
+
+```text
+SOURCE SET
+    ↓
+UNIQUE INFORMATION
+    ↓
+CORROBORATION
+    ↓
+SATURATION
+```
+
+---
+
+# 35. Retrieval Diversity
+
+For consequential questions, retrieval may intentionally diversify across:
+
+```text
+source type
+geography
+discipline
+perspective
+time period
+```
+
+The goal is not arbitrary diversity.
+
+The goal is reducing systematic blind spots.
+
+---
+
+# 36. Creative Search
+
+Creative search should be treated differently from factual retrieval.
+
+The system may search for:
+
+```text
+visual references
+campaign precedents
+editorial conventions
+composition patterns
+material photography
+lighting approaches
+narrative structures
+```
+
+The output is:
+
+```text
+REFERENCE LIBRARY
+```
+
+rather than factual truth.
+
+---
+
+# 37. Creative Reference Evaluation
+
+Creative references should be evaluated for:
+
+```text
+relevance
+visual quality
+pattern clarity
+transferability
+contextual compatibility
+originality
+scope
+```
+
+The system should distinguish:
+
+```text
+REFERENCE QUALITY
+```
+
+from:
+
+```text
+REFERENCE AUTHORITY
+```
+
+because visual inspiration does not require factual authority in the same way factual claims do.
+
+---
+
+# 38. Reference Diversity and Benchmarking
+
+A reference set should avoid being dominated by one aesthetic source.
+
+For example:
+
+```text
+20 references
+all from one brand
+```
+
+may create:
+
+```text
+STYLE COLLAPSE
+```
+
+rather than useful creative intelligence.
+
+The system should seek sufficient diversity to identify:
+
+```text
+stable patterns
+optional patterns
+outliers
+```
+
+---
+
+# 39. Pattern Extraction
+
+The intelligence layer may abstract recurring patterns from references.
+
+Example:
+
+```text
+REFERENCE SET
+        ↓
+OBSERVED PATTERNS
+        ↓
+PATTERN CONFIDENCE
+        ↓
+CREATIVE KNOWLEDGE
+```
+
+However:
+
+```text
+FREQUENCY
+≠
+BEST PRACTICE
+```
+
+A common pattern may simply be common.
+
+The system must not infer superiority solely from frequency.
+
+---
+
+# 40. Knowledge Graph Integration
+
+Validated knowledge should enter the graph with provenance.
+
+Conceptually:
+
+```text
+SOURCE
+   ↓ SUPPORTS
+CLAIM
+   ↓ INFORMS
+KNOWLEDGE RECORD
+   ↓ INFORMS
+INTENT / EVIDENCE / ASSET STRATEGY
+```
+
+The exact downstream influence must remain explicit.
+
+---
+
+# 41. Retrieval and Authority Scoping
+
+Authority must be scoped by:
+
+```text
+DOMAIN
+OBJECT
+CLAIM TYPE
+CONTEXT
+TIME
+SOURCE
+```
+
+Example:
+
+```text
+Source Authority:
+Product specification
+
+Domain:
+Current product
+
+Claim Type:
+Technical specification
+
+Context:
+Current campaign
+
+Authority:
+HIGH
+```
+
+This does not automatically establish authority for:
+
+```text
+historical claims
+cultural interpretation
+audience psychology
+```
+
+---
+
+# 42. Self-Critique Requirements
+
+The Self-Critique Agent should inspect retrieval outputs for:
+
+- query bias,
+- confirmation bias,
+- weak sources,
+- duplicated sources,
+- unsupported claims,
+- stale information,
+- context mismatch,
+- source-authority overreach,
+- creative-reference contamination,
+- and premature incorporation into campaign decisions.
+
+The critic should generate a critique record rather than silently altering knowledge.
+
+---
+
+# 43. Adversarial Verification Requirements
+
+The Adversarial Verification Agent should attempt to break retrieval integrity by:
+
+1. Returning highly relevant but low-authority sources.
+2. Promoting inspiration into factual evidence.
+3. Using repeated derivative sources as fake corroboration.
+4. Suppressing contradictory sources.
+5. Using stale information for current decisions.
+6. Treating high-confidence inference as authoritative.
+7. Injecting retrieved claims into locked campaign intent.
+8. Manipulating query formulation toward a desired answer.
+9. Creating false source independence.
+10. Using a reference to transfer another brand's strategic meaning.
+11. Exploiting ambiguous authority scope.
+12. Treating absence of search results as evidence of absence.
+13. Flooding the system with low-value sources.
+14. Severing provenance.
+15. Creating knowledge records without a valid knowledge need.
+
+Expected behavior:
+
+```text
+ATTACK
+    ↓
+DETECT
+    ↓
+BLOCK / CHALLENGE
+    ↓
+RECORD
+```
+
+---
+
+# 44. Validation Invariants
+
+### Invariant 1
+
+Retrieved content cannot become authoritative campaign knowledge without an explicit validation path.
+
+### Invariant 2
+
+Source authority and claim authority remain distinct.
+
+### Invariant 3
+
+Relevance and truth confidence remain distinct.
+
+### Invariant 4
+
+Confidence and authority remain distinct.
+
+### Invariant 5
+
+Creative references cannot silently become factual evidence.
+
+### Invariant 6
+
+Retrieved knowledge cannot silently mutate locked campaign intent.
+
+### Invariant 7
+
+Every consequential claim preserves provenance.
+
+### Invariant 8
+
+Corroboration must account for source independence.
+
+### Invariant 9
+
+Temporal validity must be considered when relevant.
+
+### Invariant 10
+
+Contextual validity must be considered.
+
+### Invariant 11
+
+Knowledge gaps remain explicit when retrieval is insufficient.
+
+### Invariant 12
+
+Search absence cannot automatically be interpreted as factual absence.
+
+### Invariant 13
+
+A creative pattern cannot be treated as a best practice solely because it is frequent.
+
+### Invariant 14
+
+Every retrieval operation has a traceable knowledge need.
+
+---
+
+# 45. Falsifiable Architectural Hypotheses
+
+## Hypothesis A — Authority-aware retrieval reduces strategic contamination
+
+**Claim:**
+
+Separating retrieval relevance, confidence, and authority reduces the rate at which weak external information enters campaign strategy as fact.
+
+**Experiment:**
+
+Inject highly relevant but low-authority sources.
+
+Compare:
+
+```text
+authority-aware retrieval
+vs
+relevance-only retrieval
+```
+
+Measure:
+
+- unsupported knowledge incorporation,
+- strategic drift,
+- human correction rate.
+
+---
+
+## Hypothesis B — Claim-level authority is superior to source-level authority
+
+**Claim:**
+
+Evaluating authority at the claim level reduces inappropriate generalization from otherwise useful sources.
+
+**Experiment:**
+
+Provide sources that are authoritative for one claim class but weak for another.
+
+Measure incorrect authority propagation.
+
+---
+
+## Hypothesis C — Contradiction search improves knowledge reliability
+
+**Claim:**
+
+Explicit adversarial retrieval of contradictory evidence reduces confirmation bias.
+
+**Experiment:**
+
+Compare:
+
+```text
+support-only retrieval
+vs
+support + contradiction search
+```
+
+Measure:
+
+- unresolved false claims,
+- confidence calibration,
+- correction rate.
+
+---
+
+## Hypothesis D — Source-independence analysis improves corroboration quality
+
+**Claim:**
+
+Distinguishing independent evidence from copied or derivative sources prevents false confidence.
+
+**Experiment:**
+
+Construct source clusters sharing one origin.
+
+Compare naive source counting against lineage-aware corroboration.
+
+---
+
+## Hypothesis E — Creative reference abstraction reduces style contamination
+
+**Claim:**
+
+Abstracting references into transferable patterns rather than copying their complete visual identity produces more original and campaign-appropriate creative directions.
+
+**Experiment:**
+
+Compare:
+
+```text
+direct reference imitation
+vs
+pattern abstraction
+```
+
+Measure:
+
+- stylistic similarity,
+- campaign relevance,
+- originality,
+- brand contamination.
+
+---
+
+# 46. Retrieval Evaluation Model
+
+Every retrieval operation should eventually expose:
+
+```text
+KNOWLEDGE NEED
+        ↓
+QUERY QUALITY
+        ↓
+RESULT RELEVANCE
+        ↓
+SOURCE QUALITY
+        ↓
+CLAIM SUPPORT
+        ↓
+CORROBORATION
+        ↓
+CONTEXTUAL VALIDITY
+        ↓
+AUTHORITY
+        ↓
+INCORPORATION DECISION
+```
+
+The system should preserve these diagnostic dimensions rather than collapsing them into a single opaque retrieval score.
+
+---
+
+# 47. Retrieval vs Intelligence Reasoning Boundary
+
+The Retrieval Layer answers:
+
+> What information and references are available?
+
+The Intelligence Layer answers:
+
+> What does this information mean for the campaign?
+
+Therefore:
+
+```text
+RETRIEVAL
+→ supplies candidates and validated knowledge
+
+INTELLIGENCE
+→ reasons over knowledge
+
+DECISION ENGINE
+→ makes authorized campaign decisions
+```
+
+Retrieval must not become an unauthorized strategy engine.
+
+---
+
+# 48. Retrieval vs Asset Strategy Boundary
+
+Creative references may inform:
+
+```text
+potential asset patterns
+visual approaches
+composition strategies
+```
+
+but they do not directly select the asset set.
+
+The chain remains:
+
+```text
+REFERENCE
+    ↓
+PATTERN
+    ↓
+KNOWLEDGE
+    ↓
+ASSET STRATEGY
+```
+
+where appropriate.
+
+---
+
+# 49. Retrieval vs Prompt Compilation Boundary
+
+Retrieved visual references must not be inserted wholesale into final prompts without abstraction and validation.
+
+The chain remains:
+
+```text
+REFERENCE
+    ↓
+ABSTRACT PATTERN
+    ↓
+VALIDATED CREATIVE KNOWLEDGE
+    ↓
+ASSET SPECIFICATION
+    ↓
+PROMPT COMPILATION
+```
+
+This prevents retrieval from becoming a hidden prompt-copying mechanism.
+
+---
+
+# 50. Knowledge Gap Closure
+
+A knowledge gap may be considered closed only when its required information threshold has been satisfied.
+
+Conceptually:
+
+```text
+KNOWLEDGE GAP
+        ↓
+RETRIEVAL
+        ↓
+EVIDENCE
+        ↓
+VALIDATION
+        ↓
+SUFFICIENT
+        ↓
+GAP CLOSED
+```
+
+If contradictory evidence remains unresolved:
+
+```text
+GAP REMAINS OPEN
+```
+
+even when large quantities of search results exist.
+
+---
+
+# 51. Core Contract
+
+> **The Retrieval and Creative Search Layer shall identify, retrieve, evaluate, validate, and preserve provenance for knowledge and creative references required by the Campaign Intelligence Layer without allowing retrieval relevance, confidence, source authority, or creative usefulness to be mistaken for campaign authority. It shall distinguish factual evidence from inspiration, evaluate claims at the appropriate scope, actively search for contradiction where consequential, account for source independence and temporal/contextual validity, preserve unresolved knowledge gaps, and expose retrieval integrity to self-critique and adversarial verification.**
+
+---
+
+# 52. Deferred Decisions
+
+II-009 does not freeze:
+
+- search provider,
+- vector database,
+- embedding model,
+- crawler architecture,
+- exact source authority taxonomy,
+- claim extraction model,
+- numerical retrieval scoring,
+- contradiction detection implementation,
+- reference-image analysis model,
+- storage schema,
+- caching,
+- external API integrations.
+
+These remain engineering and validation decisions.
+
+---
+
+# 53. Exit Criteria
+
+II-009 is semantically complete when:
+
+- [x] Knowledge Need defined
+- [x] Retrieval / knowledge / authority boundary established
+- [x] Retrieval need types established
+- [x] Source classes established provisionally
+- [x] Claim-level authority established
+- [x] Claim extraction established
+- [x] Provenance requirements established
+- [x] Confidence / authority distinction established
+- [x] Relevance / truth distinction established
+- [x] Retrieval ranking dimensions established
+- [x] Creative reference boundary established
+- [x] Reference abstraction established
+- [x] Reference contamination boundary established
+- [x] Query planning established
+- [x] Contradiction search established
+- [x] Source independence established
+- [x] Temporal validity established
+- [x] Contextual validity established
+- [x] Knowledge incorporation boundary established
+- [x] Knowledge conflict handling established
+- [x] Search stopping principles established
+- [x] Retrieval marginal value established
+- [x] Creative pattern extraction boundary established
+- [x] Knowledge Graph integration established
+- [x] Authority scoping established
+- [x] Self-critique requirements established
+- [x] Adversarial verification requirements established
+- [x] Validation invariants established
+- [x] Falsifiable hypotheses established
+- [x] Asset Strategy boundary established
+- [x] Prompt Compilation boundary established
+- [x] Knowledge-gap closure established
+
+**Current assessment:** Ready for cross-document review, but **not yet ratified**.
+
+---
+
+## Next Specification
+
+**II-010 — Evaluation & Sufficiency Contract**
+
+This specification will define how the system determines whether intents, evidence, assets, narratives, and channel projections are actually sufficient, how evaluation differs from generation, and how objective evidence can be collected to validate the architecture itself.
