@@ -177,9 +177,9 @@ export default function TeamMode() {
 
   // Onboard resolver + Load stored Brand DNA on mount
   useEffect(() => {
-    const visited = localStorage.getItem(`mercer_team_visited_${userId}`);
-    const savedDna = localStorage.getItem(`mercer_brand_dna_${userId}`);
-    const skippedDna = localStorage.getItem(`mercer_brand_dna_skipped_${userId}`);
+    const visited = localStorage.getItem(`vyren_team_visited_${userId}`);
+    const savedDna = localStorage.getItem(`vyren_brand_dna_${userId}`);
+    const skippedDna = localStorage.getItem(`vyren_brand_dna_skipped_${userId}`);
     
     if (savedDna) {
       try {
@@ -462,7 +462,7 @@ export default function TeamMode() {
   if (!isResolved) {
     return (
       <div className="w-full h-full bg-[#050505] text-[#E1D4C0] flex items-center justify-center font-mono text-[10px] tracking-widest uppercase">
-        Loading Mercer AI...
+        Loading VYREN...
       </div>
     );
   }
@@ -494,9 +494,9 @@ export default function TeamMode() {
           <GreetingScreen
             userName={userName}
             onComplete={() => {
-              localStorage.setItem(`mercer_team_visited_${userId}`, "true");
-              const savedDna = localStorage.getItem(`mercer_brand_dna_${userId}`);
-              const skippedDna = localStorage.getItem(`mercer_brand_dna_skipped_${userId}`);
+              localStorage.setItem(`vyren_team_visited_${userId}`, "true");
+              const savedDna = localStorage.getItem(`vyren_brand_dna_${userId}`);
+              const skippedDna = localStorage.getItem(`vyren_brand_dna_skipped_${userId}`);
               if (savedDna || skippedDna === "true") {
                 setPageState("workspace");
               } else {
@@ -515,11 +515,11 @@ export default function TeamMode() {
             onComplete={(data) => {
               setBrandDna(data);
               if (!data) {
-                localStorage.setItem(`mercer_brand_dna_skipped_${userId}`, "true");
+                localStorage.setItem(`vyren_brand_dna_skipped_${userId}`, "true");
               } else {
-                localStorage.removeItem(`mercer_brand_dna_skipped_${userId}`);
+                localStorage.removeItem(`vyren_brand_dna_skipped_${userId}`);
               }
-              localStorage.setItem(`mercer_team_visited_${userId}`, "true");
+              localStorage.setItem(`vyren_team_visited_${userId}`, "true");
               handleWorkspaceStart();
             }}
           />
@@ -534,7 +534,7 @@ export default function TeamMode() {
             onComplete={(data) => {
               if (data) {
                 setBrandDna(data);
-                localStorage.removeItem(`mercer_brand_dna_skipped_${userId}`);
+                localStorage.removeItem(`vyren_brand_dna_skipped_${userId}`);
               }
               setIsDnaConfigOpen(false);
             }}

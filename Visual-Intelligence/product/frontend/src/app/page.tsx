@@ -401,7 +401,7 @@ export default function Home() {
       >
         {/* Logo */}
         <div className="t-stagger-line t-stagger-line--1 absolute top-[6vh] left-[8vw] max-w-[120px] font-sans font-bold tracking-widest text-sm opacity-90">
-          MERCER AI
+          VYREN
         </div>
         
         {/* Navigation */}

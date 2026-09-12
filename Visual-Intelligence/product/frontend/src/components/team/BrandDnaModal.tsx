@@ -33,14 +33,14 @@ export const BrandDnaModal: React.FC<BrandDnaModalProps> = ({
 
   const saveAndExit = (data: BrandDnaData | null) => {
     if (data) {
-      localStorage.setItem(`mercer_brand_dna_${userId}`, JSON.stringify(data));
+      localStorage.setItem(`vyren_brand_dna_${userId}`, JSON.stringify(data));
     }
     onComplete(data);
   };
 
   const handleFinishWizard = () => {
     const data: BrandDnaData = {
-      account: "Mercer Atelier",
+      account: "VYREN Atelier",
       archetype: formArchetype,
       voice: formVoice,
       palette: formPalette,

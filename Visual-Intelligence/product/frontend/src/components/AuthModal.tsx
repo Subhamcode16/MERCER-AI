@@ -156,7 +156,7 @@ export function AuthModal({ isOpen, onClose, initialView = "login", onSuccess }:
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full bg-transparent border-b border-white/10 py-2 text-[#E1D4C0] focus:outline-none focus:border-white/50 transition-colors text-sm"
-                  placeholder="designer@mercerai.space"
+                  placeholder="designer@VYREN.space"
                 />
               </div>
               
@@ -286,7 +286,7 @@ export function AuthModal({ isOpen, onClose, initialView = "login", onSuccess }:
 
             <p className="mt-8 text-sm text-zinc-500 text-center">
               {view === "login" ? (
-                <>New to Mercer AI? <button onClick={() => handleSwitchView("signup")} className="text-[#E1D4C0] hover:underline">Create an account</button></>
+                <>New to VYREN? <button onClick={() => handleSwitchView("signup")} className="text-[#E1D4C0] hover:underline">Create an account</button></>
               ) : (
                 <>Already have an account? <button onClick={() => handleSwitchView("login")} className="text-[#E1D4C0] hover:underline">Log in</button></>
               )}

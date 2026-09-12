@@ -223,7 +223,7 @@ export function CanvasFolderPopover({
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  navigator.clipboard.writeText(`https://mercer.com/team/share/${session.id}`);
+                                  navigator.clipboard.writeText(`https://vyren.com/team/share/${session.id}`);
                                   setCopiedId(session.id);
                                   setTimeout(() => { setCopiedId(null); setOpenMenuId(null); }, 1500);
                                 }}

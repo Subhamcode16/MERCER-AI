@@ -203,7 +203,7 @@ export class MockOrchestrator {
           "Aspect Ratio": "3:4 Editorial",
           "Color Grade": "Obsidian & Gold Contrast",
         },
-        bullet: "All parameters bound to Mercer Atelier brand profile. Click 'Approve & Render' to execute image synthesis.",
+        bullet: "All parameters bound to VYREN Atelier brand profile. Click 'Approve & Render' to execute image synthesis.",
       },
     });
 

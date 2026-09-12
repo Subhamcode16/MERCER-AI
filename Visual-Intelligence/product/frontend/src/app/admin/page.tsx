@@ -97,7 +97,7 @@ export default function AdminCRM() {
     return (
       <div className="min-h-screen bg-[#0A0A0A] flex flex-col items-center justify-center gap-4 text-white">
         <Loader2 className="w-8 h-8 text-[#E1D4C0] animate-spin" />
-        <p className="text-[10px] tracking-[0.25em] uppercase text-zinc-500">Loading Mercer AI CRM</p>
+        <p className="text-[10px] tracking-[0.25em] uppercase text-zinc-500">Loading VYREN CRM</p>
       </div>
     );
   }
@@ -125,7 +125,7 @@ export default function AdminCRM() {
       <header className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6 mb-16 pb-8 border-b border-white/5">
         <div>
           <div className="flex items-center gap-3 mb-3">
-            <span className="text-[9px] tracking-[0.2em] uppercase bg-[#E1D4C0]/10 text-[#E1D4C0] px-2.5 py-1 rounded border border-[#E1D4C0]/20 font-medium">Mercer AI Command Center</span>
+            <span className="text-[9px] tracking-[0.2em] uppercase bg-[#E1D4C0]/10 text-[#E1D4C0] px-2.5 py-1 rounded border border-[#E1D4C0]/20 font-medium">VYREN Command Center</span>
             {refreshing && <span className="text-[9px] text-zinc-500">Syncing...</span>}
           </div>
           <h1 className="text-4xl font-serif text-white tracking-wide">CRM & Audience Intelligence</h1>
@@ -184,7 +184,7 @@ export default function AdminCRM() {
               </div>
               <p className="text-[10px] tracking-[0.2em] uppercase text-zinc-500 mb-2">Credits in Circulation</p>
               <h3 className="text-3xl font-serif text-white mb-4">{stats.total_credits}</h3>
-              <p className="text-[11px] text-[#E1D4C0] font-medium uppercase tracking-widest">Mercer AI Ledger Active</p>
+              <p className="text-[11px] text-[#E1D4C0] font-medium uppercase tracking-widest">VYREN Ledger Active</p>
             </div>
 
             {/* Widget 3 */}

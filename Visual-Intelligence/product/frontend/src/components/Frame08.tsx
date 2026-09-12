@@ -175,7 +175,7 @@ export function Frame08() {
         
         {/* Text */}
         <span className="text-white uppercase text-[15px] tracking-[0.2em] font-medium opacity-95">
-          Enter Mercer AI
+          Enter VYREN
         </span>
       </button>
     </div>

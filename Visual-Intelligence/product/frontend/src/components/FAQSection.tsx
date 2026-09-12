@@ -11,8 +11,8 @@ interface FAQItem {
 
 const FAQ_ITEMS: FAQItem[] = [
   {
-    question: "What is Mercer AI and how does it operate?",
-    answer: "Mercer AI is an advanced collaborative visual intelligence platform. It brings together textile physics, material analysis, and multi-agent AI pipelines to synthesize high-end fashion and lifestyle campaign imagery from design specifications."
+    question: "What is VYREN and how does it operate?",
+    answer: "VYREN is an advanced collaborative visual intelligence platform. It brings together textile physics, material analysis, and multi-agent AI pipelines to synthesize high-end fashion and lifestyle campaign imagery from design specifications."
   },
   {
     question: "How does the Material DNA engine analyze fabrics?",

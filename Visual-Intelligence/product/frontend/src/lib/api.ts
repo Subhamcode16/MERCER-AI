@@ -23,7 +23,7 @@ function sleep(ms: number): Promise<void> {
 }
 
 /**
- * Core API Client for Mercer AI
+ * Core API Client for VYREN
  *
  * Features:
  * - Automatically attaches the Supabase JWT token to requests.

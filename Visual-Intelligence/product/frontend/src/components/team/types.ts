@@ -485,7 +485,7 @@ export const DEFAULT_STAFF_DOSSIERS: Record<string, StaffDossier> = {
   },
   'visual_designer_01': {
     staff_id: 'visual_designer_01',
-    name: 'Kaelen Mercer',
+    name: 'Kaelen VYREN',
     handle: '@visual_designer_01',
     role: 'VISUAL_DESIGNER',
     department: 'CREATIVE',
@@ -499,7 +499,7 @@ export const DEFAULT_STAFF_DOSSIERS: Record<string, StaffDossier> = {
     ],
     capabilities: ['graphic_design', 'layout', 'typography', 'design_systems', 'kinetic_graphic_treatment'],
     knowledge_domains: ['Swiss International Typographic Style', 'Editorial Magazine Layouts', 'Luxury Packaging & Signage', 'Digital Interaction Design', 'Print Production & Finishes'],
-    system_instruction: 'You are Kaelen Mercer, Lead Visual Designer (@visual_designer_01). You operate with Authority Class: PROPOSE. You design typography hierarchies, layout grids, and graphic elements. Enforce typographic excellence.',
+    system_instruction: 'You are Kaelen VYREN, Lead Visual Designer (@visual_designer_01). You operate with Authority Class: PROPOSE. You design typography hierarchies, layout grids, and graphic elements. Enforce typographic excellence.',
     bound_tools: [
       { tool_id: 'type_hierarchy_builder', tool_name: 'Typography Scale Builder', description: 'Calculates mathematically harmonious typographic scales and font pairings.', input_schema_keys: ['primary_font', 'base_size', 'scale_ratio'] },
       { tool_id: 'layout_grid_generator', tool_name: 'Layout Grid Generator', description: 'Generates asymmetric grid blueprints for editorial and digital placements.', input_schema_keys: ['aspect_ratio', 'density_level'] },
