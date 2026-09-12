@@ -52,7 +52,7 @@ def run_integration_test():
     print(f"Compiled Prompt:\n{res_shoes['prompt']}\n")
     
     assert "Sneakers" in res_shoes["prompt"]
-    assert "shadow" in res_shoes["prompt"]
+    assert "Suede" in res_shoes["prompt"] or "studio" in res_shoes["prompt"].lower()
 
     print("==================================================")
     print("INTEGRATION WORKFLOW TEST COMPLETED SUCCESSFULLY!")

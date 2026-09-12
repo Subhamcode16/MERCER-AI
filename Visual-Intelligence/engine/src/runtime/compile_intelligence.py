@@ -152,12 +152,12 @@ def compile_domain_rules(domain_path):
 
 def run_pipeline():
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-    # Path: Intelligence Layer/Human Expression/
-    intelligence_dir = os.path.join(base_dir, "Intelligence Layer", "Human Expression")
-    
+    # Path: docs/knowledge/Human Expression/ or Intelligence Layer/Human Expression/
+    intelligence_dir = os.path.join(base_dir, "docs", "knowledge", "Human Expression")
     if not os.path.exists(intelligence_dir):
-        # Fallback to local workspace direct paths
-        intelligence_dir = r"c:\Users\User\OneDrive\Desktop\Fashion Knowldge Wiki\Intelligence Layer\Human Expression"
+        intelligence_dir = os.path.join(base_dir, "Intelligence Layer", "Human Expression")
+    if not os.path.exists(intelligence_dir):
+        intelligence_dir = r"c:\Users\User\OneDrive\Desktop\Fashion Knowldge Wiki\docs\knowledge\Human Expression"
         
     print(f"Building V2 Compiled Intelligence Database from: {intelligence_dir}")
     all_compiled_rules = []
