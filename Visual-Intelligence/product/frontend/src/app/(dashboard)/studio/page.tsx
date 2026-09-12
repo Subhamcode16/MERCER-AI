@@ -1,1633 +1,313 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback, useContext } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Plus, ArrowLeft, Edit2, Trash2, Upload } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useAuth } from "@/contexts/AuthContext";
-import {
-  listCampaigns,
-  createCampaign,
-  getCampaign,
-  renameCampaign,
-  deleteCampaign,
-  uploadMaterial,
-  analyzeMaterial,
-  generateCampaign,
-  updateCampaignOptions,
-  getMaterialUrl,
-  type CampaignSummary,
-  type FullCampaign,
-  type MemoryNode,
-} from "@/lib/campaigns";
+import { 
+  Sparkles, 
+  Plus, 
+  FileText, 
+  Layers, 
+  History, 
+  ArrowRight, 
+  Target, 
+  Compass, 
+  CheckCircle2,
+  Folder,
+  Sliders,
+  Eye,
+  ShieldCheck
+} from "lucide-react";
+import { 
+  INITIAL_CAMPAIGN_FIXTURE, 
+  type CampaignStudioModel 
+} from "@/lib/campaignStudioFixtures";
+import { 
+  CampaignStudioHeader, 
+  type StudioTabId 
+} from "@/components/studio/CampaignStudioHeader";
+import { AskVyrenModal } from "@/components/studio/AskVyrenModal";
+import { OverviewTab } from "@/components/studio/tabs/OverviewTab";
+import { IntelligenceTab } from "@/components/studio/tabs/IntelligenceTab";
+import { DirectionsTab } from "@/components/studio/tabs/DirectionsTab";
+import { VisualsTab } from "@/components/studio/tabs/VisualsTab";
+import { AssetsTab } from "@/components/studio/tabs/AssetsTab";
+import { ReviewTab } from "@/components/studio/tabs/ReviewTab";
+import { ProductionTab } from "@/components/studio/tabs/ProductionTab";
+import { OutcomesTab } from "@/components/studio/tabs/OutcomesTab";
 
-// --- V2 Constraint Solver Components ---
-import { ReasoningTracePanel } from "@/components/studio/ReasoningTracePanel";
-import { PhysicalViolationAlert } from "@/components/studio/PhysicalViolationAlert";
-import { HeuristicRecommendation } from "@/components/studio/HeuristicRecommendation";
-import { CREBentoGrid, type CREScores } from "@/components/studio/CREBentoGrid";
-import { PromptInputBox } from "@/components/ui/ai-prompt-box";
-import { WorkflowTimeline } from "@/components/studio/WorkflowTimeline";
+export default function CampaignStudioPage() {
+  // Campaign State: activeCampaign is loaded by default or null for empty state
+  const [activeCampaign, setActiveCampaign] = useState<CampaignStudioModel | null>(INITIAL_CAMPAIGN_FIXTURE);
+  const [activeTab, setActiveTab] = useState<StudioTabId>('overview');
+  const [isAskVyrenOpen, setIsAskVyrenOpen] = useState(false);
+  const [isCreateDrawerOpen, setIsCreateDrawerOpen] = useState(false);
+  const [newCampaignName, setNewCampaignName] = useState("");
+  const [newCampaignObjective, setNewCampaignObjective] = useState("");
 
-// --- Sidebar Context ---
-import { SidebarContext } from "../layout";
-
-// --- SVG Icons ---
-
-const FolderIcon = ({ hasMaterial }: { hasMaterial?: boolean }) => (
-  <div className="relative w-full h-full drop-shadow-2xl group-hover:scale-[1.03] transition-transform duration-300 flex items-center justify-center">
-    <img src="/assets/folder-icon.png" alt="Campaign Folder" className="w-full h-full object-contain drop-shadow-lg" />
-    {hasMaterial && (
-      <svg viewBox="0 0 24 24" className="absolute bottom-6 right-6 w-8 h-8 drop-shadow-md">
-        <rect x="0" y="0" width="24" height="24" fill="#FFFFFF" stroke="#111111" strokeWidth="3" rx="4" strokeLinejoin="round" />
-        <circle cx="8" cy="8" r="2.5" fill="#111111" />
-        <path d="M 0 20 L 8 12 L 16 20 L 24 12 L 24 24 L 0 24 Z" fill="#111111" stroke="#111111" strokeWidth="2" strokeLinejoin="round" />
-      </svg>
-    )}
-  </div>
-);
-
-const DashedFolderIcon = () => (
-  <svg viewBox="0 0 105 105" className="w-full h-full opacity-60 group-hover:opacity-100 transition-opacity duration-300">
-    <path d="M 10 90 L 10 25 Q 10 15 20 15 L 35 15 L 45 25 L 85 25 Q 95 25 95 35 L 95 90 Q 95 95 90 95 L 20 95 Q 10 95 10 90 Z" fill="transparent" stroke="#E1D4C0" strokeWidth="2" strokeDasharray="6 6" strokeLinejoin="round" />
-    <path d="M 10 90 L 10 55 Q 10 45 20 45 L 42 45 L 52 35 L 85 35 Q 95 35 95 45 L 95 90 Q 95 95 90 95 L 20 95 Q 10 95 10 90 Z" fill="transparent" stroke="#E1D4C0" strokeWidth="2" strokeDasharray="6 6" strokeLinejoin="round" />
-    <line x1="52.5" y1="45" x2="52.5" y2="75" stroke="#E1D4C0" strokeWidth="3" strokeLinecap="round" />
-    <line x1="37.5" y1="60" x2="67.5" y2="60" stroke="#E1D4C0" strokeWidth="3" strokeLinecap="round" />
-  </svg>
-);
-
-// --- Dynamic Composition Preview Component ---
-
-const SceneCompositionCard = ({
-  background,
-  pose,
-  lighting,
-  ratio
-}: {
-  background: string;
-  pose: string;
-  lighting: string;
-  ratio: string;
-}) => {
-  const getBgStyle = () => {
-    switch (background) {
-      case 'Heritage Fort / Palace Corridor':
-        return 'from-[#2C1E1B] via-[#4A322C] to-[#1C1210]';
-      case 'Lush Garden':
-        return 'from-[#0F1E15] via-[#1C3224] to-[#0A130E]';
-      case 'Reflective Metal Surface':
-        return 'from-[#23272A] via-[#43494F] to-[#141618]';
-      case 'Industrial Concrete / Urban':
-        return 'from-[#25282A] via-[#3E4246] to-[#16181A]';
-      case 'Draped Velvet Platform':
-        return 'from-[#1A0F2E] via-[#2F1A52] to-[#0E071C]';
-      case 'Minimalist Stone Pedestal':
-      default:
-        return 'from-[#1F2421] via-[#2A302D] to-[#111412]';
-    }
-  };
-
-  const getOverlayPattern = () => {
-    switch (background) {
-      case 'Heritage Fort / Palace Corridor':
-        return (
-          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#E1D4C0_1px,transparent_1px)] [background-size:16px_16px] flex items-center justify-center">
-            <svg viewBox="0 0 100 100" className="w-48 h-48 stroke-[#E1D4C0] fill-none stroke-[0.5]">
-              <path d="M 10 90 L 10 50 A 40 40 0 0 1 90 50 L 90 90 Z" />
-              <path d="M 20 90 L 20 50 A 30 30 0 0 1 80 50 L 80 90 Z" />
-            </svg>
-          </div>
-        );
-      case 'Lush Garden':
-        return (
-          <div className="absolute inset-0 opacity-10 flex items-center justify-center">
-            <svg viewBox="0 0 100 100" className="w-48 h-48 stroke-[#E1D4C0] fill-none stroke-[0.5]">
-              <path d="M 50 90 Q 30 60 50 20 Q 70 60 50 90 Z" />
-              <path d="M 50 75 Q 35 55 50 35 M 50 60 Q 65 45 50 25" />
-            </svg>
-          </div>
-        );
-      case 'Reflective Metal Surface':
-        return (
-          <div className="absolute inset-0 opacity-20 bg-gradient-to-tr from-transparent via-white/10 to-transparent flex items-center justify-center">
-            <div className="w-full h-full flex flex-col gap-6 transform rotate-45 scale-150">
-              <div className="h-0.5 w-full bg-[#E1D4C0]/20" />
-              <div className="h-1.5 w-full bg-[#E1D4C0]/10" />
-              <div className="h-0.5 w-full bg-[#E1D4C0]/20" />
-            </div>
-          </div>
-        );
-      case 'Industrial Concrete / Urban':
-        return (
-          <div className="absolute inset-0 opacity-10 flex items-center justify-center">
-            <svg viewBox="0 0 100 100" className="w-full h-full stroke-[#E1D4C0] stroke-[0.25]">
-              <line x1="20" y1="0" x2="20" y2="100" />
-              <line x1="50" y1="0" x2="50" y2="100" />
-              <line x1="80" y1="0" x2="80" y2="100" />
-              <line x1="0" y1="30" x2="100" y2="30" />
-              <line x1="0" y1="70" x2="100" y2="70" />
-            </svg>
-          </div>
-        );
-      case 'Draped Velvet Platform':
-        return (
-          <div className="absolute inset-0 opacity-15 flex items-center justify-center">
-            <svg viewBox="0 0 100 100" className="w-full h-full stroke-[#E1D4C0] fill-none stroke-[0.5]">
-              <path d="M -20 50 Q 20 80 50 50 T 120 50" />
-              <path d="M -20 60 Q 20 90 50 60 T 120 60" />
-              <path d="M -20 70 Q 20 100 50 70 T 120 70" />
-            </svg>
-          </div>
-        );
-      case 'Minimalist Stone Pedestal':
-      default:
-        return (
-          <div className="absolute inset-0 opacity-10 flex items-center justify-center">
-            <svg viewBox="0 0 100 100" className="w-40 h-40 stroke-[#E1D4C0] fill-none stroke-[0.5]">
-              <rect x="25" y="45" width="50" height="40" rx="2" />
-              <line x1="15" y1="45" x2="85" y2="45" />
-            </svg>
-          </div>
-        );
-    }
-  };
-
-  const getDrapeGraphic = () => {
-    switch (pose) {
-      case 'Dynamic Fabric Spin / Wind Blown':
-        return (
-          <path d="M 50 85 Q 20 65 30 35 Q 50 15 70 35 T 50 85" className="animate-[spin_20s_linear_infinite]" style={{ transformOrigin: '50px 50px' }} />
-        );
-      case 'Static Geometrical Placement':
-        return (
-          <g>
-            <path d="M 35 25 L 65 25 L 60 85 L 40 85 Z" />
-            <line x1="45" y1="25" x2="45" y2="85" />
-            <line x1="55" y1="25" x2="55" y2="85" />
-          </g>
-        );
-      case 'Cascading Edge / Waterflow Effect':
-        return (
-          <path d="M 30 30 Q 50 40 40 60 T 60 90" />
-        );
-      case 'Suspended / Anti-gravity Float':
-        return (
-          <path d="M 30 40 Q 55 25 50 55 T 70 40" className="animate-[pulse_4s_ease-in-out_infinite]" />
-        );
-      case 'Architectural Drape / Structured Fold':
-      default:
-        return (
-          <g>
-            <path d="M 40 20 Q 50 40 35 85 M 48 20 Q 50 45 48 85 M 58 20 Q 50 40 62 85" />
-            <path d="M 30 20 L 70 20 L 62 85 L 35 85 Z" className="opacity-10 fill-[#E1D4C0]" />
-          </g>
-        );
-    }
-  };
-
-  const getLightingStyle = () => {
-    switch (lighting) {
-      case 'Golden Hour Warmth / Soft Sun':
-        return 'bg-gradient-to-r from-amber-500/10 to-transparent mix-blend-screen border border-amber-500/20';
-      case 'High-contrast Chiaroscuro':
-        return 'bg-black/40 backdrop-brightness-50 border border-white/5';
-      case 'Moody Rim Light / Cyberpunk Glow':
-        return 'shadow-[inset_0_0_30px_rgba(139,92,246,0.3)] border border-violet-500/20';
-      case 'Soft Diffused Studio Light':
-        return 'bg-white/5 blur-[2px] border border-white/10';
-      case 'Ethereal Backlight / Edge Wrap':
-      default:
-        return 'shadow-[inset_0_0_20px_rgba(225,212,192,0.2)] border border-[#E1D4C0]/20';
-    }
-  };
-
-  return (
-    <div className={`relative w-full aspect-[4/3] rounded-2xl bg-gradient-to-b ${getBgStyle()} overflow-hidden border border-white/5 shadow-2xl flex items-center justify-center`}>
-      {getOverlayPattern()}
-      <div className={`absolute inset-0 ${getLightingStyle()}`} />
-      <div className="absolute inset-0 opacity-5 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.15),transparent)]" />
-      
-      <svg viewBox="0 0 100 100" className="w-24 h-24 stroke-[#E1D4C0]/85 fill-none stroke-[1.25] drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
-        {getDrapeGraphic()}
-      </svg>
-
-      <div className="absolute top-4 left-4 px-2 py-0.5 bg-black/60 backdrop-blur text-[8px] font-mono uppercase tracking-wider text-[#E1D4C0] border border-white/10 rounded">
-        {ratio}
-      </div>
-
-      <div className="absolute top-4 right-4 px-2 py-0.5 bg-black/60 backdrop-blur text-[8px] font-mono uppercase tracking-wider text-white/40 rounded border border-white/5">
-        Composition
-      </div>
-
-      <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-[8px] font-mono text-white/50 bg-black/60 backdrop-blur px-2.5 py-1.5 rounded-lg border border-white/5">
-        <span className="truncate max-w-[120px]">{background.split(' / ')[0]}</span>
-        <span className="w-1 h-1 rounded-full bg-[#E1D4C0]/60" />
-        <span className="truncate max-w-[120px]">{pose.split(' / ')[0]}</span>
-      </div>
-    </div>
-  );
-};
-
-// --- Main Component ---
-
-export default function CampaignStudio() {
-  const router = useRouter();
-  const { session, openAuthModal } = useAuth();
-  
-  // --- Folder Grid State ---
-  const [campaigns, setCampaigns] = useState<CampaignSummary[]>([]);
-  const [isLoadingList, setIsLoadingList] = useState(true);
-  const [activeCampaignId, setActiveCampaignId] = useState<string | null>(null);
-
-  // --- Process Step Override ---
-  const [stepOverride, setStepOverride] = useState<'dropzone' | 'art_direction' | null>(null);
-
-  // --- Inline Editing State ---
-  const [editingCampaignId, setEditingCampaignId] = useState<string | null>(null);
-  const [editNameValue, setEditNameValue] = useState("");
-
-  // --- Active Campaign Workspace State ---
-  const [activeCampaign, setActiveCampaign] = useState<FullCampaign | null>(null);
-  const [isLoadingCampaign, setIsLoadingCampaign] = useState(false);
-  const [isDraggingOver, setIsDraggingOver] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadedFileInfo, setUploadedFileInfo] = useState<{ name: string; size: string } | null>(null);
-  const uploadProgressRef = useRef<NodeJS.Timeout | null>(null);
-
-  // --- Sidebar & Layout Overrides ---
-  const { setIsInWorkspace } = useContext(SidebarContext);
-  const [selectedRatio, setSelectedRatio] = useState('3:4');
-  const [selectedAssetCount, setSelectedAssetCount] = useState(4);
-  const [wizardStep, setWizardStep] = useState(1);
-  const [showControls, setShowControls] = useState(true);
-  const [chatMessages, setChatMessages] = useState<any[]>([
-    {
-      id: 'welcome',
-      sender: 'director',
-      text: "Welcome to the Creative Intelligence Studio. I've analyzed your specimen's textile DNA. Enter a prompt below to generate campaigns, or chat with me here to refine the configurations."
-    }
-  ]);
-  const [physicalViolation, setPhysicalViolation] = useState<any>(null);
-  const [activeRecommendation, setActiveRecommendation] = useState<any>(null);
-  const [decisions, setDecisions] = useState<any[]>([]);
-  const [creScores, setCreScores] = useState<CREScores | null>(null);
-
-  // --- Right Panel Collapsible Drawer States ---
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [manualClose, setManualClose] = useState(false);
-
-  // --- Art Direction State Bindings ---
-  const [selectedBackground, setSelectedBackground] = useState<string>("");
-  const [selectedPose, setSelectedPose] = useState<string>("");
-  const [selectedLighting, setSelectedLighting] = useState<string>("");
-
-  // --- Floating Preview State ---
-  const [hoveredPreview, setHoveredPreview] = useState<string | null>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (hoveredPreview) {
-        setMousePos({ x: e.clientX, y: e.clientY });
-      }
+  const handleStartNewCampaign = () => {
+    if (!newCampaignName.trim()) return;
+    const newCamp: CampaignStudioModel = {
+      ...INITIAL_CAMPAIGN_FIXTURE,
+      id: `camp-${Date.now()}`,
+      name: newCampaignName.trim(),
+      objective: newCampaignObjective.trim() || "Define and launch high-impact omnichannel brand creative.",
+      status: "In Development",
+      lockedDecisions: [],
+      prioritizedActions: [
+        {
+          id: `act-${Date.now()}`,
+          title: "Select primary Creative Direction",
+          severity: "High",
+          assignedTo: "Elena Vance (Human Owner)",
+          dueTimeline: "Sprint 01"
+        }
+      ]
     };
-    if (hoveredPreview) {
-      window.addEventListener('mousemove', handleMouseMove);
-    }
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [hoveredPreview]);
-
-  // Clear hover preview automatically if the wizard step changes
-  useEffect(() => {
-    setHoveredPreview(null);
-  }, [wizardStep]);
-
-  // Simulating decisions and CRE scores on campaign load
-  useEffect(() => {
-    if (activeCampaign) {
-      setDecisions([
-        { id: '1', level: 1, description: 'Heavy fabric detected -> Column drape recommended', type: 'satisfied' },
-        { id: '2', level: 2, description: 'Brand archetype dictates low-key lighting', type: 'applied' }
-      ]);
-      setCreScores({
-        brand: 95,
-        product: 88,
-        photography: 92,
-        marketing: 85,
-        composition: 98
-      });
-    } else {
-      setDecisions([]);
-      setCreScores(null);
-    }
-  }, [activeCampaign]);
-
-  // Trigger drawer on selection deviation
-  useEffect(() => {
-    if (!activeCampaign) {
-      setIsDrawerOpen(false);
-      setManualClose(false);
-      return;
-    }
-
-    const hasDeviation = 
-      selectedBackground !== 'Minimalist Stone Pedestal' ||
-      selectedPose !== 'Architectural Drape / Structured Fold' ||
-      selectedLighting !== 'Ethereal Backlight / Edge Wrap';
-
-    if (hasDeviation) {
-      if (!manualClose) {
-        setIsDrawerOpen(true);
-      }
-    } else {
-      setIsDrawerOpen(false);
-      setManualClose(false);
-    }
-  }, [selectedBackground, selectedPose, selectedLighting, activeCampaign, manualClose]);
-
-  const getAgentRecommendation = () => {
-    let note = "";
-    let pairings: string[] = [];
-    let avoid: string[] = [];
-
-    // Check Background
-    if (selectedBackground !== 'Minimalist Stone Pedestal') {
-      if (selectedBackground === 'Heritage Fort / Palace Corridor') {
-        note = "Heritage Fort introduces intricate architectural motifs that can compete with high-density textile patterns like Zari weaves.";
-        pairings = ["Static Geometrical Placement", "Ethereal Backlight / Edge Wrap"];
-        avoid = ["Dynamic Fabric Spin / Wind Blown", "Golden Hour Warmth"];
-      } else if (selectedBackground === 'Lush Garden') {
-        note = "Lush Garden introduces organic green hues and highlights. Best paired with fabric-separating high-contrast lights.";
-        pairings = ["Architectural Drape / Structured Fold", "High-contrast Chiaroscuro"];
-        avoid = ["Soft Studio Diffused Light", "Suspended / Anti-gravity Float"];
-      } else if (selectedBackground === 'Reflective Metal Surface') {
-        note = "Reflective Metal creates mirror reflections. Best for modern, futuristic campaigns, but requires precise lighting control.";
-        pairings = ["Suspended / Anti-gravity Float", "Moody Rim Light / Cyberpunk Glow"];
-        avoid = ["Golden Hour Warmth", "Static Geometrical Placement"];
-      } else if (selectedBackground === 'Industrial Concrete / Urban') {
-        note = "Industrial Concrete offers a cool neutral backdrop, creating strong geometric styling.";
-        pairings = ["Static Geometrical Placement", "High-contrast Chiaroscuro"];
-        avoid = ["Ethereal Backlight / Edge Wrap", "Dynamic Fabric Spin / Wind Blown"];
-      } else if (selectedBackground === 'Draped Velvet Platform') {
-        note = "Velvet adds luxury texture. Ensure fabric draping is structured to maintain premium feel.";
-        pairings = ["Architectural Drape / Structured Fold", "Moody Rim Light / Cyberpunk Glow"];
-        avoid = ["Dynamic Fabric Spin / Wind Blown", "Soft Studio Diffused Light"];
-      }
-    }
-    // Check Pose
-    else if (selectedPose !== 'Architectural Drape / Structured Fold') {
-      if (selectedPose === 'Dynamic Fabric Spin / Wind Blown') {
-        note = "Wind Blown requires high buoyancy fabrics. If fabric is heavy silk, it may look unnatural.";
-        pairings = ["Minimalist Stone Pedestal", "Ethereal Backlight / Edge Wrap"];
-        avoid = ["Draped Velvet Platform", "Moody Rim Light / Cyberpunk Glow"];
-      } else if (selectedPose === 'Static Geometrical Placement') {
-        note = "Static placement creates rigid columns. Best paired with directional lighting.";
-        pairings = ["High-contrast Chiaroscuro", "Heritage Fort / Palace Corridor"];
-        avoid = ["Suspended / Anti-gravity Float", "Soft Studio Diffused Light"];
-      } else if (selectedPose === 'Cascading Edge / Waterflow Effect') {
-        note = "Cascading requires a platform edge to flow from.";
-        pairings = ["Minimalist Stone Pedestal", "Moody Rim Light / Cyberpunk Glow"];
-        avoid = ["Lush Garden", "Industrial Concrete / Urban"];
-      } else if (selectedPose === 'Suspended / Anti-gravity Float') {
-        note = "Suspended float introduces surreal physics. Best with soft light.";
-        pairings = ["Reflective Metal Surface", "Soft Studio Diffused Light"];
-        avoid = ["Industrial Concrete / Urban", "High-contrast Chiaroscuro"];
-      }
-    }
-    // Check Lighting
-    else if (selectedLighting !== 'Ethereal Backlight / Edge Wrap') {
-      if (selectedLighting === 'Golden Hour Warmth / Soft Sun') {
-        note = "Golden Hour introduces warm amber tones, reducing cool highlight details.";
-        pairings = ["Heritage Fort / Palace Corridor", "Architectural Drape / Structured Fold"];
-        avoid = ["Reflective Metal Surface", "Moody Rim Light / Cyberpunk Glow"];
-      } else if (selectedLighting === 'High-contrast Chiaroscuro') {
-        note = "Chiaroscuro creates deep, dramatic shadows. Perfect for showcasing heavy weave micro-contrasts.";
-        pairings = ["Minimalist Stone Pedestal", "Static Geometrical Placement"];
-        avoid = ["Soft Studio Diffused Light", "Lush Garden"];
-      } else if (selectedLighting === 'Moody Rim Light / Cyberpunk Glow') {
-        note = "Moody Rim Light creates neon highlight silhouettes, highly futuristic.";
-        pairings = ["Reflective Metal Surface", "Suspended / Anti-gravity Float"];
-        avoid = ["Lush Garden", "Golden Hour Warmth / Soft Sun"];
-      } else if (selectedLighting === 'Soft Studio Diffused Light') {
-        note = "Soft Diffused Light reduces shadow drama, creating clean commercial catalog looks.";
-        pairings = ["Minimalist Stone Pedestal", "Architectural Drape / Structured Fold"];
-        avoid = ["High-contrast Chiaroscuro", "Reflective Metal Surface"];
-      }
-    }
-
-    return { note, pairings, avoid };
+    setActiveCampaign(newCamp);
+    setActiveTab('overview');
+    setIsCreateDrawerOpen(false);
+    setNewCampaignName("");
+    setNewCampaignObjective("");
   };
-
-  // --- Polling ref (to stop polling on unmount) ---
-  const pollRef = useRef<NodeJS.Timeout | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // --- Load campaign list on mount ---
-  useEffect(() => {
-    fetchList();
-    return () => { if (pollRef.current) clearInterval(pollRef.current); };
-  }, []);
-
-  const fetchList = async () => {
-    try {
-      const data = await listCampaigns();
-      setCampaigns(data);
-    } catch (e) {
-      console.error("Failed to load campaigns:", e);
-    } finally {
-      setIsLoadingList(false);
-    }
-  };
-
-  // --- Load full campaign state when folder is clicked ---
-  const openCampaign = useCallback(async (id: string) => {
-    setActiveCampaignId(id);
-    setIsLoadingCampaign(true);
-    setIsInWorkspace(true); // Collapse sidebar
-    try {
-      const data = await getCampaign(id);
-      setActiveCampaign(data);
-      if (data.planning) {
-        setSelectedBackground(data.planning.selected_background || "");
-        setSelectedPose(data.planning.selected_pose || "");
-        setSelectedLighting(data.planning.selected_lighting || "");
-      }
-      // If analysis is already in progress (memory_stream has entries but no conclusion yet), start polling
-      const hasConcluded = data.memory_stream.some(n => n.type === 'conclusion');
-      const hasStarted = data.memory_stream.length > 0;
-      if (hasStarted && !hasConcluded) {
-        startPolling(id);
-      }
-    } catch (e) {
-      console.error("Failed to load campaign:", e);
-    } finally {
-      setIsLoadingCampaign(false);
-    }
-  }, [setIsInWorkspace]);
-
-  const closeCampaign = () => {
-    setActiveCampaignId(null);
-    setActiveCampaign(null);
-    setStepOverride(null);
-    setIsInWorkspace(false); // Restore left sidebar
-    setWizardStep(1);
-    setChatMessages([
-      { id: 'welcome', sender: 'director', text: "Welcome to the Creative Intelligence Studio. I've analyzed your specimen's textile DNA. Enter a prompt below to generate campaigns, or chat with me here to refine the configurations." }
-    ]);
-    if (pollRef.current) clearInterval(pollRef.current);
-    fetchList(); // refresh folder grid in case has_material changed
-  };
-
-  // --- Polling: re-fetches campaign until conclusion node appears ---
-  const startPolling = (id: string) => {
-    if (pollRef.current) clearInterval(pollRef.current);
-    setIsAnalyzing(true);
-    pollRef.current = setInterval(async () => {
-      try {
-        const updated = await getCampaign(id);
-        setActiveCampaign(prev => {
-          if (JSON.stringify(prev) === JSON.stringify(updated)) return prev;
-          return updated;
-        });
-        if (updated.planning) {
-          setSelectedBackground(prev => prev === updated.planning.selected_background ? prev : (updated.planning.selected_background || ""));
-          setSelectedPose(prev => prev === updated.planning.selected_pose ? prev : (updated.planning.selected_pose || ""));
-          setSelectedLighting(prev => prev === updated.planning.selected_lighting ? prev : (updated.planning.selected_lighting || ""));
-        }
-        const hasConcluded = updated.memory_stream.some(n => n.type === 'conclusion');
-        if (hasConcluded) {
-          clearInterval(pollRef.current!);
-          setIsAnalyzing(false);
-          fetchList(); // refresh folder icon to show has_material indicator
-        }
-      } catch (e) {
-        console.error("Polling error:", e);
-      }
-    }, 2500);
-  };
-
-  // --- Create Campaign ---
-  const handleCreateCampaign = async () => {
-    if (!session) {
-      openAuthModal("login");
-      return;
-    }
-    const name = `Campaign ${String(campaigns.length + 1).padStart(2, '0')}`;
-    try {
-      const newCamp = await createCampaign(name);
-      setCampaigns(prev => [...prev, newCamp]);
-    } catch (e) {
-      console.error("Failed to create campaign:", e);
-    }
-  };
-
-  const handleGenerate = async () => {
-    if (!activeCampaign) return;
-    setIsGenerating(true);
-    try {
-      await generateCampaign(activeCampaign.id);
-      startPolling(activeCampaign.id); // Re-use polling to fetch execution states
-    } catch (e) {
-      console.error("Generate failed:", e);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  // --- Rename Campaign ---
-  const startEditing = (e: React.MouseEvent, id: string, currentName: string) => {
-    e.stopPropagation();
-    setEditingCampaignId(id);
-    setEditNameValue(currentName);
-  };
-
-  const saveEdit = async (id: string) => {
-    if (editNameValue.trim()) {
-      try {
-        const updated = await renameCampaign(id, editNameValue.trim());
-        setCampaigns(prev => prev.map(c => c.id === id ? { ...c, name: updated.name } : c));
-      } catch (e) {
-        console.error("Failed to rename:", e);
-      }
-    }
-    setEditingCampaignId(null);
-  };
-
-  // --- Delete Campaign ---
-  const handleDeleteCampaign = async (e: React.MouseEvent, id: string) => {
-    e.stopPropagation();
-    try {
-      await deleteCampaign(id);
-      setCampaigns(prev => prev.filter(c => c.id !== id));
-      if (activeCampaignId === id) closeCampaign();
-    } catch (e) {
-      console.error("Failed to delete:", e);
-    }
-  };
-
-  // --- File Upload Handler ---
-  const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif', 'image/tiff'];
-  const MAX_FILE_BYTES = 25 * 1024 * 1024; // 25 MB
-
-  const handleFileDrop = async (file: File) => {
-    if (!activeCampaign) return;
-
-    // --- Frontend validation ---
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      alert(`Unsupported file type: "${file.type || 'unknown'}". Please upload a JPEG, PNG, WEBP, HEIC, or TIFF image.`);
-      return;
-    }
-    if (file.size > MAX_FILE_BYTES) {
-      alert(`File is too large (${(file.size / (1024 * 1024)).toFixed(1)} MB). Maximum allowed size is 25 MB.`);
-      return;
-    }
-    // ---------------------------
-
-    setIsUploading(true);
-
-    setUploadProgress(0);
-    setUploadedFileInfo({
-      name: file.name,
-      size: file.size < 1024 * 1024
-        ? `${(file.size / 1024).toFixed(0)} KB`
-        : `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
-    });
-    // Simulate progress with intervals
-    let progress = 0;
-    uploadProgressRef.current = setInterval(() => {
-      progress += Math.random() * 8 + 2;
-      if (progress >= 92) {
-        if (uploadProgressRef.current) clearInterval(uploadProgressRef.current);
-        progress = 92;
-      }
-      setUploadProgress(Math.min(92, Math.round(progress)));
-    }, 200);
-    try {
-      await uploadMaterial(activeCampaign.id, file);
-      if (uploadProgressRef.current) clearInterval(uploadProgressRef.current);
-      setUploadProgress(96);
-      // Immediately trigger analysis
-      await analyzeMaterial(activeCampaign.id);
-      setUploadProgress(100);
-      await new Promise(r => setTimeout(r, 600));
-      // Clear step override since we have new material
-      setStepOverride(null);
-      // Refresh campaign state and start polling for results
-      const updated = await getCampaign(activeCampaign.id);
-      setActiveCampaign(updated);
-      setCampaigns(prev => prev.map(c => c.id === activeCampaign.id ? { ...c, has_material: true } : c));
-      startPolling(activeCampaign.id);
-    } catch (e) {
-      if (uploadProgressRef.current) clearInterval(uploadProgressRef.current);
-      console.error("Upload/analyze failed:", e);
-    } finally {
-      setIsUploading(false);
-      setUploadedFileInfo(null);
-      setUploadProgress(0);
-    }
-  };
-
-  const onDropZoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) handleFileDrop(file);
-  };
-
-  const onDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDraggingOver(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file) handleFileDrop(file);
-  };
-
-
-
-  const handleOptionChange = async (category: 'background' | 'pose' | 'lighting', value: string) => {
-    if (!activeCampaign) return;
-    
-    let bg = selectedBackground;
-    let ps = selectedPose;
-    let lt = selectedLighting;
-
-    if (category === 'background') {
-      setSelectedBackground(value);
-      bg = value;
-    } else if (category === 'pose') {
-      setSelectedPose(value);
-      ps = value;
-    } else if (category === 'lighting') {
-      setSelectedLighting(value);
-      lt = value;
-    }
-
-    setManualClose(false);
-
-    try {
-      await updateCampaignOptions(activeCampaign.id, { background: bg, pose: ps, lighting: lt });
-      // Update activeCampaign local state to keep it in sync
-      setActiveCampaign(prev => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          planning: {
-            ...prev.planning,
-            selected_background: bg,
-            selected_pose: ps,
-            selected_lighting: lt
-          }
-        };
-      });
-    } catch (e) {
-      console.error("Failed to update options:", e);
-    }
-  };
-
-  const getConflictWarning = (): string | null => {
-    if (!activeCampaign?.identity?.product_dna) return null;
-    const materialVal = String(activeCampaign.identity.product_dna.material.value).toLowerCase();
-    
-    const isHeavy = materialVal.includes("banarasi") || materialVal.includes("kanjeevaram") || materialVal.includes("silk");
-    const isLight = materialVal.includes("chiffon") || materialVal.includes("organza") || materialVal.includes("net");
-
-    if (isHeavy && selectedPose === "Wind-Blown Toss") {
-      return "Stiff, heavy silk fabrics lack the buoyancy required to toss or float naturally in the wind. The generated assets will show architectural folds falling downward rather than flowing motion.";
-    }
-    if (isLight && selectedPose === "Dynamic Fabric Spin") {
-      return "Lightweight sheer fabrics will flare outward and disintegrate into transparent waves during a spin rather than keeping defined structural pleats.";
-    }
-    if (isHeavy && selectedLighting === "High-Key Window Doorway") {
-      return "High-key silhouette lighting washes out the depth of Zari weave highlights. Directional or Ethereal backlighting is recommended to maintain metallic micro-contrast.";
-    }
-    return null;
-  };
-
-  const currentCampaignSummary = campaigns.find(c => c.id === activeCampaignId);
-
-  // --- Derived Step State ---
-  const currentStep = stepOverride || (
-    !activeCampaign?.material_path ? 'dropzone'
-    : (activeCampaign.execution?.asset_states && activeCampaign.execution.asset_states.length > 0) ? 'assets'
-    : 'art_direction'
-  );
 
   return (
-    <div className="flex w-full h-full relative overflow-hidden bg-black">
-      {/* Background Glows */}
-      <div className="absolute top-[-20%] left-[20%] w-[800px] h-[800px] bg-sky-900/10 rounded-full blur-[150px] pointer-events-none" />
-      <div className="absolute top-[-10%] right-[10%] w-[600px] h-[600px] bg-emerald-900/10 rounded-full blur-[120px] pointer-events-none" />
+    <div className="min-h-screen bg-[#0A0A0A] text-white/90 flex flex-col">
+      
+      {/* Ask VYREN Bounded Intelligence Modal */}
+      {activeCampaign && (
+        <AskVyrenModal
+          isOpen={isAskVyrenOpen}
+          onClose={() => setIsAskVyrenOpen(false)}
+          campaign={activeCampaign}
+        />
+      )}
 
-      {/* Workspace */}
-      <div className="flex-1 h-full flex flex-col relative z-10 px-8 py-8 min-h-0">
-
-        {/* Header */}
-        <div className="flex items-center w-full">
-          <div className="flex items-center gap-4 text-[10px] tracking-[0.2em] uppercase text-white/30">
-            <button
-              onClick={() => {
-                if (activeCampaignId) {
-                  closeCampaign();
-                } else {
-                  router.push('/studio');
-                }
-              }}
-              className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5 transition-colors shrink-0"
-              title="Go Back"
-            >
-              <ArrowLeft size={14} />
-            </button>
-            <div className="flex items-center gap-3">
-              <Link href="/studio" className="cursor-pointer hover:text-white transition-colors" onClick={(e) => {
-                if (activeCampaignId) {
-                  e.preventDefault();
-                  closeCampaign();
-                }
-              }}>
-                Campaign Studio
-              </Link>
-              {activeCampaign && (
-                <>
-                  <span>/</span>
-                  <span className="text-white/60">{activeCampaign.name}</span>
-                </>
-              )}
-            </div>
+      {/* STATE 1: Empty / Genesis Hub ("What are we creating?") */}
+      {!activeCampaign ? (
+        <div className="flex-1 p-8 lg:p-12 flex flex-col justify-center max-w-5xl mx-auto w-full space-y-10 animate-in fade-in duration-300">
+          
+          {/* Hero Header */}
+          <div className="space-y-2 text-center max-w-2xl mx-auto">
+            <span className="text-[10px] font-mono tracking-widest uppercase text-[#E1D4C0] bg-[#E1D4C0]/10 border border-[#E1D4C0]/20 px-3 py-1 rounded-full">
+              CAMPAIGN STUDIO &bull; CREATIVE WORKSPACE
+            </span>
+            <h1 className="text-3xl lg:text-4xl font-serif text-white font-light tracking-tight mt-2">
+              What are we creating?
+            </h1>
+            <p className="text-xs text-white/50 font-light leading-relaxed">
+              Campaign Studio is VYREN's end-to-end creative operating system. Formulate strategic intelligence, explore comparative directions, and synthesize production-ready assets.
+            </p>
           </div>
-        </div>
 
-        {/* Canvas */}
-        <div className="flex-1 flex flex-col mt-8 min-h-0">
-
-          {/* STATE 1: No campaigns */}
-          {!isLoadingList && campaigns.length === 0 && activeCampaignId === null && (
-            <div className="flex-1 flex flex-col items-center justify-center -mt-24">
-              <div className="flex flex-col items-center justify-center max-w-sm text-center">
-                <div className="relative w-24 h-24 mb-6 flex items-center justify-center">
-                  <FolderIcon />
-                </div>
-                <h2 className="text-xl font-medium text-white mb-3">No Campaigns</h2>
-                <p className="text-sm text-zinc-400 mb-8 leading-relaxed">
-                  Campaigns are a great way to explore ideas that share a common theme or topic
+          {/* 4 Strategic Genesis Pathways */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            {/* Pathway 1: Start a Campaign */}
+            <div 
+              onClick={() => setIsCreateDrawerOpen(true)}
+              className="p-6 rounded-2xl bg-[#111113]/80 border border-white/10 hover:border-[#E1D4C0]/40 transition-all cursor-pointer group space-y-3"
+            >
+              <div className="w-10 h-10 rounded-xl bg-[#E1D4C0]/10 text-[#E1D4C0] border border-[#E1D4C0]/20 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <Plus className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-serif text-white group-hover:text-[#E1D4C0] transition-colors">Start a Campaign</h3>
+                <p className="text-xs text-white/50 font-light mt-0.5">
+                  Launch a full creative cycle from strategic objective through omnichannel delivery.
                 </p>
-                <button
-                  onClick={handleCreateCampaign}
-                  className="px-6 py-3 bg-[#E1D4C0] text-[#0A0A0A] font-medium rounded-full text-sm hover:bg-white transition-colors shadow-xl"
-                >
-                  Start a campaign
-                </button>
               </div>
             </div>
-          )}
 
-          {/* STATE 1.5: Loading Skeleton Grid */}
-          {isLoadingList && activeCampaignId === null && (
-            <div className="flex-1 flex items-start justify-start p-12 mt-12">
-              <div className="flex flex-wrap gap-12">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="flex flex-col items-center gap-4 animate-pulse">
-                    <div className="w-36 h-36 bg-white/[0.03] border border-white/5 rounded-3xl relative overflow-hidden flex items-center justify-center shimmer-gradient">
-                      <div className="w-12 h-10 bg-white/5 rounded-lg" />
-                    </div>
-                    <div className="h-3 w-20 bg-white/10 rounded-full" />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* STATE 2: Folder Grid */}
-          {campaigns.length > 0 && activeCampaignId === null && (
-            <div className="flex-1 flex items-start justify-start p-12 mt-12">
-              <div className="flex flex-wrap gap-12">
-                {campaigns.map((camp) => (
-                  <div key={camp.id} className="flex flex-col items-center gap-4 group relative">
-                    <div
-                      onClick={() => openCampaign(camp.id)}
-                      className="w-36 h-36 relative flex items-center justify-center cursor-pointer"
-                    >
-                      <FolderIcon hasMaterial={camp.has_material} />
-                      {/* Hover Actions */}
-                      <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity z-20">
-                        <button
-                          onClick={(e) => startEditing(e, camp.id, camp.name)}
-                          className="p-1.5 bg-black/60 hover:bg-black/80 text-white rounded backdrop-blur-md transition-colors border border-white/10"
-                          title="Rename"
-                        >
-                          <Edit2 size={13} />
-                        </button>
-                        <button
-                          onClick={(e) => handleDeleteCampaign(e, camp.id)}
-                          className="p-1.5 bg-black/60 hover:bg-red-500/80 text-white rounded backdrop-blur-md transition-colors border border-white/10 hover:border-red-500/50"
-                          title="Delete"
-                        >
-                          <Trash2 size={13} />
-                        </button>
-                      </div>
-                    </div>
-
-                    {editingCampaignId === camp.id ? (
-                      <input
-                        type="text"
-                        value={editNameValue}
-                        onChange={(e) => setEditNameValue(e.target.value)}
-                        onBlur={() => saveEdit(camp.id)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') saveEdit(camp.id);
-                          if (e.key === 'Escape') setEditingCampaignId(null);
-                        }}
-                        autoFocus
-                        className="bg-zinc-800/80 text-white text-[12px] font-medium tracking-wide uppercase px-3 py-1 outline-none rounded border border-[#E1D4C0]/50 w-36 text-center shadow-2xl"
-                      />
-                    ) : (
-                      <span className="text-[12px] text-white/80 font-medium tracking-wide uppercase px-2 text-center truncate w-36">
-                        {camp.name}
-                      </span>
-                    )}
-                  </div>
-                ))}
-
-                {/* New Campaign Button */}
-                <div onClick={handleCreateCampaign} className="flex flex-col items-center gap-4 group cursor-pointer">
-                  <div className="w-36 h-36 relative flex items-center justify-center">
-                    <DashedFolderIcon />
-                  </div>
-                  <span className="text-[12px] text-white/40 font-medium tracking-wide uppercase group-hover:text-[#E1D4C0] transition-colors">
-                    New Campaign
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* STATE 3: Inside Campaign */}
-          {activeCampaignId !== null && (
-            <div className="flex-1 flex flex-col min-h-0">
-              {isLoadingCampaign ? (
-                <div className="flex-1 flex gap-12 p-8 animate-pulse max-w-5xl mx-auto w-full">
-                  {/* Left Column: Specimen Image Skeleton */}
-                  <div className="w-[45%] aspect-[3/4] bg-white/[0.02] border border-white/5 rounded-3xl shimmer-gradient flex items-center justify-center">
-                    <div className="w-10 h-10 rounded-full bg-white/5" />
-                  </div>
-                  {/* Right Column: Workflow Settings Skeleton */}
-                  <div className="flex-1 flex flex-col gap-8">
-                    <div className="space-y-3">
-                      <div className="h-6 w-1/3 bg-white/10 rounded-full" />
-                      <div className="h-3 w-1/4 bg-white/5 rounded-full" />
-                    </div>
-                    <div className="h-44 w-full bg-white/[0.01] border border-white/5 rounded-2xl p-6 flex flex-col gap-4 justify-between shimmer-gradient">
-                      <div className="h-4 w-1/2 bg-white/10 rounded-full" />
-                      <div className="h-3 w-3/4 bg-white/5 rounded-full" />
-                      <div className="h-3 w-2/3 bg-white/5 rounded-full" />
-                    </div>
-                    <div className="h-14 w-full bg-[#E1D4C0]/5 border border-white/10 rounded-full" />
-                  </div>
-                </div>
-              ) : activeCampaign && currentStep === 'dropzone' ? (
-                // Dropzone — Glassmorphic Upload Zone
-                <div className="flex-1 flex items-center justify-center w-full min-h-0">
-                  {/* Horizon Arc Glow — bottom of screen */}
-                  <AnimatePresence>
-                    {isUploading && (
-                      <motion.div
-                        key="arc-glow"
-                        className="absolute bottom-0 left-0 w-full h-48 pointer-events-none z-0"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.8 }}
-                      >
-                        <div className="absolute inset-0" style={{
-                          background: 'radial-gradient(ellipse 70% 60% at 50% 130%, rgba(99,80,220,0.45) 0%, rgba(225,212,192,0.08) 55%, transparent 80%)'
-                        }} />
-                        <motion.div
-                          className="absolute inset-0"
-                          animate={{ opacity: [0.6, 1, 0.6] }}
-                          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-                          style={{
-                            background: 'radial-gradient(ellipse 50% 40% at 50% 120%, rgba(130,100,255,0.3) 0%, transparent 70%)'
-                          }}
-                        />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={onDropZoneChange} />
-
-                  <AnimatePresence mode="wait">
-                    {isUploading && uploadedFileInfo ? (
-                      // --- ACTIVE STATE: Glassmorphic Progress Card ---
-                      <motion.div
-                        key="upload-progress"
-                        className="relative z-10 w-full max-w-md"
-                        initial={{ opacity: 0, scale: 0.92, y: 12 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.92, y: -8 }}
-                        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                      >
-                        {/* Card Outer — double-bezel blue-violet glass */}
-                        <div
-                          className="relative rounded-[2rem] p-[1.5px] overflow-hidden"
-                          style={{ background: 'linear-gradient(135deg, rgba(130,100,255,0.5) 0%, rgba(60,40,160,0.2) 40%, rgba(225,212,192,0.12) 100%)' }}
-                        >
-                          {/* Outer glow bloom */}
-                          <div className="absolute -inset-8 pointer-events-none" style={{ background: 'radial-gradient(ellipse 70% 50% at 50% 50%, rgba(80,60,200,0.35) 0%, transparent 70%)', filter: 'blur(24px)', zIndex: -1 }} />
-                          
-                          <div
-                            className="relative rounded-[1.9rem] px-7 py-7"
-                            style={{ background: 'linear-gradient(145deg, rgba(18,16,42,0.92) 0%, rgba(10,8,28,0.96) 100%)', backdropFilter: 'blur(24px)' }}
-                          >
-                            {/* Close/cancel button */}
-                            <button
-                              onClick={(e) => { e.stopPropagation(); if (uploadProgressRef.current) clearInterval(uploadProgressRef.current); setIsUploading(false); setUploadedFileInfo(null); setUploadProgress(0); }}
-                              className="absolute top-5 right-5 w-8 h-8 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all"
-                            >
-                              <svg viewBox="0 0 16 16" className="w-3 h-3 fill-current"><path d="M3.22 3.22a.75.75 0 011.06 0L8 6.94l3.72-3.72a.75.75 0 111.06 1.06L9.06 8l3.72 3.72a.75.75 0 11-1.06 1.06L8 9.06l-3.72 3.72a.75.75 0 01-1.06-1.06L6.94 8 3.22 4.28a.75.75 0 010-1.06z"/></svg>
-                            </button>
-
-                            {/* Specimen Icon + File Info */}
-                            <div className="flex items-center gap-5 mb-7">
-                              {/* Glassmorphic Specimen Icon */}
-                              <div
-                                className="w-20 h-20 rounded-2xl flex-shrink-0 flex flex-col items-center justify-center relative overflow-hidden"
-                                style={{ background: 'linear-gradient(145deg, rgba(80,60,200,0.4) 0%, rgba(40,30,120,0.6) 100%)', border: '1px solid rgba(130,100,255,0.3)' }}
-                              >
-                                {/* Fabric/weave grid lines */}
-                                <svg viewBox="0 0 40 40" className="w-12 h-12 opacity-90">
-                                  <defs>
-                                    <pattern id="weave" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
-                                      <line x1="4" y1="0" x2="4" y2="8" stroke="rgba(225,212,192,0.6)" strokeWidth="0.8"/>
-                                      <line x1="0" y1="4" x2="8" y2="4" stroke="rgba(225,212,192,0.4)" strokeWidth="0.5"/>
-                                    </pattern>
-                                  </defs>
-                                  <rect width="40" height="40" fill="url(#weave)" rx="2"/>
-                                  <rect x="8" y="8" width="24" height="24" fill="none" stroke="rgba(225,212,192,0.8)" strokeWidth="1" rx="2"/>
-                                  <circle cx="20" cy="20" r="5" fill="none" stroke="rgba(225,212,192,0.9)" strokeWidth="1"/>
-                                </svg>
-                                {/* Glass shine */}
-                                <div className="absolute top-0 left-0 right-0 h-1/2" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 100%)', borderRadius: '16px 16px 0 0' }} />
-                              </div>
-
-                              {/* File metadata */}
-                              <div className="flex flex-col gap-1.5 text-left min-w-0">
-                                <div className="inline-flex items-center gap-2">
-                                  <span className="text-[9px] tracking-[0.2em] uppercase font-mono px-2 py-0.5 rounded-full" style={{ background: 'rgba(130,100,255,0.25)', border: '1px solid rgba(130,100,255,0.4)', color: '#c4b5fd' }}>IMAGE / SPECIMEN</span>
-                                </div>
-                                <p className="text-[15px] font-medium tracking-tight text-[#E1D4C0] leading-tight truncate max-w-[200px]">{uploadedFileInfo.name.replace(/\.[^.]+$/, '')}</p>
-                                <p className="text-[12px] text-white/40 font-mono">{uploadedFileInfo.size}</p>
-                              </div>
-                            </div>
-
-                            {/* Progress Bar Area */}
-                            <div
-                              className="rounded-2xl px-5 py-4"
-                              style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.06)' }}
-                            >
-                              <div className="flex items-center justify-between mb-3">
-                                <div className="flex items-center gap-2.5">
-                                  <motion.div
-                                    className="w-4 h-4 rounded-full border-2"
-                                    style={{ borderColor: 'rgba(130,100,255,0.8)', borderTopColor: 'rgba(225,212,192,0.9)' }}
-                                    animate={{ rotate: 360 }}
-                                    transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
-                                  />
-                                  <span className="text-[13px] text-white/60 font-light tracking-wide">
-                                    {uploadProgress < 96 ? 'Uploading...' : uploadProgress < 100 ? 'Analyzing DNA...' : 'Complete'}
-                                  </span>
-                                </div>
-                                <motion.span
-                                  className="text-[22px] font-bold tracking-tight"
-                                  style={{ color: '#E1D4C0' }}
-                                  key={uploadProgress}
-                                >
-                                  {uploadProgress}%
-                                </motion.span>
-                              </div>
-                              {/* Progress bar track */}
-                              <div className="relative h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                                <motion.div
-                                  className="absolute inset-y-0 left-0 rounded-full"
-                                  style={{ background: 'linear-gradient(90deg, rgba(80,60,180,0.9) 0%, rgba(225,212,192,1) 100%)' }}
-                                  animate={{ width: `${uploadProgress}%` }}
-                                  transition={{ duration: 0.3, ease: 'easeOut' }}
-                                />
-                                {/* Glow on bar edge */}
-                                <motion.div
-                                  className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full blur-sm"
-                                  style={{ background: '#E1D4C0', left: `${uploadProgress}%`, transform: 'translate(-50%, -50%)' }}
-                                  animate={{ left: `${uploadProgress}%` }}
-                                  transition={{ duration: 0.3, ease: 'easeOut' }}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ) : (
-                      // --- DEFAULT STATE: Dashed Double-Bezel Dropzone ---
-                      <motion.div
-                        key="dropzone-idle"
-                        initial={{ opacity: 0, scale: 0.96 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.96 }}
-                        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                        className="relative z-10 w-full max-w-xl"
-                      >
-                        {/* Outer bezel ring */}
-                        <div
-                          onDragOver={(e) => { e.preventDefault(); setIsDraggingOver(true); }}
-                          onDragLeave={() => setIsDraggingOver(false)}
-                          onDrop={onDrop}
-                          onClick={() => fileInputRef.current?.click()}
-                          className={`group relative cursor-pointer transition-all duration-500 rounded-[2.5rem] p-[1px] ${
-                            isDraggingOver ? 'scale-[1.02]' : ''
-                          }`}
-                          style={{
-                            background: isDraggingOver
-                              ? 'linear-gradient(135deg, rgba(225,212,192,0.5) 0%, rgba(130,100,255,0.4) 100%)'
-                              : 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)'
-                          }}
-                        >
-                          {/* Inner core */}
-                          <div
-                            className="rounded-[2.45rem] px-16 py-20 flex flex-col items-center gap-7 transition-all duration-500"
-                            style={{
-                              background: isDraggingOver
-                                ? 'rgba(225,212,192,0.04)'
-                                : 'rgba(255,255,255,0.02)',
-                              border: `1.5px dashed ${isDraggingOver ? 'rgba(225,212,192,0.5)' : 'rgba(255,255,255,0.1)'}`,
-                            }}
-                          >
-                            {/* Upload Icon Circle */}
-                            <div
-                              className="w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-105"
-                              style={{
-                                border: '1px solid rgba(255,255,255,0.15)',
-                                background: 'rgba(255,255,255,0.03)'
-                              }}
-                            >
-                              <Plus size={22} strokeWidth={1} className="text-white/30 group-hover:text-[#E1D4C0]/60 transition-colors duration-300" />
-                            </div>
-
-                            <div className="text-center space-y-1.5">
-                              <p className="text-[14px] text-[#E1D4C0]/70 tracking-wide font-light">Upload material or mood image</p>
-                              <p className="text-[11px] text-white/25 tracking-wide">
-                                {isDraggingOver ? 'Release to upload' : 'Drag & drop or click to browse'}
-                              </p>
-                              <p className="text-[9px] uppercase tracking-[0.2em] text-white/15 font-mono mt-3">JPG · PNG · WEBP · HEIC · RAW</p>
-                            </div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              ) : activeCampaign ? (
-                // Active Workspace
-                <div className="flex-1 flex flex-col relative min-h-0">
-                  {/* Left Back Button for Process Steps */}
-                  <button
-                    onClick={() => {
-                      if (currentStep === 'assets') setStepOverride('art_direction');
-                      else if (currentStep === 'art_direction') setStepOverride('dropzone');
-                    }}
-                    className="absolute left-10 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-colors z-50 group shadow-lg"
-                    title="Previous Step"
-                  >
-                    <ArrowLeft size={20} strokeWidth={1.5} className="group-hover:-translate-x-0.5 transition-transform" />
-                  </button>
-
-                  {currentStep === 'assets' ? (
-                    // Render Generated Assets Grid
-                    <div className="w-full max-w-5xl flex gap-6">
-                      {/* Left: Material Ref */}
-                      <div className="w-1/4 flex flex-col gap-4">
-                        <div className="text-[10px] tracking-[0.2em] uppercase text-white/40">Material Ref</div>
-                        <div className="aspect-[3/4] bg-[#111111] rounded-md border border-white/5 overflow-hidden">
-                          <img
-                            src={getMaterialUrl(activeCampaign.material_path!)}
-                            alt="Material"
-                            className="w-full h-full object-cover opacity-60"
-                            onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder.jpg'; }}
-                          />
-                        </div>
-                      </div>
-                      
-                      {/* Right: Generated Assets */}
-                      <div className="w-3/4 flex flex-col gap-4">
-                         <div className="text-[10px] tracking-[0.2em] uppercase text-[#E1D4C0]">Generated Assets</div>
-                         <div className="grid grid-cols-2 gap-4">
-                           {activeCampaign.execution.asset_states.map(asset => (
-                              <div key={asset.id} className="relative aspect-[3/4] bg-[#111] border border-white/10 rounded-md overflow-hidden group">
-                                {asset.image_url ? (
-                                  <img src={asset.image_url} alt={asset.id} className="w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105" />
-                                ) : (
-                                  <div className="w-full h-full flex items-center justify-center text-white/20 text-xs animate-pulse">Generating...</div>
-                                )}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-                                  <p className="text-[10px] text-white/80 line-clamp-3">{asset.prompt}</p>
-                                </div>
-                                <div className="absolute top-3 left-3 px-2 py-1 bg-black/60 backdrop-blur text-[9px] uppercase tracking-wider rounded border border-white/10">
-                                  {asset.id.replace('_', ' ')}
-                                </div>
-                              </div>
-                           ))}
-                         </div>
-                      </div>
-                    </div>
-                  ) : (
-                    // Render Material Preview with Art Direction Panel (Split Screen)
-                    <div className="w-full flex flex-1 min-h-0 text-left overflow-hidden">
-
-                      {/* ── LEFT: FULL-BLEED SPECIMEN PANEL ─────────────────── */}
-                      <div className="relative w-[30%] h-full overflow-hidden flex-shrink-0">
-                        {/* Fabric image — bleeds full height, no border-radius on left */}
-                        <img
-                          src={getMaterialUrl(activeCampaign.material_path!)}
-                          alt="Material Specimen"
-                          className="absolute inset-0 w-full h-full object-cover transition-all duration-700"
-                          style={{ opacity: 0.72 }}
-                          onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder.jpg'; }}
-                        />
-                        {/* Bottom gradient fade */}
-                        <div className="absolute inset-0 pointer-events-none" style={{
-                          background: 'linear-gradient(to top, rgba(6,6,8,1) 0%, rgba(6,6,8,0.55) 35%, transparent 65%)'
-                        }} />
-                        {/* Right-edge vignette — blends into center */}
-                        <div className="absolute inset-y-0 right-0 w-16 pointer-events-none" style={{
-                          background: 'linear-gradient(to right, transparent, rgba(6,6,8,0.9))'
-                        }} />
-
-                        {/* DNA data overlay — floats on bottom of image */}
-                        <div className="absolute bottom-0 left-0 right-0 px-7 pb-7 pt-12">
-                          <div className="space-y-4">
-                            <div>
-                              <p className="text-[8px] tracking-[0.3em] uppercase text-white/30 font-mono mb-0.5">Specimen</p>
-                              <p className="text-[11px] tracking-[0.15em] uppercase text-[#E1D4C0]/80 font-light">
-                                {String(activeCampaign.identity?.product_dna?.material?.value || 'Banarasi Silk')}
-                              </p>
-                            </div>
-                            <div className="space-y-2.5">
-                              {[
-                                { label: 'Weave Type', value: String(activeCampaign.identity?.product_dna?.weaving_technique?.value || 'Zari Brocade') },
-                                { label: 'Fiber Base', value: String(activeCampaign.identity?.product_dna?.material?.value || 'Pure Silk') },
-                                { label: 'Drape Archetype', value: 'Architectural / Heavy' },
-                              ].map((row, i) => (
-                                <div key={i} className="flex justify-between items-baseline border-b pb-2" style={{ borderColor: 'rgba(225,212,192,0.08)' }}>
-                                  <span className="text-[9px] uppercase tracking-[0.2em] text-white/30 font-mono">{row.label}</span>
-                                  <span className="text-[10px] text-[#E1D4C0]/70 font-light tracking-wide">{row.value}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* ── CENTER: EDITORIAL COMMAND COLUMNS ───────────────── */}
-                      <div className="flex-1 flex flex-col min-h-0 px-10 pt-2 pb-36 overflow-y-auto">
-
-                        {/* Header */}
-                        <div className="flex items-baseline justify-between mb-8 shrink-0">
-                          <div>
-                            <p className="text-[8px] tracking-[0.35em] uppercase text-white/20 font-mono mb-1.5">Atelier / Directive</p>
-                            <h3 className="text-[13px] tracking-[0.12em] uppercase text-[#E1D4C0]/60 font-extralight">Evolving Spatial Canvas</h3>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            {physicalViolation && (
-                              <span className="text-[8px] font-mono tracking-wider text-red-400/70 uppercase border border-red-500/20 px-2 py-0.5 rounded">⚠ Constraint</span>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Alert / Recommendation strip */}
-                        {physicalViolation && (
-                          <PhysicalViolationAlert
-                            violation={physicalViolation}
-                            onDismiss={() => setPhysicalViolation(null)}
-                            className="mb-6 shrink-0"
-                          />
-                        )}
-                        {activeRecommendation && (
-                          <HeuristicRecommendation
-                            recommendation={activeRecommendation}
-                            onAccept={(rec) => {
-                              if (rec.affectedParameters) {
-                                Object.entries(rec.affectedParameters).forEach(([k, v]) => {
-                                  handleOptionChange(k as "background" | "pose" | "lighting", v as string);
-                                });
-                              }
-                              setActiveRecommendation(null);
-                            }}
-                            onIgnore={() => setActiveRecommendation(null)}
-                            className="mb-6 shrink-0"
-                          />
-                        )}
-
-                        {/* ── 2-column editorial grid ────────────────────────── */}
-                        <div className="grid grid-cols-2 gap-x-8 gap-y-0 flex-1">
-
-                          {[
-                            {
-                              index: '01',
-                              label: 'Background',
-                              key: 'background' as const,
-                              selected: selectedBackground,
-                              options: [
-                                { name: 'Heritage Fort / Palace Corridor', isRec: false },
-                                { name: 'Lush Garden', isRec: false },
-                                { name: 'Minimalist Stone Pedestal', isRec: true },
-                                { name: 'Reflective Metal Surface', isRec: false },
-                                { name: 'Industrial Concrete / Urban', isRec: false },
-                                { name: 'Draped Velvet Platform', isRec: false },
-                              ]
-                            },
-                            {
-                              index: '02',
-                              label: 'Pose & Flow',
-                              key: 'pose' as const,
-                              selected: selectedPose,
-                              options: [
-                                { name: 'Architectural Drape / Structured Fold', isRec: true },
-                                { name: 'Dynamic Fabric Spin / Wind Blown', isRec: false },
-                                { name: 'Static Geometrical Placement', isRec: false },
-                                { name: 'Cascading Edge / Waterflow Effect', isRec: false },
-                                { name: 'Suspended / Anti-gravity Float', isRec: false },
-                              ]
-                            },
-                            {
-                              index: '03',
-                              label: 'Lighting',
-                              key: 'lighting' as const,
-                              selected: selectedLighting,
-                              options: [
-                                { name: 'Golden Hour Warmth / Soft Sun', isRec: false },
-                                { name: 'High-contrast Chiaroscuro', isRec: false },
-                                { name: 'Ethereal Backlight / Edge Wrap', isRec: true },
-                                { name: 'Moody Rim Light / Cyberpunk Glow', isRec: false },
-                                { name: 'Soft Studio Diffused Light', isRec: false },
-                              ]
-                            },
-                            {
-                              index: '04',
-                              label: 'Synthesis',
-                              key: null,
-                              selected: null,
-                              options: []
-                            }
-                          ].map((col) => (
-                            <div key={col.index} className="flex flex-col border-t py-5" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-                              {/* Column header */}
-                              <div className="flex items-baseline gap-3 mb-5">
-                                <span className="text-[8px] font-mono text-white/15">{col.index}</span>
-                                <span className="text-[9px] tracking-[0.25em] uppercase text-white/35 font-mono">{col.label}</span>
-                                {col.selected && (
-                                  <span className="text-[8px] font-mono text-[#9b87f5]/60 ml-auto truncate max-w-[100px]">✓ set</span>
-                                )}
-                              </div>
-
-                              {col.key ? (
-                                // Option list
-                                <div className="space-y-0.5 flex-1">
-                                  {col.options.map((opt) => {
-                                    const isSelected = col.selected === opt.name;
-                                    return (
-                                      <button
-                                        key={opt.name}
-                                        onClick={() => handleOptionChange(col.key!, opt.name)}
-                                        className="group w-full text-left py-2.5 px-0 flex items-baseline gap-2.5 transition-all duration-200 cursor-pointer"
-                                        style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}
-                                      >
-                                        {/* Active indicator bar */}
-                                        <span
-                                          className="shrink-0 w-0.5 self-stretch rounded-full transition-all duration-300"
-                                          style={{
-                                            background: isSelected ? '#E1D4C0' : 'transparent',
-                                            minHeight: '14px'
-                                          }}
-                                        />
-                                        <span
-                                          className={`text-[11px] leading-snug transition-all duration-200 ${
-                                            isSelected
-                                              ? 'text-[#E1D4C0] font-medium tracking-wide'
-                                              : 'text-white/30 font-light group-hover:text-white/55'
-                                          }`}
-                                          style={{ fontStyle: isSelected ? 'italic' : 'normal', fontFamily: isSelected ? 'Georgia, serif' : 'inherit' }}
-                                        >
-                                          {opt.name}
-                                        </span>
-                                        {opt.isRec && !isSelected && (
-                                          <span className="ml-auto shrink-0 text-[7px] font-mono tracking-widest text-[#9b87f5]/50 uppercase">Rec</span>
-                                        )}
-                                      </button>
-                                    );
-                                  })}
-                                </div>
-                              ) : (
-                                // Synthesis controls
-                                <div className="space-y-4 flex-1">
-                                  <div className="space-y-2">
-                                    <p className="text-[8px] uppercase tracking-[0.2em] text-white/20 font-mono">Aspect Ratio</p>
-                                    <div className="flex gap-1.5">
-                                      {['3:4', '16:9', '1:1', '4:5'].map(r => (
-                                        <button
-                                          key={r}
-                                          onClick={() => setSelectedRatio(r)}
-                                          className={`flex-1 py-1.5 text-[9px] font-mono rounded-md border transition-all cursor-pointer ${
-                                            selectedRatio === r
-                                              ? 'border-[#E1D4C0]/50 text-[#E1D4C0] bg-[#E1D4C0]/5'
-                                              : 'border-white/5 text-white/25 hover:border-white/15 hover:text-white/50'
-                                          }`}
-                                        >
-                                          {r}
-                                        </button>
-                                      ))}
-                                    </div>
-                                  </div>
-                                  <div className="space-y-2">
-                                    <p className="text-[8px] uppercase tracking-[0.2em] text-white/20 font-mono">Asset Quantity</p>
-                                    <div className="flex gap-1.5">
-                                      {[1, 2, 4, 8].map(cnt => (
-                                        <button
-                                          key={cnt}
-                                          onClick={() => setSelectedAssetCount(cnt)}
-                                          className={`flex-1 py-1.5 text-[9px] font-mono rounded-md border transition-all cursor-pointer ${
-                                            selectedAssetCount === cnt
-                                              ? 'border-[#E1D4C0]/50 text-[#E1D4C0] bg-[#E1D4C0]/5'
-                                              : 'border-white/5 text-white/25 hover:border-white/15 hover:text-white/50'
-                                          }`}
-                                        >
-                                          {cnt}
-                                        </button>
-                                      ))}
-                                    </div>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-
-                        {/* ── GENERATE BAR — full-width editorial CTA ────────── */}
-                        <div className="shrink-0 mt-6 mb-2">
-                          <button
-                            onClick={() => { setWizardStep(1); handleGenerate(); }}
-                            disabled={isGenerating || !!physicalViolation || !selectedBackground || !selectedPose || !selectedLighting}
-                            className="w-full py-4 flex items-center justify-between px-7 transition-all duration-300 group disabled:opacity-25 disabled:cursor-not-allowed cursor-pointer"
-                            style={{
-                              background: 'rgba(225,212,192,1)',
-                              borderRadius: '0.75rem',
-                              boxShadow: '0 0 40px rgba(225,212,192,0.12), 0 1px 3px rgba(0,0,0,0.4)'
-                            }}
-                          >
-                            <span className="text-[10px] font-bold tracking-[0.25em] uppercase text-black">
-                              {isGenerating ? 'Synthesizing Campaign...' : `Synthesize Campaign  ·  ${selectedAssetCount * 2} credits`}
-                            </span>
-                            <span className="text-black text-[13px] font-light group-hover:translate-x-0.5 transition-transform duration-200">→</span>
-                          </button>
-                        </div>
-                        
-                        {/* ── TELEMETRY DOCK ────────── */}
-                        <div className="shrink-0 mt-8 mb-4 w-full">
-                          <WorkflowTimeline
-                            status={activeCampaign.v3_creative_state?.status || 'pending'}
-                            hasMaterial={!!activeCampaign.material_path}
-                            weaveType={
-                              Array.isArray(activeCampaign.identity?.product_dna?.weaving_technique?.value)
-                                ? activeCampaign.identity.product_dna.weaving_technique.value.join(', ')
-                                : activeCampaign.identity?.product_dna?.weaving_technique?.value || 'Zari Brocade'
-                            }
-                            fiberBase={
-                              Array.isArray(activeCampaign.identity?.product_dna?.material?.value)
-                                ? activeCampaign.identity.product_dna.material.value.join(', ')
-                                : activeCampaign.identity?.product_dna?.material?.value || 'Silk'
-                            }
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Repurposed Team Mode Transition CTA Box */}
-                  {showControls && (
-                    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30 w-max pointer-events-auto transition-all duration-300 hover:scale-[1.02]">
-                      <div className="absolute -inset-2 bg-gradient-to-r from-[#E1D4C0]/15 via-[#C9B99A]/10 to-[#E1D4C0]/15 rounded-full blur-xl -z-10 pointer-events-none" />
-                      <Link 
-                        href="/team" 
-                        className="flex items-center justify-center gap-6 bg-[#0D0D0E]/80 border border-[#E1D4C0]/25 hover:border-[#E1D4C0]/65 pl-10 pr-8 py-4 rounded-full shadow-[0_0_40px_rgba(225,212,192,0.15)] backdrop-blur-xl transition-all cursor-pointer group text-center"
-                      >
-                        <div className="flex flex-col items-center justify-center gap-1">
-                          <span className="text-[11px] font-serif tracking-[0.2em] uppercase text-[#E1D4C0] font-medium flex items-center justify-center gap-2">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#E1D4C0] animate-pulse" />
-                            ✦ Enter Team Mode
-                          </span>
-                          <span className="text-[9px] font-sans text-white/40 group-hover:text-white/60 transition-colors tracking-wide font-light">
-                            Assemble 8 specialist agents to orchestrate campaign end-to-end
-                          </span>
-                        </div>
-                        <span className="text-[#E1D4C0]/60 group-hover:text-[#E1D4C0] group-hover:translate-x-1 transition-all duration-300 font-light text-[15px]">→</span>
-                      </Link>
-                    </div>
-                  )}
-                </div>
-              ) : null}
-            </div>
-          )}
-        </div>
-
-        {/* Inspiration Dock (only on empty state) */}
-        {campaigns.length === 0 && !isLoadingList && (
-          <div className="w-full pb-4">
-            <div className="grid grid-cols-3 gap-6 w-full pb-4">
-              <div className="w-full h-52 bg-[#E1D4C0]/5 hover:bg-[#E1D4C0]/10 backdrop-blur-md rounded-3xl border border-[#E1D4C0]/10 relative overflow-hidden group cursor-pointer hover:border-[#E1D4C0]/30 transition-colors duration-500">
-                <div className="p-6 relative z-10">
-                  <h3 className="text-sm font-semibold text-[#E1D4C0] tracking-wide">MATERIAL<br />INTELLIGENCE</h3>
-                  <p className="text-xs text-[#E1D4C0]/50 mt-1">Extract textile DNA</p>
-                </div>
-                <div className="absolute -bottom-10 -right-4 flex gap-2 rotate-[-5deg] group-hover:rotate-[-2deg] transition-transform duration-500">
-                  <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=200" className="w-24 h-36 rounded-lg object-cover shadow-2xl border border-white/10" alt="mock" />
-                  <img src="https://images.unsplash.com/photo-1604014237800-1c9102c219da?q=80&w=200" className="w-24 h-36 rounded-lg object-cover shadow-2xl border border-white/10 -translate-y-4" alt="mock" />
-                  <img src="https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?q=80&w=200" className="w-24 h-36 rounded-lg object-cover shadow-2xl border border-white/10 -translate-y-8" alt="mock" />
-                </div>
-              </div>
-              <div className="w-full h-52 bg-[#E1D4C0]/5 hover:bg-[#E1D4C0]/10 backdrop-blur-md rounded-3xl border border-[#E1D4C0]/10 relative overflow-hidden group cursor-pointer hover:border-[#E1D4C0]/30 transition-colors duration-500">
-                <div className="p-6 relative z-10">
-                  <h3 className="text-sm font-semibold text-[#E1D4C0] tracking-wide">CINEMATIC<br />CAMPAIGNS</h3>
-                  <p className="text-xs text-[#E1D4C0]/50 mt-1">High-end visual generation</p>
-                </div>
-                <div className="absolute -bottom-12 -right-4 flex gap-2 rotate-[-10deg] group-hover:rotate-[-5deg] transition-transform duration-500">
-                  <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=200" className="w-28 h-40 rounded-lg object-cover shadow-2xl border border-white/10 translate-y-4" alt="mock" />
-                  <img src="https://images.unsplash.com/photo-1434389670869-c80327f99995?q=80&w=200" className="w-28 h-40 rounded-lg object-cover shadow-2xl border border-white/10 translate-y-2" alt="mock" />
-                  <img src="https://images.unsplash.com/photo-1550639525-c97d455acf70?q=80&w=200" className="w-28 h-40 rounded-lg object-cover shadow-2xl border border-white/10" alt="mock" />
-                </div>
-              </div>
-              <div className="w-full h-52 bg-[#E1D4C0]/5 hover:bg-[#E1D4C0]/10 backdrop-blur-md rounded-3xl border border-[#E1D4C0]/10 relative overflow-hidden group cursor-pointer hover:border-[#E1D4C0]/30 transition-colors duration-500">
-                <div className="p-6 relative z-10">
-                  <h3 className="text-sm font-semibold text-[#E1D4C0] tracking-wide">BRAND<br />ARCHETYPES</h3>
-                  <p className="text-xs text-[#E1D4C0]/50 mt-1">Strict style enforcement</p>
-                </div>
-                <div className="absolute -bottom-10 -right-2 flex gap-2 rotate-[5deg] group-hover:rotate-[2deg] transition-transform duration-500">
-                  <img src="https://images.unsplash.com/photo-1509319117193-57bab727e09d?q=80&w=200" className="w-28 h-40 rounded-lg object-cover shadow-2xl border border-white/10 -translate-y-2" alt="mock" />
-                  <img src="https://images.unsplash.com/photo-1520613495404-5177893af96c?q=80&w=200" className="w-28 h-40 rounded-lg object-cover shadow-2xl border border-white/10 -translate-y-4" alt="mock" />
-                  <img src="https://images.unsplash.com/photo-1534062886737-f83fa14fa5c7?q=80&w=200" className="w-28 h-40 rounded-lg object-cover shadow-2xl border border-white/10 -translate-y-6" alt="mock" />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Collapsible Art Director Drawer */}
-      <AnimatePresence>
-        {isDrawerOpen && activeCampaign && (
-          <>
-            {/* Backdrop click-shield overlay */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => {
-                setIsDrawerOpen(false);
-                setManualClose(true);
-              }}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 pointer-events-auto"
-            />
-
-            {/* Slide-in drawer container */}
-            <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 180 }}
-              className="fixed right-0 top-0 h-screen w-[380px] bg-[#0C0C0D] border-l border-white/5 shadow-2xl z-40 flex flex-col pt-8 pb-10 px-6 overflow-hidden"
-            >
-              {/* Drawer Header */}
-              <div className="flex items-center justify-between mb-6 shrink-0">
-                <h2 className="text-[10px] tracking-[0.25em] uppercase text-white/40 font-mono">Art Director</h2>
-                <button
-                  onClick={() => {
-                    setIsDrawerOpen(false);
-                    setManualClose(true);
-                  }}
-                  className="p-1.5 rounded-full hover:bg-white/5 text-white/40 hover:text-white transition-colors cursor-pointer"
-                >
-                  <Plus className="w-4 h-4 transform rotate-45" />
-                </button>
-              </div>
-
-              {/* Scrollable Content */}
-              <div className="flex-1 flex flex-col gap-6 overflow-y-auto pr-1 scrollbar-none">
-                {/* Scene Composition Card */}
-                <SceneCompositionCard
-                  background={selectedBackground}
-                  pose={selectedPose}
-                  lighting={selectedLighting}
-                  ratio={selectedRatio}
-                />
-
-                {/* Live-in Agent Recommendation feedback card (Structured render) */}
-                {(() => {
-                  const rec = getAgentRecommendation();
-                  if (!rec.note) return null;
-
-                  return (
-                    <div className="flex flex-col gap-4 border border-white/5 bg-white/[0.01] rounded-2xl p-5 relative overflow-hidden">
-                      {/* Decorative top illumination bar */}
-                      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#E1D4C0]/25 to-transparent" />
-
-                      <div>
-                        <span className="text-[8px] font-mono tracking-widest text-[#E1D4C0]/65 uppercase mb-2 block animate-pulse">Director's Note</span>
-                        <p className="text-[12px] text-white/70 font-light leading-relaxed">
-                          {rec.note}
-                        </p>
-                      </div>
-
-                      {rec.pairings.length > 0 && (
-                        <div className="border-t border-white/5 pt-3">
-                          <span className="text-[8px] font-mono tracking-widest text-white/35 uppercase mb-2 block">Optimal Pairings</span>
-                          <div className="flex flex-wrap gap-1.5">
-                            {rec.pairings.map((p) => (
-                              <span key={p} className="text-[9px] text-[#E1D4C0]/90 bg-[#E1D4C0]/5 px-2 py-1 rounded border border-[#E1D4C0]/10 tracking-wide font-light">
-                                {p.split(' / ')[0]}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {rec.avoid.length > 0 && (
-                        <div className="border-t border-white/5 pt-3">
-                          <span className="text-[8px] font-mono tracking-widest text-red-400/40 uppercase mb-2 block">Avoid</span>
-                          <div className="flex flex-wrap gap-1.5">
-                            {rec.avoid.map((a) => (
-                              <span key={a} className="text-[9px] text-red-400/70 bg-red-500/5 px-2 py-1 rounded border border-red-500/10 tracking-wide font-light">
-                                {a.split(' / ')[0]}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })()}
-
-                {/* Mini status indicator */}
-                <div className="mt-auto border-t border-white/5 pt-4 text-center shrink-0">
-                  <p className="text-[8px] font-mono text-white/20 tracking-[0.2em] uppercase">
-                    Parallel Advisor Active
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-
-      {/* Floating Art Director Toggle Badge */}
-      {!isDrawerOpen && activeCampaign && (
-        (() => {
-          const hasDeviation = 
-            selectedBackground !== 'Minimalist Stone Pedestal' ||
-            selectedPose !== 'Architectural Drape / Structured Fold' ||
-            selectedLighting !== 'Ethereal Backlight / Edge Wrap';
-
-          if (!hasDeviation) return null;
-
-          return (
+            {/* Pathway 2: Start from a Creative Brief */}
             <div 
               onClick={() => {
-                setManualClose(false);
-                setIsDrawerOpen(true);
+                setActiveCampaign(INITIAL_CAMPAIGN_FIXTURE);
+                setActiveTab('intelligence');
               }}
-              className="fixed right-0 top-1/2 -translate-y-1/2 z-30 bg-[#0C0C0D] border-l border-t border-b border-white/5 px-2 py-4 rounded-l-xl flex flex-col items-center gap-2 hover:bg-[#121213] transition-colors cursor-pointer group shadow-2xl"
+              className="p-6 rounded-2xl bg-[#111113]/80 border border-white/10 hover:border-[#E1D4C0]/40 transition-all cursor-pointer group space-y-3"
             >
-              <div className="relative">
-                <span className="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-[#E1D4C0] animate-ping" />
-                <span className="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-[#E1D4C0]" />
-                <Plus className="w-3.5 h-3.5 text-white/40 group-hover:text-white transition-colors" />
+              <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-300 border border-purple-500/20 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <FileText className="w-5 h-5" />
               </div>
-              <span className="text-[6.5px] font-mono tracking-widest text-[#E1D4C0]/70 uppercase transform rotate-90 mt-4 select-none whitespace-nowrap">
-                ADVISOR
-              </span>
+              <div>
+                <h3 className="text-base font-serif text-white group-hover:text-purple-300 transition-colors">Start from a Brief</h3>
+                <p className="text-xs text-white/50 font-light mt-0.5">
+                  Ingest an existing agency creative brief and extract structured campaign intelligence.
+                </p>
+              </div>
             </div>
-          );
-        })()
-      )}
 
-      {/* Floating Image Preview */}
-      {hoveredPreview && (
-        <div 
-          className="fixed z-[100] pointer-events-none rounded-xl overflow-hidden shadow-2xl border border-white/10 transition-transform duration-75 ease-out"
-          style={{
-            left: mousePos.x + 32, // Offset to the right of cursor
-            top: mousePos.y - 200,  // Offset up to center vertically
-            width: '400px',
-            height: '400px'
-          }}
-        >
-          <img src={hoveredPreview} alt="Preview" className="w-full h-full object-cover" />
+            {/* Pathway 3: Continue an Active Initiative */}
+            <div 
+              onClick={() => {
+                setActiveCampaign(INITIAL_CAMPAIGN_FIXTURE);
+                setActiveTab('overview');
+              }}
+              className="p-6 rounded-2xl bg-[#111113]/80 border border-white/10 hover:border-[#E1D4C0]/40 transition-all cursor-pointer group space-y-3"
+            >
+              <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-300 border border-blue-500/20 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <Layers className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-serif text-white group-hover:text-blue-300 transition-colors">Continue an Initiative</h3>
+                <p className="text-xs text-white/50 font-light mt-0.5">
+                  Resume active development on "Autumn/Winter 2026: The Modern Sovereign".
+                </p>
+              </div>
+            </div>
+
+            {/* Pathway 4: Explore Previous Campaign */}
+            <div 
+              onClick={() => {
+                setActiveCampaign(INITIAL_CAMPAIGN_FIXTURE);
+                setActiveTab('outcomes');
+              }}
+              className="p-6 rounded-2xl bg-[#111113]/80 border border-white/10 hover:border-[#E1D4C0]/40 transition-all cursor-pointer group space-y-3"
+            >
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <History className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-serif text-white group-hover:text-emerald-400 transition-colors">Explore Previous Campaign</h3>
+                <p className="text-xs text-white/50 font-light mt-0.5">
+                  Review historical outcome attribution and organizational learnings from past launches.
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Creation Modal Drawer */}
+          {isCreateDrawerOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+              <div className="w-full max-w-md rounded-2xl bg-[#141416] border border-white/10 p-6 space-y-5 shadow-2xl">
+                <div className="space-y-1">
+                  <h3 className="text-base font-serif text-white">Initialize New Campaign</h3>
+                  <p className="text-xs text-white/50 font-light">Set campaign name and primary strategic objective.</p>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div className="space-y-1">
+                    <label className="text-white/60 font-mono text-[10px] uppercase">Campaign Name</label>
+                    <input
+                      type="text"
+                      value={newCampaignName}
+                      onChange={(e) => setNewCampaignName(e.target.value)}
+                      placeholder="e.g. Spring/Summer 2027: Raw Solitude"
+                      className="w-full p-2.5 rounded-xl bg-white/[0.03] border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#E1D4C0]/50"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-white/60 font-mono text-[10px] uppercase">Strategic Objective</label>
+                    <textarea
+                      value={newCampaignObjective}
+                      onChange={(e) => setNewCampaignObjective(e.target.value)}
+                      placeholder="e.g. Expand high-end minimalist silk outerwear line into European luxury boutiques."
+                      rows={3}
+                      className="w-full p-2.5 rounded-xl bg-white/[0.03] border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#E1D4C0]/50"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2">
+                  <button
+                    onClick={() => setIsCreateDrawerOpen(false)}
+                    className="px-3.5 py-2 rounded-xl text-xs text-white/60 hover:text-white"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleStartNewCampaign}
+                    className="px-4 py-2 rounded-xl bg-[#E1D4C0] text-[#0A0A0A] font-semibold text-xs hover:opacity-90 transition-opacity"
+                  >
+                    Initialize Workspace
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+        </div>
+      ) : (
+        /* STATE 2: Full 8-Tab Campaign Studio Active Workspace */
+        <div className="flex-1 flex flex-col">
+          
+          {/* Top Campaign Header & Crew HUD */}
+          <CampaignStudioHeader
+            campaign={activeCampaign}
+            activeTab={activeTab}
+            onSelectTab={(tab) => setActiveTab(tab)}
+            onOpenAskVyren={() => setIsAskVyrenOpen(true)}
+            onBackToOverview={() => setActiveCampaign(null)}
+          />
+
+          {/* Tab Subsystem Workspace Viewport */}
+          <div className="flex-1 p-6 lg:p-10 max-w-7xl mx-auto w-full">
+            {activeTab === 'overview' && (
+              <OverviewTab 
+                campaign={activeCampaign} 
+                onNavigateTab={(tab) => setActiveTab(tab)} 
+              />
+            )}
+
+            {activeTab === 'intelligence' && (
+              <IntelligenceTab 
+                campaign={activeCampaign} 
+              />
+            )}
+
+            {activeTab === 'directions' && (
+              <DirectionsTab 
+                campaign={activeCampaign}
+                onSelectDirection={(dirId) => {
+                  setActiveCampaign(prev => prev ? {
+                    ...prev,
+                    directions: prev.directions.map(d => d.id === dirId ? { ...d, decisionStatus: 'selected' } : { ...d, decisionStatus: 'draft' })
+                  } : null);
+                }}
+                onNavigateTab={(tab) => setActiveTab(tab)}
+              />
+            )}
+
+            {activeTab === 'visuals' && (
+              <VisualsTab 
+                campaign={activeCampaign} 
+                onNavigateTab={(tab) => setActiveTab(tab)}
+              />
+            )}
+
+            {activeTab === 'assets' && (
+              <AssetsTab 
+                campaign={activeCampaign} 
+                onNavigateTab={(tab) => setActiveTab(tab)}
+              />
+            )}
+
+            {activeTab === 'review' && (
+              <ReviewTab 
+                campaign={activeCampaign} 
+                onNavigateTab={(tab) => setActiveTab(tab)}
+              />
+            )}
+
+            {activeTab === 'production' && (
+              <ProductionTab 
+                campaign={activeCampaign} 
+                onNavigateTab={(tab) => setActiveTab(tab)}
+              />
+            )}
+
+            {activeTab === 'outcomes' && (
+              <OutcomesTab 
+                campaign={activeCampaign} 
+              />
+            )}
+          </div>
+
         </div>
       )}
+
     </div>
   );
 }
