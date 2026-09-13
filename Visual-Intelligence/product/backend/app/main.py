@@ -109,3 +109,16 @@ app.include_router(campaigns_router)
 app.include_router(payments.router)
 app.include_router(jobs.router)
 app.include_router(team.router)
+
+# Phase 31 & External MCP Gateways
+try:
+    from src.api.routes.vyren_room_routes import router as vyren_room_router
+    app.include_router(vyren_room_router)
+except Exception as e:
+    logger.warning(f"Could not load vyren_room_router: {e}")
+
+try:
+    from src.api.routes.mcp_routes import router as mcp_router
+    app.include_router(mcp_router)
+except Exception as e:
+    logger.warning(f"Could not load mcp_router: {e}")

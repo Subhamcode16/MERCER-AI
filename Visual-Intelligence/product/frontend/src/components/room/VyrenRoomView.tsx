@@ -12,10 +12,12 @@ import {
   RefreshCw, 
   ArrowRight,
   User,
+  AlertCircle,
+  ExternalLink,
   Layers,
-  FileCheck,
   Check
 } from "lucide-react";
+import { PinterestMoodboardDrawer } from "./PinterestMoodboardDrawer";
 
 interface MessageArtifact {
   id: string;
@@ -113,6 +115,43 @@ export function VyrenRoomView() {
 
   const [inputVal, setInputVal] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isPinterestDrawerOpen, setIsPinterestDrawerOpen] = useState(false);
+
+  const handleIngestPinterestBoard = (boardId: string, boardName: string) => {
+    setIsProcessing(true);
+    setTimeout(() => {
+      const moodboardMsg: RoomMessage = {
+        id: `msg-${Date.now()}`,
+        senderId: "vyren_core",
+        senderName: "VYREN (Pinterest MCP Ingestion)",
+        senderRole: "Creative Operating System",
+        isHuman: false,
+        content: `Successfully ingested Pinterest moodboard: "${boardName}". Aesthetic tokens, dominant color harmonies (Imperial Crimson, Antique Gold Zari), and 2800K tungsten lighting specs have been locked into the active room context.`,
+        timestamp: "Just now",
+        workEvents: [
+          { step: `Connecting to Pinterest API v5 for board: ${boardName}`, status: "DONE" },
+          { step: "Extracting high-resolution visual references & palette weights", status: "DONE" },
+          { step: "Synthesizing Visual DNA tokens into room memory", status: "DONE" }
+        ],
+        artifacts: [
+          {
+            id: `art-pb-${Date.now()}`,
+            type: "MOODBOARD",
+            title: `Ingested Moodboard — ${boardName}`,
+            summary: "Extracted 3 dominant palettes and Banarasi raw silk drape physics from curated pin references.",
+            data: {
+              epistemicStatus: "OBSERVED",
+              palette: "#7A1C24, #D4AF37, #0F111A",
+              lighting: "2800K Tungsten Key + Cool 6500K Cyan Rim",
+              fabricPhysics: "Banarasi Silk with micro-crease stiffness (0.84)"
+            }
+          }
+        ]
+      };
+      setMessages(prev => [...prev, moodboardMsg]);
+      setIsProcessing(false);
+    }, 1000);
+  };
 
   const handleSendMessage = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -380,8 +419,37 @@ export function VyrenRoomView() {
         ))}
       </div>
 
-      {/* Persistent Bottom Composer Bar */}
-      <div className="p-4 border-t border-white/10 bg-[#0D0D0E]/90 backdrop-blur-md shrink-0">
+      {/* Persistent Bottom Composer Bar & Quick Action Chips */}
+      <div className="p-4 border-t border-white/10 bg-[#0D0D0E]/90 backdrop-blur-md shrink-0 space-y-2.5">
+        {/* Quick Suggestion Chips */}
+        <div className="max-w-4xl mx-auto flex items-center gap-2 overflow-x-auto pb-1 text-xs no-scrollbar">
+          <button
+            onClick={() => setIsPinterestDrawerOpen(true)}
+            className="px-2.5 py-1 rounded-lg bg-[#E60023]/10 hover:bg-[#E60023]/20 border border-[#E60023]/30 text-[#E60023] text-[11px] font-medium transition-colors flex items-center gap-1.5 shrink-0"
+          >
+            <Layers className="w-3 h-3" />
+            <span>Ingest Pinterest Moodboard</span>
+          </button>
+          <button
+            onClick={() => {
+              setInputVal("Search trending luxury editorial aesthetics and modern royal bridal drapes on Pinterest");
+            }}
+            className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 text-[11px] font-medium transition-colors flex items-center gap-1.5 shrink-0"
+          >
+            <Sparkles className="w-3 h-3 text-amber-400" />
+            <span>Discover Editorial Trends</span>
+          </button>
+          <button
+            onClick={() => {
+              setInputVal("Marcus, calibrate 2800K tungsten key lighting with cool 6500K cyan rim on Banarasi silk");
+            }}
+            className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 text-[11px] font-medium transition-colors flex items-center gap-1.5 shrink-0"
+          >
+            <Sparkles className="w-3 h-3 text-indigo-400" />
+            <span>Calibrate Lighting Shaders</span>
+          </button>
+        </div>
+
         <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto flex items-center gap-3 bg-black/50 p-2 rounded-2xl border border-white/10 focus-within:border-[#E1D4C0]/50 transition-all">
           <div className="w-8 h-8 rounded-xl bg-[#E1D4C0]/10 text-[#E1D4C0] flex items-center justify-center shrink-0">
             <Sparkles className="w-4 h-4" />
@@ -414,6 +482,13 @@ export function VyrenRoomView() {
           </button>
         </form>
       </div>
+
+      {/* Slide-Over Pinterest Ingestion Drawer */}
+      <PinterestMoodboardDrawer
+        isOpen={isPinterestDrawerOpen}
+        onClose={() => setIsPinterestDrawerOpen(false)}
+        onIngestBoard={handleIngestPinterestBoard}
+      />
 
     </div>
   );

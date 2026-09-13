@@ -139,3 +139,82 @@ class GovernedToolRegistry:
             }
 
         self.register_tool(research_tool, research_search_handler)
+
+        # Tool 2: pinterest.boards (List Pinterest Moodboards)
+        pinterest_boards_tool = ToolRegistration(
+            tool_id="pinterest.boards",
+            name="Pinterest Moodboard Listing",
+            description="Lists connected Pinterest moodboards for creative inspiration.",
+            tenant_scope="global",
+            allowed_roles=["intelligence_specialist", "creative_director", "researcher", "founder"],
+            required_authority="read_only",
+            read_write="read",
+            data_classification="confidential",
+            approval_required=False,
+            evidence_requirement="external_reference",
+            audit_requirement=True,
+            parameters_schema={
+                "tenant_id": {"type": "string", "description": "Tenant ID"}
+            }
+        )
+
+        async def pinterest_boards_handler(session: AgentSession, worker: WorkerDefinition, tenant_id: str = "", **kwargs):
+            from src.agent_runtime.mcp.pinterest_mcp_server import PinterestMCPServer
+            server = PinterestMCPServer()
+            tid = tenant_id or session.tenant_id
+            return await server.list_boards(tid)
+
+        self.register_tool(pinterest_boards_tool, pinterest_boards_handler)
+
+        # Tool 3: pinterest.ingest (Ingest Moodboard & Extract Tokens)
+        pinterest_ingest_tool = ToolRegistration(
+            tool_id="pinterest.ingest",
+            name="Pinterest Moodboard Ingestion",
+            description="Ingests a Pinterest board, extracting high-res visuals, dominant color palettes, and aesthetic tokens.",
+            tenant_scope="global",
+            allowed_roles=["intelligence_specialist", "creative_director", "researcher", "founder"],
+            required_authority="read_only",
+            read_write="read",
+            data_classification="confidential",
+            approval_required=False,
+            evidence_requirement="grounded_citation",
+            audit_requirement=True,
+            parameters_schema={
+                "board_id": {"type": "string", "description": "Board ID to ingest"},
+                "tenant_id": {"type": "string", "description": "Tenant ID"}
+            }
+        )
+
+        async def pinterest_ingest_handler(session: AgentSession, worker: WorkerDefinition, board_id: str = "board_bridal_heritage", tenant_id: str = "", **kwargs):
+            from src.agent_runtime.mcp.pinterest_mcp_server import PinterestMCPServer
+            server = PinterestMCPServer()
+            tid = tenant_id or session.tenant_id
+            return await server.ingest_moodboard(tid, board_id)
+
+        self.register_tool(pinterest_ingest_tool, pinterest_ingest_handler)
+
+        # Tool 4: pinterest.trends (Search Editorial Trends)
+        pinterest_trends_tool = ToolRegistration(
+            tool_id="pinterest.trends",
+            name="Pinterest Editorial Trend Search",
+            description="Searches trending luxury, editorial, and fashion aesthetics on Pinterest.",
+            tenant_scope="global",
+            allowed_roles=["intelligence_specialist", "creative_director", "researcher", "founder"],
+            required_authority="read_only",
+            read_write="read",
+            data_classification="public",
+            approval_required=False,
+            evidence_requirement="external_reference",
+            audit_requirement=True,
+            parameters_schema={
+                "query": {"type": "string", "description": "Trend query"},
+                "category": {"type": "string", "description": "Category"}
+            }
+        )
+
+        async def pinterest_trends_handler(session: AgentSession, worker: WorkerDefinition, query: str = "luxury couture", category: str = "fashion", **kwargs):
+            from src.agent_runtime.mcp.pinterest_mcp_server import PinterestMCPServer
+            server = PinterestMCPServer()
+            return await server.search_trends(query, category)
+
+        self.register_tool(pinterest_trends_tool, pinterest_trends_handler)

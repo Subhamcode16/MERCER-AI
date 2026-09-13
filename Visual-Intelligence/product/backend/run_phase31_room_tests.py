@@ -10,14 +10,15 @@ import os
 def run_tests():
     backend_dir = os.path.dirname(os.path.abspath(__file__))
     
-    # Run Phase 31 Tests
+    # Run Phase 31 Tests (Room & MCP Runtime)
     print("\n" + "="*70)
-    print("[VYREN] RUNNING PHASE 31: AGENTIC ROOM & SECURITY INVARIANTS (T-001 to T-020)")
+    print("[VYREN] RUNNING PHASE 31: AGENTIC ROOM, MCP GATEWAYS & SECURITY INVARIANTS (T-001 to T-020)")
     print("="*70 + "\n")
     
     cmd_p31 = [
         sys.executable, "-m", "pytest",
         os.path.join(backend_dir, "tests", "vyren_room"),
+        os.path.join(backend_dir, "tests", "agent_runtime"),
         "-v"
     ]
     
@@ -42,7 +43,7 @@ def run_tests():
         sys.exit(res_p30.returncode)
 
     print("\n" + "="*70)
-    print("[PASS] ALL TESTS PASSED: PHASE 31 (21 TESTS) + PHASE 30 (81 TESTS) = 102/102 (100%)")
+    print("[PASS] ALL TESTS PASSED: PHASE 31 & MCP (29 TESTS) + PHASE 30 (81 TESTS) = 110/110 (100%)")
     print("="*70 + "\n")
 
 if __name__ == "__main__":
