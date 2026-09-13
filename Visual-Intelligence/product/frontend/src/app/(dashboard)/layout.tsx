@@ -83,10 +83,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {/* Canonical Primary Navigation */}
           <nav className="flex flex-col gap-5 flex-1 w-full overflow-y-auto scrollbar-none pr-1">
             
-            {/* 1. HOME */}
+            {/* 1. ROOM / HOME */}
             <div>
               <div className="flex flex-col gap-1">
-                <NavLink href="/home" active={pathname === '/home' || pathname === '/'} collapsed={isCollapsed} icon={Home}>Home</NavLink>
+                <NavLink href="/home" active={pathname === '/home' || pathname === '/' || pathname === '/room'} collapsed={isCollapsed} icon={Sparkles}>VYREN Room</NavLink>
               </div>
             </div>
 
@@ -96,7 +96,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <div className="text-[9px] tracking-[0.22em] uppercase text-white/30 mb-2 font-semibold px-2">Work</div>
               )}
               <div className="flex flex-col gap-1">
-                <NavLink href="/room" active={pathname === '/room'} collapsed={isCollapsed} icon={Sparkles}>VYREN Room</NavLink>
                 <NavLink href="/projects" active={pathname.includes('/projects')} collapsed={isCollapsed} icon={FolderKanban}>Projects</NavLink>
                 <NavLink href="/campaigns" active={pathname.includes('/campaigns') || pathname.includes('/attribution')} collapsed={isCollapsed} icon={Target}>Campaigns</NavLink>
                 <NavLink href="/studio" active={pathname === '/studio'} collapsed={isCollapsed} icon={Palette}>Creative Studio</NavLink>
