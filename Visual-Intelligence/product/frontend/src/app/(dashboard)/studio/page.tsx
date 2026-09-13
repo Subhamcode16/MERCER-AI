@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { 
   Sparkles, 
@@ -15,7 +15,8 @@ import {
   Folder,
   Sliders,
   Eye,
-  ShieldCheck
+  ShieldCheck,
+  Send
 } from "lucide-react";
 import { 
   INITIAL_CAMPAIGN_FIXTURE, 
@@ -26,11 +27,10 @@ import {
   type StudioTabId 
 } from "@/components/studio/CampaignStudioHeader";
 import { AskVyrenModal } from "@/components/studio/AskVyrenModal";
+import { PersistentAskVyrenBar } from "@/components/studio/PersistentAskVyrenBar";
 import { OverviewTab } from "@/components/studio/tabs/OverviewTab";
-import { IntelligenceTab } from "@/components/studio/tabs/IntelligenceTab";
 import { DirectionsTab } from "@/components/studio/tabs/DirectionsTab";
 import { VisualsTab } from "@/components/studio/tabs/VisualsTab";
-import { AssetsTab } from "@/components/studio/tabs/AssetsTab";
 import { ReviewTab } from "@/components/studio/tabs/ReviewTab";
 import { ProductionTab } from "@/components/studio/tabs/ProductionTab";
 import { OutcomesTab } from "@/components/studio/tabs/OutcomesTab";
@@ -40,9 +40,34 @@ export default function CampaignStudioPage() {
   const [activeCampaign, setActiveCampaign] = useState<CampaignStudioModel | null>(INITIAL_CAMPAIGN_FIXTURE);
   const [activeTab, setActiveTab] = useState<StudioTabId>('overview');
   const [isAskVyrenOpen, setIsAskVyrenOpen] = useState(false);
+  const [conversationalPrompt, setConversationalPrompt] = useState("");
   const [isCreateDrawerOpen, setIsCreateDrawerOpen] = useState(false);
   const [newCampaignName, setNewCampaignName] = useState("");
   const [newCampaignObjective, setNewCampaignObjective] = useState("");
+
+  const handleStartFromConversationalPrompt = (promptText: string) => {
+    if (!promptText.trim()) return;
+    const newCamp: CampaignStudioModel = {
+      ...INITIAL_CAMPAIGN_FIXTURE,
+      id: `camp-${Date.now()}`,
+      name: promptText.length > 40 ? promptText.slice(0, 40) + "..." : promptText,
+      objective: promptText.trim(),
+      status: "In Development",
+      lockedDecisions: [],
+      prioritizedActions: [
+        {
+          id: `act-${Date.now()}`,
+          title: "Select primary Creative Direction",
+          severity: "High",
+          assignedTo: "Elena Vance (Human Owner)",
+          dueTimeline: "Sprint 01"
+        }
+      ]
+    };
+    setActiveCampaign(newCamp);
+    setActiveTab('create');
+    setConversationalPrompt("");
+  };
 
   const handleStartNewCampaign = () => {
     if (!newCampaignName.trim()) return;
@@ -71,7 +96,7 @@ export default function CampaignStudioPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white/90 flex flex-col">
+    <div className="min-h-screen bg-[#0A0A0A] text-white/90 flex flex-col relative">
       
       {/* Ask VYREN Bounded Intelligence Modal */}
       {activeCampaign && (
@@ -87,33 +112,83 @@ export default function CampaignStudioPage() {
         <div className="flex-1 p-8 lg:p-12 flex flex-col justify-center max-w-5xl mx-auto w-full space-y-10 animate-in fade-in duration-300">
           
           {/* Hero Header */}
-          <div className="space-y-2 text-center max-w-2xl mx-auto">
+          <div className="space-y-3 text-center max-w-2xl mx-auto">
             <span className="text-[10px] font-mono tracking-widest uppercase text-[#E1D4C0] bg-[#E1D4C0]/10 border border-[#E1D4C0]/20 px-3 py-1 rounded-full">
-              CAMPAIGN STUDIO &bull; CREATIVE WORKSPACE
+              CAMPAIGN STUDIO &bull; CREATIVE OPERATING SYSTEM
             </span>
-            <h1 className="text-3xl lg:text-4xl font-serif text-white font-light tracking-tight mt-2">
+            <h1 className="text-3xl lg:text-5xl font-serif text-white font-light tracking-tight mt-2">
               What are we creating?
             </h1>
             <p className="text-xs text-white/50 font-light leading-relaxed">
-              Campaign Studio is VYREN's end-to-end creative operating system. Formulate strategic intelligence, explore comparative directions, and synthesize production-ready assets.
+              Tell VYREN your vision or launch goal in plain language. VYREN connects brand context, Visual DNA, audience intelligence, and multi-surface asset production.
             </p>
           </div>
 
+          {/* Large Conversational Input Surface */}
+          <div className="p-2 rounded-3xl bg-[#121214]/90 border border-white/10 shadow-2xl focus-within:border-[#E1D4C0]/50 transition-all max-w-3xl mx-auto w-full">
+            <div className="flex items-center gap-3 p-4 bg-black/50 rounded-2xl border border-white/5">
+              <div className="w-9 h-9 rounded-xl bg-[#E1D4C0]/10 text-[#E1D4C0] flex items-center justify-center shrink-0">
+                <Sparkles className="w-5 h-5" />
+              </div>
+
+              <input
+                type="text"
+                value={conversationalPrompt}
+                onChange={(e) => setConversationalPrompt(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && conversationalPrompt.trim()) {
+                    handleStartFromConversationalPrompt(conversationalPrompt);
+                  }
+                }}
+                placeholder="Tell VYREN what you want to make... (e.g. 'Launch our winter luxury bridal collection')"
+                className="flex-1 bg-transparent text-sm text-white placeholder-white/40 focus:outline-none font-light"
+              />
+
+              <button
+                onClick={() => handleStartFromConversationalPrompt(conversationalPrompt)}
+                disabled={!conversationalPrompt.trim()}
+                className="px-5 py-2.5 rounded-xl bg-[#E1D4C0] text-[#0A0A0A] font-semibold text-xs hover:opacity-90 disabled:opacity-40 transition-opacity flex items-center gap-1.5 shrink-0 shadow-lg"
+              >
+                <span>Develop</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {/* Quick Inspiration Pills */}
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-none px-4 py-2.5">
+              <span className="text-[10px] font-mono text-white/30 uppercase tracking-widest shrink-0">Try:</span>
+              {[
+                "Launch our winter collection with contemporary heritage restraint",
+                "Create a social campaign that makes the brand feel more architectural",
+                "Explore high-intent Gen Z luxury bridal campaign",
+              ].map((pill, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleStartFromConversationalPrompt(pill)}
+                  className="text-[11px] text-white/60 hover:text-[#E1D4C0] bg-white/[0.03] hover:bg-white/[0.07] border border-white/5 hover:border-[#E1D4C0]/30 px-3 py-1 rounded-full whitespace-nowrap transition-all flex items-center gap-1 shrink-0"
+                >
+                  <span>{pill}</span>
+                  <ArrowRight className="w-2.5 h-2.5 opacity-40" />
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* 4 Strategic Genesis Pathways */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto w-full">
             
             {/* Pathway 1: Start a Campaign */}
             <div 
               onClick={() => setIsCreateDrawerOpen(true)}
-              className="p-6 rounded-2xl bg-[#111113]/80 border border-white/10 hover:border-[#E1D4C0]/40 transition-all cursor-pointer group space-y-3"
+              className="p-5 rounded-2xl bg-[#111113]/80 border border-white/10 hover:border-[#E1D4C0]/40 transition-all cursor-pointer group space-y-2"
             >
-              <div className="w-10 h-10 rounded-xl bg-[#E1D4C0]/10 text-[#E1D4C0] border border-[#E1D4C0]/20 flex items-center justify-center group-hover:scale-105 transition-transform">
-                <Plus className="w-5 h-5" />
+              <div className="w-8 h-8 rounded-xl bg-[#E1D4C0]/10 text-[#E1D4C0] border border-[#E1D4C0]/20 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <Plus className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-base font-serif text-white group-hover:text-[#E1D4C0] transition-colors">Start a Campaign</h3>
+                <h3 className="text-sm font-serif text-white group-hover:text-[#E1D4C0] transition-colors">Start a Campaign</h3>
                 <p className="text-xs text-white/50 font-light mt-0.5">
-                  Launch a full creative cycle from strategic objective through omnichannel delivery.
+                  Full creative cycle from strategic objective through omnichannel delivery.
                 </p>
               </div>
             </div>
@@ -122,17 +197,17 @@ export default function CampaignStudioPage() {
             <div 
               onClick={() => {
                 setActiveCampaign(INITIAL_CAMPAIGN_FIXTURE);
-                setActiveTab('intelligence');
+                setActiveTab('create');
               }}
-              className="p-6 rounded-2xl bg-[#111113]/80 border border-white/10 hover:border-[#E1D4C0]/40 transition-all cursor-pointer group space-y-3"
+              className="p-5 rounded-2xl bg-[#111113]/80 border border-white/10 hover:border-[#E1D4C0]/40 transition-all cursor-pointer group space-y-2"
             >
-              <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-300 border border-purple-500/20 flex items-center justify-center group-hover:scale-105 transition-transform">
-                <FileText className="w-5 h-5" />
+              <div className="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-300 border border-purple-500/20 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <FileText className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-base font-serif text-white group-hover:text-purple-300 transition-colors">Start from a Brief</h3>
+                <h3 className="text-sm font-serif text-white group-hover:text-purple-300 transition-colors">Start from a Brief</h3>
                 <p className="text-xs text-white/50 font-light mt-0.5">
-                  Ingest an existing agency creative brief and extract structured campaign intelligence.
+                  Ingest agency brief and extract structured campaign intelligence.
                 </p>
               </div>
             </div>
@@ -143,15 +218,15 @@ export default function CampaignStudioPage() {
                 setActiveCampaign(INITIAL_CAMPAIGN_FIXTURE);
                 setActiveTab('overview');
               }}
-              className="p-6 rounded-2xl bg-[#111113]/80 border border-white/10 hover:border-[#E1D4C0]/40 transition-all cursor-pointer group space-y-3"
+              className="p-5 rounded-2xl bg-[#111113]/80 border border-white/10 hover:border-[#E1D4C0]/40 transition-all cursor-pointer group space-y-2"
             >
-              <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-300 border border-blue-500/20 flex items-center justify-center group-hover:scale-105 transition-transform">
-                <Layers className="w-5 h-5" />
+              <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-300 border border-blue-500/20 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <Layers className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-base font-serif text-white group-hover:text-blue-300 transition-colors">Continue an Initiative</h3>
+                <h3 className="text-sm font-serif text-white group-hover:text-blue-300 transition-colors">Continue an Initiative</h3>
                 <p className="text-xs text-white/50 font-light mt-0.5">
-                  Resume active development on "Autumn/Winter 2026: The Modern Sovereign".
+                  Resume active development on "The Modern Sovereign".
                 </p>
               </div>
             </div>
@@ -160,17 +235,17 @@ export default function CampaignStudioPage() {
             <div 
               onClick={() => {
                 setActiveCampaign(INITIAL_CAMPAIGN_FIXTURE);
-                setActiveTab('outcomes');
+                setActiveTab('learn');
               }}
-              className="p-6 rounded-2xl bg-[#111113]/80 border border-white/10 hover:border-[#E1D4C0]/40 transition-all cursor-pointer group space-y-3"
+              className="p-5 rounded-2xl bg-[#111113]/80 border border-white/10 hover:border-[#E1D4C0]/40 transition-all cursor-pointer group space-y-2"
             >
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center group-hover:scale-105 transition-transform">
-                <History className="w-5 h-5" />
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <History className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-base font-serif text-white group-hover:text-emerald-400 transition-colors">Explore Previous Campaign</h3>
+                <h3 className="text-sm font-serif text-white group-hover:text-emerald-400 transition-colors">Explore Previous Campaign</h3>
                 <p className="text-xs text-white/50 font-light mt-0.5">
-                  Review historical outcome attribution and organizational learnings from past launches.
+                  Review historical outcomes and learnings from past launches.
                 </p>
               </div>
             </div>
@@ -230,7 +305,7 @@ export default function CampaignStudioPage() {
 
         </div>
       ) : (
-        /* STATE 2: Full 8-Tab Campaign Studio Active Workspace */
+        /* STATE 2: Canonical 5-Stage Creative Room Active Workspace */
         <div className="flex-1 flex flex-col">
           
           {/* Top Campaign Header & Crew HUD */}
@@ -242,7 +317,7 @@ export default function CampaignStudioPage() {
             onBackToOverview={() => setActiveCampaign(null)}
           />
 
-          {/* Tab Subsystem Workspace Viewport */}
+          {/* Main Stage Viewport */}
           <div className="flex-1 p-6 lg:p-10 max-w-7xl mx-auto w-full">
             {activeTab === 'overview' && (
               <OverviewTab 
@@ -251,13 +326,7 @@ export default function CampaignStudioPage() {
               />
             )}
 
-            {activeTab === 'intelligence' && (
-              <IntelligenceTab 
-                campaign={activeCampaign} 
-              />
-            )}
-
-            {activeTab === 'directions' && (
+            {(activeTab === 'create' || activeTab === 'directions' || activeTab === 'intelligence') && (
               <DirectionsTab 
                 campaign={activeCampaign}
                 onSelectDirection={(dirId) => {
@@ -273,37 +342,40 @@ export default function CampaignStudioPage() {
             {activeTab === 'visuals' && (
               <VisualsTab 
                 campaign={activeCampaign} 
-                onNavigateTab={(tab) => setActiveTab(tab)}
+                onNavigateTab={(tab) => setActiveTab(tab)} 
               />
             )}
 
-            {activeTab === 'assets' && (
-              <AssetsTab 
-                campaign={activeCampaign} 
-                onNavigateTab={(tab) => setActiveTab(tab)}
-              />
-            )}
-
-            {activeTab === 'review' && (
+            {(activeTab === 'review' || activeTab === 'assets') && (
               <ReviewTab 
                 campaign={activeCampaign} 
-                onNavigateTab={(tab) => setActiveTab(tab)}
+                onNavigateTab={(tab) => setActiveTab(tab)} 
               />
             )}
 
-            {activeTab === 'production' && (
+            {(activeTab === 'ship' || activeTab === 'production') && (
               <ProductionTab 
                 campaign={activeCampaign} 
-                onNavigateTab={(tab) => setActiveTab(tab)}
+                onNavigateTab={(tab) => setActiveTab(tab)} 
               />
             )}
 
-            {activeTab === 'outcomes' && (
+            {(activeTab === 'learn' || activeTab === 'outcomes') && (
               <OutcomesTab 
                 campaign={activeCampaign} 
+                onNavigateTab={(tab) => setActiveTab(tab)} 
               />
             )}
           </div>
+
+          {/* Persistent Floating Creative Command Bar */}
+          <PersistentAskVyrenBar
+            campaign={activeCampaign}
+            activeStage={activeTab}
+            onOpenAskVyrenModal={(query) => {
+              setIsAskVyrenOpen(true);
+            }}
+          />
 
         </div>
       )}

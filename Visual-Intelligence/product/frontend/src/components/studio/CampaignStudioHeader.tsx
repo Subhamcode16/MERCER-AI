@@ -17,12 +17,15 @@ import type { CampaignStudioModel, WorkerContribution } from "@/lib/campaignStud
 
 export type StudioTabId = 
   | 'overview' 
-  | 'intelligence' 
-  | 'directions' 
-  | 'visuals' 
-  | 'assets' 
+  | 'create' 
   | 'review' 
-  | 'production' 
+  | 'ship' 
+  | 'learn'
+  | 'visuals'
+  | 'intelligence'
+  | 'directions'
+  | 'assets'
+  | 'production'
   | 'outcomes';
 
 interface CampaignStudioHeaderProps {
@@ -41,15 +44,13 @@ export function CampaignStudioHeader({
 }: CampaignStudioHeaderProps) {
   const [hoveredWorker, setHoveredWorker] = useState<WorkerContribution | null>(null);
 
+  // Canonical 5-Stage Creative Room Navigation
   const tabs: { id: StudioTabId; label: string; badge?: string }[] = [
     { id: 'overview', label: 'Overview' },
-    { id: 'intelligence', label: 'Intelligence', badge: `${campaign.intelligence.length}` },
-    { id: 'directions', label: 'Directions', badge: `${campaign.directions.length}` },
-    { id: 'visuals', label: 'Visuals', badge: `${campaign.visualStudies.length}` },
-    { id: 'assets', label: 'Assets', badge: `${campaign.assets.length}` },
-    { id: 'review', label: 'Review', badge: `${campaign.reviews.length}` },
-    { id: 'production', label: 'Production' },
-    { id: 'outcomes', label: 'Outcomes' }
+    { id: 'create', label: 'Create & Develop', badge: `${campaign.directions.length + campaign.visualStudies.length}` },
+    { id: 'review', label: 'Review & Sign-Off', badge: `${campaign.reviews.length}` },
+    { id: 'ship', label: 'Ship & Release' },
+    { id: 'learn', label: 'Learn & Memory' }
   ];
 
   return (

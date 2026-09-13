@@ -3,266 +3,340 @@
 import React, { useState } from "react";
 import { 
   Palette, 
-  Camera, 
-  SunMedium, 
-  Layers, 
   Sparkles, 
   CheckCircle2, 
-  Sliders, 
-  Maximize2,
-  Image as ImageIcon,
-  Activity,
   ArrowRight,
+  Sliders,
+  Maximize2,
+  RefreshCw,
+  Sun,
   ShieldCheck,
-  RefreshCw
+  ChevronRight,
+  Send,
+  Layers,
+  Camera,
+  Activity,
+  X
 } from "lucide-react";
-import type { CampaignStudioModel, ShotFamily, VisualStudy } from "@/lib/campaignStudioFixtures";
+import type { CampaignStudioModel, VisualStudy } from "@/lib/campaignStudioFixtures";
 
 interface VisualsTabProps {
   campaign: CampaignStudioModel;
-  onNavigateTab: (tab: 'overview' | 'intelligence' | 'directions' | 'visuals' | 'assets' | 'review' | 'production' | 'outcomes') => void;
+  onNavigateTab: (tab: any) => void;
 }
 
 export function VisualsTab({ campaign, onNavigateTab }: VisualsTabProps) {
-  const [selectedFamily, setSelectedFamily] = useState<ShotFamily | 'All'>('All');
+  const [selectedShot, setSelectedShot] = useState<string>("HERO");
   const [activeStudy, setActiveStudy] = useState<VisualStudy>(campaign.visualStudies[0]);
-  const [isSimulatingPhysics, setIsSimulatingPhysics] = useState(false);
-  const [focalLength, setFocalLength] = useState("85mm");
-  const [apertureVal, setApertureVal] = useState("f/2.0");
+  
+  // Intuitive Creative Sliders
+  const [lightingVal, setLightingVal] = useState(65); // 0: Cinematic -> 100: Editorial
+  const [compositionVal, setCompositionVal] = useState(30); // 0: Minimal -> 100: Dramatic
+  const [materialVal, setMaterialVal] = useState(80); // 0: Matte -> 100: Reflective
+  const [atmosphereVal, setAtmosphereVal] = useState(50); // 0: Pure Studio -> 100: Atmospheric
 
-  const shotFamilies: ShotFamily[] = ['Hero', 'Detail', 'Portrait', 'Product', 'Editorial', 'Social'];
+  const [nlCommand, setNlCommand] = useState("");
+  const [isApplyingTweak, setIsApplyingTweak] = useState(false);
+  const [showAdvancedControls, setShowAdvancedControls] = useState(false);
+  const [feedbackNotice, setFeedbackNotice] = useState<string | null>(null);
 
-  const filteredStudies = selectedFamily === 'All'
-    ? campaign.visualStudies
-    : campaign.visualStudies.filter(s => s.shotFamily === selectedFamily);
+  const shots = [
+    { id: "HERO", label: "HERO", desc: "Main Campaign Anchor (16:9 / 4:5)" },
+    { id: "DETAIL", label: "DETAIL", desc: "Brocade & Weave Close-Up (1:1)" },
+    { id: "SOCIAL", label: "SOCIAL", desc: "Vertical Motion Story (9:16)" },
+    { id: "EDITORIAL", label: "EDITORIAL", desc: "Atmospheric Print Spread (4:5)" }
+  ];
 
-  const handleRunPhysicsSimulation = () => {
-    setIsSimulatingPhysics(true);
-    setTimeout(() => setIsSimulatingPhysics(false), 1200);
+  const handleApplyNlCommand = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!nlCommand.trim()) return;
+
+    setIsApplyingTweak(true);
+    setTimeout(() => {
+      setIsApplyingTweak(false);
+      setFeedbackNotice(`VYREN adjusted lighting, lens angle, and drape tension to: "${nlCommand}"`);
+      setNlCommand("");
+      setTimeout(() => setFeedbackNotice(null), 4500);
+    }, 1200);
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-200">
+    <div className="space-y-6 animate-in fade-in duration-200 pb-20 max-w-7xl mx-auto">
       
-      {/* Surface Header & Shot Families Filter */}
-      <div className="p-6 rounded-2xl bg-[#111113]/80 border border-white/10 space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <Palette className="w-5 h-5 text-[#E1D4C0]" />
-              <h2 className="text-lg font-serif text-white font-medium">Visual Development Workspace</h2>
-            </div>
-            <p className="text-xs text-white/50 font-light">
-              Interactive design studio for optical camera setups, textile drape physics simulations, and colorimetric palettes.
-            </p>
-          </div>
-
-          {/* Shot Families Toolbar */}
-          <div className="flex items-center gap-1.5 flex-wrap">
+      {/* 1. Shot Selector Tabs */}
+      <div className="flex items-center justify-between border-b border-white/5 pb-4">
+        <div className="flex items-center gap-2">
+          {shots.map((shot) => (
             <button
-              onClick={() => setSelectedFamily('All')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all border ${
-                selectedFamily === 'All'
-                  ? "bg-[#E1D4C0] text-[#0A0A0A] font-bold border-[#E1D4C0]"
-                  : "bg-white/[0.02] text-white/50 border-white/5 hover:text-white"
+              key={shot.id}
+              onClick={() => setSelectedShot(shot.id)}
+              className={`px-4 py-2 rounded-xl text-xs font-medium transition-all ${
+                selectedShot === shot.id
+                  ? "bg-[#E1D4C0] text-[#0A0A0A] font-semibold shadow-md"
+                  : "bg-white/[0.03] text-white/50 hover:text-white hover:bg-white/[0.07]"
               }`}
             >
-              All Shots
+              <span>{shot.label}</span>
             </button>
-            {shotFamilies.map((fam) => (
-              <button
-                key={fam}
-                onClick={() => setSelectedFamily(fam)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all border ${
-                  selectedFamily === fam
-                    ? "bg-[#E1D4C0] text-[#0A0A0A] font-bold border-[#E1D4C0]"
-                    : "bg-white/[0.02] text-white/50 border-white/5 hover:text-white"
-                }`}
-              >
-                {fam}
-              </button>
-            ))}
-          </div>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => onNavigateTab('review')}
+            className="px-4 py-2 rounded-xl bg-white/[0.06] hover:bg-white/10 text-white text-xs font-medium transition-colors flex items-center gap-1.5"
+          >
+            <span>Proceed to Review</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
         </div>
       </div>
 
-      {/* Main Interactive Studio Canvas Split */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
-        {/* Left: Visual Canvas & Simulation Stage */}
-        <div className="lg:col-span-7 space-y-4">
-          
-          {/* Active Visual Study Canvas */}
-          <div className="relative aspect-[4/3] rounded-2xl bg-gradient-to-br from-[#18181C] via-[#0E0E10] to-black border border-white/10 overflow-hidden flex flex-col items-center justify-center p-8 group">
-            
-            {/* Background Grid & Shader Ambient Glow */}
-            <div className="absolute inset-0 bg-[radial-gradient(#E1D4C0_1px,transparent_1px)] [background-size:24px_24px] opacity-10 pointer-events-none" />
-            <div className="absolute -top-24 -right-24 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Feedback Toast */}
+      {feedbackNotice && (
+        <div className="p-3.5 rounded-xl bg-[#141416] border border-[#E1D4C0]/40 text-[#E1D4C0] text-xs flex items-center gap-2.5 animate-in slide-in-from-top-2">
+          <Sparkles className="w-4 h-4 text-[#E1D4C0] shrink-0 animate-pulse" />
+          <span>{feedbackNotice}</span>
+        </div>
+      )}
 
-            {/* Specimen Graphical Representation */}
+      {/* 2. Dominant Visual Studio Canvas */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        {/* Left: Large Visual Canvas (7 Cols) */}
+        <div className="lg:col-span-8 space-y-4">
+          <div className="relative aspect-[16/10] rounded-3xl bg-gradient-to-br from-[#18181D] via-[#0E0E10] to-black border border-white/10 overflow-hidden flex flex-col items-center justify-center p-8 group shadow-2xl">
+            
+            {/* Ambient Shader Glow */}
+            <div className="absolute inset-0 bg-[radial-gradient(#E1D4C0_1px,transparent_1px)] [background-size:28px_28px] opacity-10 pointer-events-none" />
+            <div 
+              className="absolute -top-20 -right-20 w-80 h-80 rounded-full blur-3xl pointer-events-none transition-all duration-700" 
+              style={{ backgroundColor: `rgba(225, 212, 192, ${lightingVal / 600})` }}
+            />
+
+            {/* Specimen Visual Centerpiece */}
             <div className="relative z-10 flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="w-32 h-32 rounded-2xl border border-[#E1D4C0]/30 bg-black/60 backdrop-blur-md flex items-center justify-center shadow-2xl relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-tr from-[#D4AF37]/20 via-transparent to-transparent" />
-                <svg viewBox="0 0 100 100" className="w-20 h-20 stroke-[#E1D4C0] fill-none stroke-[1.5]">
+              <div className="w-44 h-44 rounded-3xl border border-[#E1D4C0]/40 bg-black/70 backdrop-blur-xl flex items-center justify-center shadow-2xl relative overflow-hidden transition-transform duration-500 group-hover:scale-105">
+                <div className="absolute inset-0 bg-gradient-to-tr from-[#D4AF37]/25 via-transparent to-transparent" />
+                <svg viewBox="0 0 100 100" className="w-28 h-28 stroke-[#E1D4C0] fill-none stroke-[1.5]">
                   <path d="M 30 20 L 70 20 L 62 85 L 35 85 Z" className="fill-[#E1D4C0]/10" />
                   <path d="M 40 20 Q 50 40 35 85 M 48 20 Q 50 45 48 85 M 58 20 Q 50 40 62 85" />
                 </svg>
               </div>
 
               <div>
-                <h3 className="text-base font-serif text-white">{activeStudy.title}</h3>
-                <span className="text-[10px] font-mono text-[#E1D4C0] uppercase tracking-widest">{activeStudy.shotFamily} &bull; {activeStudy.aspectRatio}</span>
+                <span className="text-[10px] font-mono uppercase tracking-widest text-[#E1D4C0]">
+                  Modern Sovereign &bull; {selectedShot} SHOT
+                </span>
+                <h3 className="text-xl font-serif text-white mt-0.5">{activeStudy.title}</h3>
               </div>
             </div>
 
-            {/* Canvas HUD Overlays */}
-            <div className="absolute top-4 left-4 px-2.5 py-1 rounded-lg bg-black/60 border border-white/10 text-[10px] font-mono text-white/70 backdrop-blur-sm">
-              OPTICS: {focalLength} · {apertureVal}
+            {/* Canvas Badges */}
+            <div className="absolute top-4 left-4 px-3 py-1.5 rounded-xl bg-black/70 border border-white/10 text-[11px] font-mono text-white/80 backdrop-blur-md">
+              DNA COMPLIANCE: 98%
             </div>
 
-            <div className="absolute top-4 right-4 px-2.5 py-1 rounded-lg bg-black/60 border border-white/10 text-[10px] font-mono text-emerald-400 backdrop-blur-sm flex items-center gap-1.5">
-              <ShieldCheck className="w-3 h-3" /> DNA FIT: {activeStudy.dnaAdherenceScore}%
+            <div className="absolute top-4 right-4 px-3 py-1.5 rounded-xl bg-black/70 border border-white/10 text-[11px] font-mono text-emerald-400 backdrop-blur-md flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5" /> PRINT-SAFE
             </div>
 
-            <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-[10px] font-mono text-white/50 bg-black/60 backdrop-blur-sm px-3 py-2 rounded-xl border border-white/10">
-              <span className="truncate max-w-[200px]">{activeStudy.lightingShader}</span>
+            {/* Canvas Bottom Strip */}
+            <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs text-white/60 bg-black/70 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-white/10">
+              <span className="truncate">{activeStudy.lightingShader}</span>
               <button
-                onClick={handleRunPhysicsSimulation}
-                className="px-2.5 py-1 rounded-lg bg-[#E1D4C0]/10 hover:bg-[#E1D4C0]/20 text-[#E1D4C0] border border-[#E1D4C0]/30 transition-colors flex items-center gap-1"
+                onClick={() => setShowAdvancedControls(true)}
+                className="text-[11px] text-[#E1D4C0] hover:underline font-medium flex items-center gap-1 shrink-0 ml-2"
               >
-                <RefreshCw className={`w-3 h-3 ${isSimulatingPhysics ? 'animate-spin' : ''}`} />
-                <span>Simulate Drape</span>
+                <span>Advanced optical controls</span>
+                <ChevronRight className="w-3 h-3" />
               </button>
             </div>
 
           </div>
 
-          {/* Studies Selector Carousel */}
-          <div className="grid grid-cols-3 gap-3">
-            {filteredStudies.map((study) => (
-              <div
-                key={study.id}
-                onClick={() => setActiveStudy(study)}
-                className={`p-3 rounded-xl border cursor-pointer transition-all ${
-                  activeStudy.id === study.id
-                    ? "bg-[#E1D4C0]/10 border-[#E1D4C0]/50"
-                    : "bg-[#111113]/60 border-white/5 hover:border-white/20"
-                }`}
-              >
-                <div className="text-[9px] font-mono text-white/40 uppercase">{study.shotFamily}</div>
-                <div className="text-xs font-medium text-white truncate mt-0.5">{study.title}</div>
-              </div>
-            ))}
-          </div>
-
+          {/* Natural Language Creative Control Box */}
+          <form onSubmit={handleApplyNlCommand} className="p-4 rounded-2xl bg-[#111113]/90 border border-white/10 flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-[#E1D4C0]/10 text-[#E1D4C0] flex items-center justify-center shrink-0">
+              <Sparkles className="w-4 h-4" />
+            </div>
+            <input
+              type="text"
+              value={nlCommand}
+              onChange={(e) => setNlCommand(e.target.value)}
+              placeholder='Describe creative adjustments in plain language... (e.g. "Make the hero more commanding")'
+              className="flex-1 bg-transparent text-xs text-white placeholder-white/40 focus:outline-none font-light"
+            />
+            <button
+              type="submit"
+              disabled={isApplyingTweak || !nlCommand.trim()}
+              className="px-4 py-2 rounded-xl bg-[#E1D4C0] text-[#0A0A0A] font-semibold text-xs hover:opacity-90 disabled:opacity-40 transition-opacity flex items-center gap-1.5"
+            >
+              {isApplyingTweak ? (
+                <>
+                  <RefreshCw className="w-3 h-3 animate-spin" />
+                  <span>Synthesizing...</span>
+                </>
+              ) : (
+                <>
+                  <span>Adjust</span>
+                  <Send className="w-3 h-3" />
+                </>
+              )}
+            </button>
+          </form>
         </div>
 
-        {/* Right: Optical & Material Parameter Controls */}
-        <div className="lg:col-span-5 space-y-4">
-          
-          {/* Camera & Optics Controls */}
-          <div className="p-5 rounded-2xl bg-[#111113]/90 border border-white/10 space-y-4">
-            <div className="flex items-center justify-between border-b border-white/5 pb-2.5">
-              <h4 className="text-xs font-medium text-white flex items-center gap-2">
-                <Camera className="w-4 h-4 text-[#E1D4C0]" /> Optical Camera & Sensor Settings
-              </h4>
-              <span className="text-[10px] font-mono text-white/40">Full Frame 35mm</span>
+        {/* Right: Simple Intuitive Creative Sliders (4 Cols) */}
+        <div className="lg:col-span-4 space-y-4">
+          <div className="p-6 rounded-3xl bg-[#111113]/90 border border-white/10 space-y-6">
+            <div className="space-y-1 border-b border-white/5 pb-3">
+              <h4 className="text-sm font-serif text-white">Creative Tuning Controls</h4>
+              <p className="text-[11px] text-white/40 font-light">
+                Directly modulate aesthetic atmosphere. VYREN translates these into camera, lighting, and physics constraints.
+              </p>
             </div>
 
-            <div className="space-y-3 text-xs">
-              <div className="space-y-1">
-                <div className="flex items-center justify-between text-[11px] text-white/60 font-mono">
-                  <span>Focal Length</span>
-                  <span className="text-[#E1D4C0]">{focalLength}</span>
-                </div>
-                <div className="grid grid-cols-4 gap-1.5">
-                  {['24mm', '35mm', '50mm', '85mm'].map(f => (
-                    <button
-                      key={f}
-                      onClick={() => setFocalLength(f)}
-                      className={`py-1.5 rounded-lg text-[10px] font-mono border transition-all ${
-                        focalLength === f ? 'bg-[#E1D4C0] text-black font-bold border-[#E1D4C0]' : 'bg-white/[0.02] text-white/60 border-white/5'
-                      }`}
-                    >
-                      {f}
-                    </button>
-                  ))}
-                </div>
+            {/* Slider 1: Lighting */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-white font-medium">Lighting Tone</span>
+                <span className="text-[#E1D4C0] font-mono text-[11px]">
+                  {lightingVal < 40 ? "Cinematic Dramatic" : lightingVal > 70 ? "Editorial High-Key" : "Balanced Chiaroscuro"}
+                </span>
               </div>
-
-              <div className="space-y-1">
-                <div className="flex items-center justify-between text-[11px] text-white/60 font-mono">
-                  <span>Aperture</span>
-                  <span className="text-[#E1D4C0]">{apertureVal}</span>
-                </div>
-                <div className="grid grid-cols-4 gap-1.5">
-                  {['f/1.4', 'f/2.0', 'f/2.8', 'f/5.6'].map(a => (
-                    <button
-                      key={a}
-                      onClick={() => setApertureVal(a)}
-                      className={`py-1.5 rounded-lg text-[10px] font-mono border transition-all ${
-                        apertureVal === a ? 'bg-[#E1D4C0] text-black font-bold border-[#E1D4C0]' : 'bg-white/[0.02] text-white/60 border-white/5'
-                      }`}
-                    >
-                      {a}
-                    </button>
-                  ))}
-                </div>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={lightingVal}
+                onChange={(e) => setLightingVal(Number(e.target.value))}
+                className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#E1D4C0]"
+              />
+              <div className="flex justify-between text-[9px] font-mono uppercase text-white/30">
+                <span>Cinematic</span>
+                <span>Editorial</span>
               </div>
             </div>
+
+            {/* Slider 2: Composition */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-white font-medium">Composition</span>
+                <span className="text-[#E1D4C0] font-mono text-[11px]">
+                  {compositionVal < 40 ? "Minimal Architectural" : "Dynamic Angles"}
+                </span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={compositionVal}
+                onChange={(e) => setCompositionVal(Number(e.target.value))}
+                className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#E1D4C0]"
+              />
+              <div className="flex justify-between text-[9px] font-mono uppercase text-white/30">
+                <span>Minimal</span>
+                <span>Dramatic</span>
+              </div>
+            </div>
+
+            {/* Slider 3: Material Sheen */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-white font-medium">Material Sheen</span>
+                <span className="text-[#E1D4C0] font-mono text-[11px]">
+                  {materialVal > 60 ? "Reflective Gold Zari" : "Soft Matte Silk"}
+                </span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={materialVal}
+                onChange={(e) => setMaterialVal(Number(e.target.value))}
+                className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#E1D4C0]"
+              />
+              <div className="flex justify-between text-[9px] font-mono uppercase text-white/30">
+                <span>Matte</span>
+                <span>Reflective</span>
+              </div>
+            </div>
+
+            {/* Slider 4: Atmosphere */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-white font-medium">Atmospheric Depth</span>
+                <span className="text-[#E1D4C0] font-mono text-[11px]">
+                  {atmosphereVal > 50 ? "Warm Tungsten Haze" : "Crisp Minimal Studio"}
+                </span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={atmosphereVal}
+                onChange={(e) => setAtmosphereVal(Number(e.target.value))}
+                className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#E1D4C0]"
+              />
+              <div className="flex justify-between text-[9px] font-mono uppercase text-white/30">
+                <span>Clean Studio</span>
+                <span>Atmospheric</span>
+              </div>
+            </div>
+
           </div>
-
-          {/* Textile Physics Parameters */}
-          <div className="p-5 rounded-2xl bg-[#111113]/90 border border-white/10 space-y-4">
-            <div className="flex items-center justify-between border-b border-white/5 pb-2.5">
-              <h4 className="text-xs font-medium text-white flex items-center gap-2">
-                <Activity className="w-4 h-4 text-emerald-400" /> Textile Drape Physics Engine
-              </h4>
-              <span className="text-[10px] font-mono text-emerald-400">CALIBRATED</span>
-            </div>
-
-            <div className="space-y-2 text-xs">
-              <div className="flex items-center justify-between text-white/70 py-1 border-b border-white/5">
-                <span className="text-white/40 font-mono">Material:</span>
-                <span className="font-medium text-white">{activeStudy.drapePhysics.material}</span>
-              </div>
-              <div className="flex items-center justify-between text-white/70 py-1 border-b border-white/5">
-                <span className="text-white/40 font-mono">Shearing Stiffness:</span>
-                <span className="font-mono text-[#E1D4C0]">{activeStudy.drapePhysics.shearingStiffness} N/m</span>
-              </div>
-              <div className="flex items-center justify-between text-white/70 py-1 border-b border-white/5">
-                <span className="text-white/40 font-mono">Bending Modulus:</span>
-                <span className="font-mono text-[#E1D4C0]">{activeStudy.drapePhysics.bendingModulus} mN·m</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Color Palette Mathematics */}
-          <div className="p-5 rounded-2xl bg-[#111113]/90 border border-white/10 space-y-4">
-            <div className="flex items-center justify-between border-b border-white/5 pb-2.5">
-              <h4 className="text-xs font-medium text-white flex items-center gap-2">
-                <Palette className="w-4 h-4 text-purple-300" /> Colorimetric Palette Breakdown
-              </h4>
-              <span className="text-[10px] font-mono text-white/40">sRGB &bull; CMYK</span>
-            </div>
-
-            <div className="grid grid-cols-4 gap-2">
-              {activeStudy.colorPalette.map((col, idx) => (
-                <div key={idx} className="p-2.5 rounded-xl bg-white/[0.02] border border-white/5 space-y-1.5 text-center">
-                  <div 
-                    className="w-full h-8 rounded-lg border border-white/10 shadow-sm"
-                    style={{ backgroundColor: col.hex }}
-                  />
-                  <div className="text-[10px] font-mono font-medium text-white truncate">{col.name}</div>
-                  <div className="text-[9px] font-mono text-white/40">{col.weight}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
         </div>
 
       </div>
+
+      {/* Advanced Optical & Physics Modal (Layer 3 Progressive Disclosure) */}
+      {showAdvancedControls && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-150">
+          <div className="w-full max-w-2xl rounded-3xl bg-[#141416] border border-white/10 p-6 space-y-5 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-white/5 pb-3">
+              <div className="flex items-center gap-2">
+                <Camera className="w-4 h-4 text-[#E1D4C0]" />
+                <h3 className="text-base font-serif text-white">Advanced Optical &amp; Physical Specifications</h3>
+              </div>
+              <button
+                onClick={() => setShowAdvancedControls(false)}
+                className="p-1 rounded-lg text-white/40 hover:text-white hover:bg-white/5"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 text-xs">
+              <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
+                <span className="text-[10px] font-mono uppercase text-white/40">Sensor &amp; Lens Setup</span>
+                <p className="text-white">Full Frame 35mm &bull; 85mm Prime @ f/2.0</p>
+              </div>
+              <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
+                <span className="text-[10px] font-mono uppercase text-white/40">Textile Modulus</span>
+                <p className="text-emerald-400 font-mono">38.4 N/m (Banarasi Brocade Shearing)</p>
+              </div>
+              <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
+                <span className="text-[10px] font-mono uppercase text-white/40">Colorimetry</span>
+                <p className="text-white">Wide Gamut DCI-P3 calibrated for 300 DPI CMYK</p>
+              </div>
+              <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
+                <span className="text-[10px] font-mono uppercase text-white/40">Lighting Shader</span>
+                <p className="text-white">Warm Tungsten Key + Soft Fill Rim (2800K)</p>
+              </div>
+            </div>
+
+            <div className="pt-2 flex justify-end">
+              <button
+                onClick={() => setShowAdvancedControls(false)}
+                className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-medium"
+              >
+                Close Specifications
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

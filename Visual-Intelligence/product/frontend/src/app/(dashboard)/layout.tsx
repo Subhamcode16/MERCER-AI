@@ -80,56 +80,57 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             )}
           </div>
 
-          {/* 5-Group Primary Navigation */}
+          {/* Canonical Primary Navigation */}
           <nav className="flex flex-col gap-5 flex-1 w-full overflow-y-auto scrollbar-none pr-1">
             
-            {/* 1. WORKSPACE */}
+            {/* 1. HOME */}
             <div>
-              {!isCollapsed && (
-                <div className="text-[9px] tracking-[0.22em] uppercase text-white/30 mb-2 font-semibold px-2">Workspace</div>
-              )}
               <div className="flex flex-col gap-1">
                 <NavLink href="/home" active={pathname === '/home' || pathname === '/'} collapsed={isCollapsed} icon={Home}>Home</NavLink>
-                <NavLink href="/brand" active={pathname.includes('/brand')} collapsed={isCollapsed} icon={Fingerprint}>Brand</NavLink>
-                <NavLink href="/projects" active={pathname.includes('/projects')} collapsed={isCollapsed} icon={FolderKanban}>Projects</NavLink>
-                <NavLink href="/campaigns" active={pathname.includes('/campaigns') || pathname.includes('/attribution')} collapsed={isCollapsed} icon={Target}>Campaigns</NavLink>
               </div>
             </div>
 
-            {/* 2. CREATE */}
+            {/* 2. WORK */}
             <div>
               {!isCollapsed && (
-                <div className="text-[9px] tracking-[0.22em] uppercase text-white/30 mb-2 font-semibold px-2">Create</div>
+                <div className="text-[9px] tracking-[0.22em] uppercase text-white/30 mb-2 font-semibold px-2">Work</div>
               )}
               <div className="flex flex-col gap-1">
+                <NavLink href="/projects" active={pathname.includes('/projects')} collapsed={isCollapsed} icon={FolderKanban}>Projects</NavLink>
+                <NavLink href="/campaigns" active={pathname.includes('/campaigns') || pathname.includes('/attribution')} collapsed={isCollapsed} icon={Target}>Campaigns</NavLink>
                 <NavLink href="/studio" active={pathname === '/studio'} collapsed={isCollapsed} icon={Palette}>Creative Studio</NavLink>
+              </div>
+            </div>
+
+            {/* 3. BRAND */}
+            <div>
+              {!isCollapsed && (
+                <div className="text-[9px] tracking-[0.22em] uppercase text-white/30 mb-2 font-semibold px-2">Brand</div>
+              )}
+              <div className="flex flex-col gap-1">
+                <NavLink href="/brand" active={pathname.includes('/brand')} collapsed={isCollapsed} icon={Fingerprint}>Brand</NavLink>
                 <NavLink href="/visual-dna" active={pathname.includes('/visual-dna') || pathname.includes('/materials')} collapsed={isCollapsed} icon={Dna}>Visual DNA</NavLink>
+              </div>
+            </div>
+
+            {/* 4. ASSETS */}
+            <div>
+              <div className="flex flex-col gap-1">
                 <NavLink href="/assets" active={pathname.includes('/assets') || pathname.includes('/archive')} collapsed={isCollapsed} icon={Box}>Assets</NavLink>
               </div>
             </div>
 
-            {/* 3. INTELLIGENCE */}
+            {/* 5. TEAM */}
             <div>
               {!isCollapsed && (
-                <div className="text-[9px] tracking-[0.22em] uppercase text-white/30 mb-2 font-semibold px-2">Intelligence</div>
-              )}
-              <div className="flex flex-col gap-1">
-                <NavLink href="/research" active={pathname.includes('/research') || pathname.includes('/atlas')} collapsed={isCollapsed} icon={Search}>Research</NavLink>
-                <NavLink href="/knowledge" active={pathname.includes('/knowledge') || pathname.includes('/observatory') || pathname.includes('/foresight')} collapsed={isCollapsed} icon={Brain}>Knowledge</NavLink>
-              </div>
-            </div>
-
-            {/* 4. WORKFORCE */}
-            <div>
-              {!isCollapsed && (
-                <div className="text-[9px] tracking-[0.22em] uppercase text-white/30 mb-2 font-semibold px-2">Workforce</div>
+                <div className="text-[9px] tracking-[0.22em] uppercase text-white/30 mb-2 font-semibold px-2">Team</div>
               )}
               <div className="flex flex-col gap-1">
                 <NavLink href="/team" active={pathname === '/team'} collapsed={isCollapsed} icon={Users}>AI Team</NavLink>
               </div>
             </div>
 
-            {/* 5. UTILITY */}
+            {/* 6. UTILITY */}
             <div>
               {!isCollapsed && (
                 <div className="text-[9px] tracking-[0.22em] uppercase text-white/30 mb-2 font-semibold px-2">Utility</div>
