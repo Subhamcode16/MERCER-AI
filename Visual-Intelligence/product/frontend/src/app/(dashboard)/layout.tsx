@@ -96,6 +96,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <div className="text-[9px] tracking-[0.22em] uppercase text-white/30 mb-2 font-semibold px-2">Work</div>
               )}
               <div className="flex flex-col gap-1">
+                <NavLink href="/room" active={pathname === '/room'} collapsed={isCollapsed} icon={Sparkles}>VYREN Room</NavLink>
                 <NavLink href="/projects" active={pathname.includes('/projects')} collapsed={isCollapsed} icon={FolderKanban}>Projects</NavLink>
                 <NavLink href="/campaigns" active={pathname.includes('/campaigns') || pathname.includes('/attribution')} collapsed={isCollapsed} icon={Target}>Campaigns</NavLink>
                 <NavLink href="/studio" active={pathname === '/studio'} collapsed={isCollapsed} icon={Palette}>Creative Studio</NavLink>
