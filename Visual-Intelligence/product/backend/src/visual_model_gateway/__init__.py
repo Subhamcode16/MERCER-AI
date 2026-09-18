@@ -13,10 +13,13 @@ from .models import (
     VisualLineage,
     ImageGenerationRequest,
     ImageGenerationResponse,
+    VideoGenerationRequest,
+    VideoGenerationResponse,
+    CameraMotion,
     VisionAnalysisRequest,
     VisionAnalysisResponse
 )
-from .provider import IVisualProvider, SandboxVisualProvider
+from .provider import IVisualProvider, SandboxVisualProvider, HiggsfieldVisualProvider
 from .artifact_validation import VisualArtifactValidator
 from .visual_ledger import VisualLedger, VisualLedgerBlock
 from .gateway import VisualModelGateway
@@ -30,12 +33,17 @@ __all__ = [
     "VisualLineage",
     "ImageGenerationRequest",
     "ImageGenerationResponse",
+    "VideoGenerationRequest",
+    "VideoGenerationResponse",
+    "CameraMotion",
     "VisionAnalysisRequest",
     "VisionAnalysisResponse",
     "IVisualProvider",
     "SandboxVisualProvider",
+    "HiggsfieldVisualProvider",
     "VisualArtifactValidator",
     "VisualLedger",
     "VisualLedgerBlock",
     "VisualModelGateway"
 ]
+

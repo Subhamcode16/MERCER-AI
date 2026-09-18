@@ -5,12 +5,12 @@ Validates generated image artifacts against aspect ratio specs, resolution bound
 and visual quality policies before returning to workforce.
 """
 
-from .models import ImageGenerationResponse
+from .models import ImageGenerationResponse, VideoGenerationResponse
 from .exceptions import ArtifactValidationFailedError
 
 
 class VisualArtifactValidator:
-    """Validates generated image attributes."""
+    """Validates generated image and video attributes."""
 
     ALLOWED_ASPECT_RATIOS = {"1:1", "9:16", "16:9", "4:5"}
 
@@ -25,3 +25,16 @@ class VisualArtifactValidator:
             raise ArtifactValidationFailedError("Artifact missing required lineage metadata.")
 
         return True
+
+    def validate_video_artifact(self, response: VideoGenerationResponse) -> bool:
+        if response.aspect_ratio not in self.ALLOWED_ASPECT_RATIOS:
+            raise ArtifactValidationFailedError(f"Unsupported video aspect ratio: {response.aspect_ratio}")
+
+        if response.duration_sec <= 0:
+            raise ArtifactValidationFailedError("Invalid video duration.")
+
+        if not response.lineage or not response.lineage.artifact_id:
+            raise ArtifactValidationFailedError("Video artifact missing required lineage metadata.")
+
+        return True
+

@@ -81,9 +81,11 @@ All user workflows and system capabilities align with these 6 verbs:
 | :--- | :--- | :--- |
 | **Institutional Intelligence** | `backend/src/institutional_intelligence` | Multi-horizon strategy ($H_1, H_2, H_3, H_{\text{unknown}}$), Operating Rooms, Cadence Engine, and 14 memory classes. |
 | **Creative Intelligence** | `backend/src/creative_intelligence_network` | Visual DNA, foresight graph, material physics, lighting shaders, and creative graph. |
+| **Visual Model Gateway** | `backend/src/visual_model_gateway` | Higgsfield Unified Creative Engine (text-to-image, video synthesis, 14 camera motion vectors, 360° turntable physics, waterfall failover). |
 | **Studio & Production** | `backend/src/studio_operations` | Digital turntable, asset lineage, campaign composition, and policy status HUD. |
 | **Security Substrate** | `backend/src/security_substrate` | Tenant isolation, cryptographically tamper-evident ledgers, and recovery authorities. |
 | **Frontend Studio** | `product/frontend/src` | Next.js 15 App router, Campaign Studio, Turntable, and Attribution Observatory. |
+
 
 ---
 

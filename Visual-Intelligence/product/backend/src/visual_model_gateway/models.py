@@ -8,8 +8,27 @@ artifact lineage traces, and visual quality metrics.
 import time
 import uuid
 import hashlib
+from enum import Enum
 from typing import Dict, List, Any, Optional
 from pydantic import BaseModel, Field
+
+
+class CameraMotion(str, Enum):
+    """Camera trajectory motion types supported by Higgsfield unified motion engine."""
+    STATIC = "STATIC"
+    PAN_LEFT = "PAN_LEFT"
+    PAN_RIGHT = "PAN_RIGHT"
+    TILT_UP = "TILT_UP"
+    TILT_DOWN = "TILT_DOWN"
+    ZOOM_IN = "ZOOM_IN"
+    ZOOM_OUT = "ZOOM_OUT"
+    DOLLY_IN = "DOLLY_IN"
+    DOLLY_OUT = "DOLLY_OUT"
+    ORBIT_360 = "ORBIT_360"
+    TURNTABLE_CW = "TURNTABLE_CW"
+    TURNTABLE_CCW = "TURNTABLE_CCW"
+    CRANE_UP = "CRANE_UP"
+    ROLL = "ROLL"
 
 
 class VisualLineage(BaseModel):
@@ -37,6 +56,10 @@ class ImageGenerationRequest(BaseModel):
     parent_artifact_id: Optional[str] = None
     client_id: Optional[str] = None
     created_at: float = Field(default_factory=time.time)
+    # Higgsfield extended motion / camera controls
+    camera_motion: Optional[CameraMotion] = None
+    motion_strength: float = 1.0
+    seed: Optional[int] = None
 
 
 class ImageGenerationResponse(BaseModel):
@@ -48,6 +71,40 @@ class ImageGenerationResponse(BaseModel):
     aspect_ratio: str
     width: int = 1024
     height: int = 1024
+    lineage: VisualLineage
+    latency_ms: float = 0.0
+    status: str = "SUCCESS"
+
+
+class VideoGenerationRequest(BaseModel):
+    """Request structure for video synthesis and motion physics via Higgsfield."""
+    request_id: str = Field(default_factory=lambda: f"vvid_req_{uuid.uuid4().hex[:12]}")
+    prompt: str
+    source_image_url: Optional[str] = None
+    aspect_ratio: str = "16:9"  # "16:9", "9:16", "1:1", "4:5"
+    camera_motion: CameraMotion = CameraMotion.STATIC
+    duration_sec: float = 4.0
+    fps: int = 24
+    motion_strength: float = 1.0
+    seed: Optional[int] = None
+    creative_direction: Dict[str, Any] = Field(default_factory=dict)
+    visual_dna: Dict[str, Any] = Field(default_factory=dict)
+    parent_artifact_id: Optional[str] = None
+    client_id: Optional[str] = None
+    created_at: float = Field(default_factory=time.time)
+
+
+class VideoGenerationResponse(BaseModel):
+    """Response payload containing generated video asset and motion metadata."""
+    artifact_id: str = Field(default_factory=lambda: f"art_vid_{uuid.uuid4().hex[:12]}")
+    request_id: str
+    video_url: str
+    thumbnail_url: Optional[str] = None
+    mime_type: str = "video/mp4"
+    aspect_ratio: str
+    duration_sec: float
+    fps: int
+    camera_motion: CameraMotion
     lineage: VisualLineage
     latency_ms: float = 0.0
     status: str = "SUCCESS"
@@ -69,3 +126,4 @@ class VisionAnalysisResponse(BaseModel):
     visual_dna: Optional[Dict[str, Any]] = None
     confidence_score: float = 0.90
     latency_ms: float = 0.0
+

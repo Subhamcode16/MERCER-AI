@@ -29,6 +29,9 @@ class DeliverableType(str, Enum):
     TREND_REPORT = "TREND_REPORT"
     VIDEO_SHORT = "VIDEO_SHORT"
     BRAND_ASSET = "BRAND_ASSET"
+    TURNTABLE_360 = "TURNTABLE_360"
+    CINEMATIC_VIDEO = "CINEMATIC_VIDEO"
+
 
 class DeliverableStatus(str, Enum):
     PLANNED = "PLANNED"

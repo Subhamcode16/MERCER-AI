@@ -8,20 +8,28 @@ and vision analysis with artifact lineage tracking and cryptographic audit loggi
 from typing import Dict, Any, Optional
 from .models import (
     ImageGenerationRequest, ImageGenerationResponse,
+    VideoGenerationRequest, VideoGenerationResponse,
     VisionAnalysisRequest, VisionAnalysisResponse
 )
-from .provider import IVisualProvider, SandboxVisualProvider
+from .provider import IVisualProvider, SandboxVisualProvider, HiggsfieldVisualProvider
 from .artifact_validation import VisualArtifactValidator
 from .visual_ledger import VisualLedger
 
 
 class VisualModelGateway:
-    """Facade for image generation and vision model analysis."""
+    """Facade for image/video generation and vision model analysis."""
 
     def __init__(self, provider: Optional[IVisualProvider] = None):
-        self.provider = provider or SandboxVisualProvider()
+        self.provider = provider or HiggsfieldVisualProvider()
         self.validator = VisualArtifactValidator()
         self.ledger = VisualLedger()
+
+    @classmethod
+    def create_default(cls) -> "VisualModelGateway":
+        """Instantiate gateway configured with Higgsfield unified provider and sandbox fallback."""
+        sandbox = SandboxVisualProvider()
+        higgsfield = HiggsfieldVisualProvider(fallback_provider=sandbox)
+        return cls(provider=higgsfield)
 
     def generate_image(self, request: ImageGenerationRequest) -> ImageGenerationResponse:
         """Generate visual asset, validate dimensions/aspect ratio, and record lineage block."""
@@ -36,6 +44,20 @@ class VisualModelGateway:
 
         return response
 
+    def generate_video(self, request: VideoGenerationRequest) -> VideoGenerationResponse:
+        """Generate video asset with camera trajectory motion and record ledger action."""
+        response = self.provider.generate_video(request)
+        self.validator.validate_video_artifact(response)
+        
+        self.ledger.record_action(
+            artifact_id=response.artifact_id,
+            action_type="VIDEO_GENERATED",
+            model_name=response.lineage.model_name
+        )
+
+        return response
+
+
     def analyze_vision(self, request: VisionAnalysisRequest) -> VisionAnalysisResponse:
         """Perform vision analysis on an image reference."""
         response = self.provider.analyze_vision(request)
@@ -43,7 +65,8 @@ class VisualModelGateway:
         self.ledger.record_action(
             artifact_id=request.analysis_id,
             action_type="VISION_ANALYZED",
-            model_name="sandbox-vision"
+            model_name="vision-analyzer"
         )
 
         return response
+
