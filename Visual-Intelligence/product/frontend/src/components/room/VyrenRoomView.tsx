@@ -211,49 +211,49 @@ export function VyrenRoomView() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#0A0A0A] text-white/90 font-sans">
+    <div className="flex flex-col h-full bg-background text-foreground font-sans">
       
       {/* Room Header */}
-      <div className="px-6 py-4 border-b border-white/10 bg-[#0D0D0E]/90 backdrop-blur-md flex items-center justify-between shrink-0">
+      <div className="px-6 py-4 border-b border-border bg-card/80 backdrop-blur-md flex items-center justify-between shrink-0 shadow-sm">
         <div className="space-y-0.5">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono tracking-widest uppercase text-[#E1D4C0] bg-[#E1D4C0]/10 border border-[#E1D4C0]/20 px-2 py-0.5 rounded">
+            <span className="text-[10px] font-mono tracking-widest uppercase text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded font-bold">
               VYREN ROOM &bull; AUTUMN/WINTER 2026
             </span>
-            <span className="text-white/20 text-xs">&bull;</span>
-            <span className="text-xs text-white/50 font-light">The Modern Sovereign</span>
+            <span className="text-muted-foreground/40 text-xs">&bull;</span>
+            <span className="text-xs text-muted-foreground font-light">The Modern Sovereign</span>
           </div>
-          <h1 className="text-lg font-serif text-white font-normal">Collaborative Creative Studio</h1>
+          <h1 className="text-lg font-serif text-foreground font-normal">Collaborative Creative Studio</h1>
         </div>
 
         {/* Room Presence Strip */}
         <div className="flex items-center gap-3 text-xs">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/5">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-white/80 font-medium">VYREN</span>
-            <span className="text-white/30 font-mono text-[10px]">&bull; Active OS</span>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-muted/40 border border-border">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
+            <span className="text-foreground font-medium">VYREN</span>
+            <span className="text-muted-foreground/60 font-mono text-[10px]">&bull; Active OS</span>
           </div>
 
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/5">
-            <div className="w-5 h-5 rounded-full bg-purple-500/20 text-purple-300 flex items-center justify-center text-[10px] font-mono font-bold">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-muted/40 border border-border">
+            <div className="w-5 h-5 rounded-full bg-indigo-500/15 text-indigo-600 dark:text-purple-300 flex items-center justify-center text-[10px] font-mono font-bold">
               MV
             </div>
-            <span className="text-white/80 font-medium">Marcus Vance</span>
-            <span className="text-white/30 font-mono text-[10px]">&bull; AI CD</span>
+            <span className="text-foreground font-medium">Marcus Vance</span>
+            <span className="text-muted-foreground/60 font-mono text-[10px]">&bull; AI CD</span>
           </div>
 
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/5">
-            <div className="w-5 h-5 rounded-full bg-amber-500/20 text-[#E1D4C0] flex items-center justify-center text-[10px] font-mono font-bold">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-muted/40 border border-border">
+            <div className="w-5 h-5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-300 flex items-center justify-center text-[10px] font-mono font-bold">
               EV
             </div>
-            <span className="text-white/80 font-medium">Elena Vance</span>
-            <span className="text-amber-400 font-mono text-[10px]">&bull; Human Authority</span>
+            <span className="text-foreground font-medium">Elena Vance</span>
+            <span className="text-amber-600 dark:text-amber-400 font-mono text-[10px] font-semibold">&bull; Human Authority</span>
           </div>
         </div>
       </div>
 
       {/* Messages Stream Viewport */}
-      <div className="flex-1 overflow-y-auto p-6 lg:p-10 space-y-8 scrollbar-thin scrollbar-thumb-white/10 max-w-5xl mx-auto w-full">
+      <div className="flex-1 overflow-y-auto p-6 lg:p-10 space-y-8 scrollbar-thin scrollbar-thumb-border max-w-5xl mx-auto w-full">
         {messages.map((msg) => (
           <div
             key={msg.id}
@@ -263,7 +263,7 @@ export function VyrenRoomView() {
           >
             {/* AI Avatar */}
             {!msg.isHuman && (
-              <div className="w-9 h-9 rounded-xl bg-[#E1D4C0]/15 text-[#E1D4C0] border border-[#E1D4C0]/30 flex items-center justify-center shrink-0 mt-1 shadow-lg">
+              <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary border border-primary/20 flex items-center justify-center shrink-0 mt-1 shadow-sm">
                 <Sparkles className="w-4 h-4" />
               </div>
             )}
@@ -273,17 +273,17 @@ export function VyrenRoomView() {
               
               {/* Header Info */}
               <div className={`flex items-center gap-2 text-xs ${msg.isHuman ? "justify-end" : "justify-start"}`}>
-                <span className="font-medium text-white">{msg.senderName}</span>
-                <span className="text-[10px] font-mono text-white/40">{msg.senderRole}</span>
-                <span className="text-[10px] text-white/20">&bull; {msg.timestamp}</span>
+                <span className="font-medium text-foreground">{msg.senderName}</span>
+                <span className="text-[10px] font-mono text-muted-foreground">{msg.senderRole}</span>
+                <span className="text-[10px] text-muted-foreground/40">&bull; {msg.timestamp}</span>
               </div>
 
               {/* Text Bubble */}
               <div
                 className={`p-5 rounded-2xl text-xs leading-relaxed font-light ${
                   msg.isHuman
-                    ? "bg-[#E1D4C0] text-[#0A0A0A] font-medium rounded-tr-sm shadow-md"
-                    : "bg-[#121214] text-white/90 border border-white/10 rounded-tl-sm shadow-xl"
+                    ? "bg-primary text-primary-foreground font-medium rounded-tr-sm shadow-sm"
+                    : "bg-card text-foreground border border-border rounded-tl-sm shadow-sm"
                 }`}
               >
                 {msg.content}
@@ -291,20 +291,20 @@ export function VyrenRoomView() {
 
               {/* In-Room Work Progress Events */}
               {msg.workEvents && msg.workEvents.length > 0 && (
-                <div className="p-4 rounded-2xl bg-black/40 border border-white/5 space-y-2 text-left">
-                  <span className="text-[9px] font-mono uppercase tracking-widest text-white/40">
+                <div className="p-4 rounded-2xl bg-muted/40 border border-border space-y-2 text-left">
+                  <span className="text-[9px] font-mono uppercase tracking-widest text-muted-foreground/70">
                     Live Operational Trace
                   </span>
                   <div className="space-y-1.5 text-[11px]">
                     {msg.workEvents.map((we, idx) => (
-                      <div key={idx} className="flex items-center justify-between text-white/70">
+                      <div key={idx} className="flex items-center justify-between text-foreground/80">
                         <span>{we.step}</span>
                         {we.status === "DONE" ? (
-                          <span className="text-emerald-400 font-mono text-[10px] flex items-center gap-1">
+                          <span className="text-emerald-600 dark:text-emerald-400 font-mono text-[10px] flex items-center gap-1 font-semibold">
                             <Check className="w-3 h-3" /> Done
                           </span>
                         ) : (
-                          <span className="text-amber-300 font-mono text-[10px] flex items-center gap-1 animate-pulse">
+                          <span className="text-amber-600 dark:text-amber-300 font-mono text-[10px] flex items-center gap-1 animate-pulse font-medium">
                             &bull; Pending Gate
                           </span>
                         )}
@@ -320,36 +320,36 @@ export function VyrenRoomView() {
                   {msg.artifacts.map((art) => (
                     <div
                       key={art.id}
-                      className="p-5 rounded-2xl bg-[#141417] border border-white/10 space-y-3 shadow-xl hover:border-[#E1D4C0]/30 transition-all"
+                      className="p-5 rounded-2xl bg-card border border-border space-y-3 shadow-sm hover:border-primary/40 transition-all"
                     >
-                      <div className="flex items-center justify-between border-b border-white/5 pb-2.5">
+                      <div className="flex items-center justify-between border-b border-border pb-2.5">
                         <div className="flex items-center gap-2">
                           {art.type === "RESEARCH" ? (
-                            <Brain className="w-4 h-4 text-purple-400" />
+                            <Brain className="w-4 h-4 text-indigo-500 dark:text-purple-400" />
                           ) : (
-                            <Compass className="w-4 h-4 text-[#E1D4C0]" />
+                            <Compass className="w-4 h-4 text-primary" />
                           )}
-                          <span className="text-xs font-serif text-white font-medium">{art.title}</span>
+                          <span className="text-xs font-serif text-foreground font-medium">{art.title}</span>
                         </div>
-                        <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                        <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-semibold">
                           {art.data?.epistemicStatus || "READY"}
                         </span>
                       </div>
 
-                      <p className="text-xs text-white/70 font-light leading-relaxed">{art.summary}</p>
+                      <p className="text-xs text-muted-foreground font-light leading-relaxed">{art.summary}</p>
 
                       {/* Creative Directions Comparison Preview */}
                       {art.type === "CREATIVE_DIRECTION" && art.data && (
                         <div className="grid grid-cols-2 gap-3 pt-1 text-xs">
-                          <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
-                            <span className="text-[10px] font-mono text-[#E1D4C0]">Territory A: Modern Sovereign</span>
-                            <div className="text-white font-medium">Architectural Precision</div>
-                            <span className="text-[10px] text-emerald-400 font-mono">96% Distinctiveness</span>
+                          <div className="p-3 rounded-xl bg-muted/40 border border-border space-y-1">
+                            <span className="text-[10px] font-mono text-primary font-bold">Territory A: Modern Sovereign</span>
+                            <div className="text-foreground font-medium">Architectural Precision</div>
+                            <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-semibold">96% Distinctiveness</span>
                           </div>
-                          <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
-                            <span className="text-[10px] font-mono text-purple-400">Territory B: Regal Lineage</span>
-                            <div className="text-white font-medium">Heritage Grandeur</div>
-                            <span className="text-[10px] text-emerald-400 font-mono">88% Distinctiveness</span>
+                          <div className="p-3 rounded-xl bg-muted/40 border border-border space-y-1">
+                            <span className="text-[10px] font-mono text-indigo-500 dark:text-purple-400 font-bold">Territory B: Regal Lineage</span>
+                            <div className="text-foreground font-medium">Heritage Grandeur</div>
+                            <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-semibold">88% Distinctiveness</span>
                           </div>
                         </div>
                       )}
@@ -364,23 +364,23 @@ export function VyrenRoomView() {
                   {msg.decisions.map((dec) => (
                     <div
                       key={dec.id}
-                      className="p-5 rounded-2xl bg-gradient-to-r from-amber-950/20 via-[#141418] to-black border border-amber-500/30 space-y-3 shadow-xl"
+                      className="p-5 rounded-2xl bg-card border border-amber-500/30 space-y-3 shadow-sm"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <Lock className="w-4 h-4 text-amber-400" />
-                          <span className="text-xs font-serif text-white font-medium">{dec.title}</span>
+                          <Lock className="w-4 h-4 text-amber-500 dark:text-amber-400" />
+                          <span className="text-xs font-serif text-foreground font-medium">{dec.title}</span>
                         </div>
                         <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full border ${
                           dec.status === "CONFIRMED" 
-                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" 
-                            : "bg-amber-500/10 text-amber-300 border-amber-500/20"
+                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 font-semibold" 
+                            : "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20 font-semibold"
                         }`}>
                           {dec.status === "CONFIRMED" ? "DECISION COMMITTED ★" : "HUMAN GATE"}
                         </span>
                       </div>
 
-                      <p className="text-xs text-white/60 font-light">{dec.context}</p>
+                      <p className="text-xs text-muted-foreground font-light">{dec.context}</p>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
                         {dec.options.map((opt) => {
@@ -392,8 +392,8 @@ export function VyrenRoomView() {
                               disabled={dec.status === "CONFIRMED"}
                               className={`p-3 rounded-xl border text-left text-xs transition-all flex items-center justify-between ${
                                 isSelected
-                                  ? "bg-[#E1D4C0] text-[#0A0A0A] font-semibold border-[#E1D4C0] shadow-lg"
-                                  : "bg-white/[0.02] text-white/80 border-white/5 hover:bg-white/5 hover:border-white/20"
+                                  ? "bg-primary text-primary-foreground font-semibold border-primary shadow-sm"
+                                  : "bg-muted/40 text-foreground border-border hover:bg-accent"
                               }`}
                             >
                               <span>{opt.label}</span>
@@ -411,7 +411,7 @@ export function VyrenRoomView() {
 
             {/* Human Avatar */}
             {msg.isHuman && (
-              <div className="w-9 h-9 rounded-xl bg-white/10 text-white border border-white/20 flex items-center justify-center shrink-0 mt-1">
+              <div className="w-9 h-9 rounded-xl bg-accent text-accent-foreground border border-border flex items-center justify-center shrink-0 mt-1 shadow-sm">
                 <User className="w-4 h-4" />
               </div>
             )}
@@ -420,7 +420,7 @@ export function VyrenRoomView() {
       </div>
 
       {/* Persistent Bottom Composer Bar & Quick Action Chips */}
-      <div className="p-4 border-t border-white/10 bg-[#0D0D0E]/90 backdrop-blur-md shrink-0 space-y-2.5">
+      <div className="p-4 border-t border-border bg-card/80 backdrop-blur-md shrink-0 space-y-2.5 shadow-lg">
         {/* Quick Suggestion Chips */}
         <div className="max-w-4xl mx-auto flex items-center gap-2 overflow-x-auto pb-1 text-xs no-scrollbar">
           <button
@@ -434,24 +434,24 @@ export function VyrenRoomView() {
             onClick={() => {
               setInputVal("Search trending luxury editorial aesthetics and modern royal bridal drapes on Pinterest");
             }}
-            className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 text-[11px] font-medium transition-colors flex items-center gap-1.5 shrink-0"
+            className="px-2.5 py-1 rounded-lg bg-accent/60 hover:bg-accent border border-border text-foreground text-[11px] font-medium transition-colors flex items-center gap-1.5 shrink-0"
           >
-            <Sparkles className="w-3 h-3 text-amber-400" />
+            <Sparkles className="w-3 h-3 text-amber-500" />
             <span>Discover Editorial Trends</span>
           </button>
           <button
             onClick={() => {
               setInputVal("Marcus, calibrate 2800K tungsten key lighting with cool 6500K cyan rim on Banarasi silk");
             }}
-            className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 text-[11px] font-medium transition-colors flex items-center gap-1.5 shrink-0"
+            className="px-2.5 py-1 rounded-lg bg-accent/60 hover:bg-accent border border-border text-foreground text-[11px] font-medium transition-colors flex items-center gap-1.5 shrink-0"
           >
-            <Sparkles className="w-3 h-3 text-indigo-400" />
+            <Sparkles className="w-3 h-3 text-indigo-500" />
             <span>Calibrate Lighting Shaders</span>
           </button>
         </div>
 
-        <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto flex items-center gap-3 bg-black/50 p-2 rounded-2xl border border-white/10 focus-within:border-[#E1D4C0]/50 transition-all">
-          <div className="w-8 h-8 rounded-xl bg-[#E1D4C0]/10 text-[#E1D4C0] flex items-center justify-center shrink-0">
+        <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto flex items-center gap-3 bg-muted/40 p-2 rounded-2xl border border-border focus-within:border-primary/50 transition-all">
+          <div className="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
             <Sparkles className="w-4 h-4" />
           </div>
 
@@ -460,13 +460,13 @@ export function VyrenRoomView() {
             value={inputVal}
             onChange={(e) => setInputVal(e.target.value)}
             placeholder="Collaborate with VYREN in the Room... (e.g. 'Make the hero more commanding')"
-            className="flex-1 bg-transparent text-xs text-white placeholder-white/40 focus:outline-none font-light"
+            className="flex-1 bg-transparent text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none font-light"
           />
 
           <button
             type="submit"
             disabled={!inputVal.trim() || isProcessing}
-            className="px-4 py-2 rounded-xl bg-[#E1D4C0] text-[#0A0A0A] font-semibold text-xs hover:opacity-90 disabled:opacity-40 transition-opacity flex items-center gap-1.5 shrink-0 shadow-lg"
+            className="px-4 py-2 rounded-xl bg-primary text-primary-foreground font-semibold text-xs hover:opacity-90 disabled:opacity-40 transition-opacity flex items-center gap-1.5 shrink-0 shadow-sm"
           >
             {isProcessing ? (
               <>

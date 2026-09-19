@@ -23,18 +23,18 @@ export default function StrategicObservatoryPage() {
   }, []);
 
   return (
-    <div className="flex-1 space-y-8 p-8 max-w-7xl mx-auto text-foreground">
+    <div className="flex-1 space-y-8 p-8 max-w-7xl mx-auto text-foreground bg-background">
       {/* Header Banner */}
       <div className="flex items-center justify-between border-b border-border pb-6">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded text-[10px] font-mono uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <span className="px-2.5 py-0.5 rounded text-[10px] font-mono uppercase bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
               Phase 29 Operating Layer
             </span>
             <span className="text-xs text-muted-foreground font-mono">Tenant: LUXE-MAISON</span>
           </div>
-          <h1 className="text-3xl font-serif tracking-tight text-white flex items-center gap-3">
-            <Compass className="w-7 h-7 text-emerald-400" />
+          <h1 className="text-3xl font-serif tracking-tight text-foreground flex items-center gap-3">
+            <Compass className="w-7 h-7 text-emerald-500" />
             Strategic Intelligence Observatory
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
@@ -43,63 +43,63 @@ export default function StrategicObservatoryPage() {
         </div>
 
         <div className="flex items-center gap-3 font-mono text-xs">
-          <div className="flex items-center gap-2 bg-neutral-900 border border-border px-3 py-1.5 rounded-lg">
-            <Radio className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-            <span>Telemetry Live</span>
+          <div className="flex items-center gap-2 bg-card border border-border px-3 py-1.5 rounded-lg shadow-xs">
+            <Radio className="w-3.5 h-3.5 text-emerald-500 animate-pulse" />
+            <span className="text-foreground">Telemetry Live</span>
           </div>
         </div>
       </div>
 
       {/* Top Telemetry KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 font-mono">
-        <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
+        <div className="bg-card border border-border rounded-xl p-5 shadow-xs">
           <div className="text-xs text-muted-foreground uppercase flex items-center justify-between">
             <span>Graph Nodes</span>
-            <Activity className="w-4 h-4 text-emerald-400" />
+            <Activity className="w-4 h-4 text-emerald-500" />
           </div>
-          <div className="text-2xl font-bold text-white mt-2">
+          <div className="text-2xl font-bold text-foreground mt-2">
             {snapshot?.metrics.total_entities_in_graph || 342}
           </div>
-          <div className="text-[11px] text-emerald-400 mt-1 flex items-center gap-1">
+          <div className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 flex items-center gap-1">
             <CheckCircle2 className="w-3 h-3" /> 100% Provenance Hashed
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
+        <div className="bg-card border border-border rounded-xl p-5 shadow-xs">
           <div className="text-xs text-muted-foreground uppercase flex items-center justify-between">
             <span>Active Signals</span>
-            <TrendingUp className="w-4 h-4 text-cyan-400" />
+            <TrendingUp className="w-4 h-4 text-cyan-500" />
           </div>
-          <div className="text-2xl font-bold text-white mt-2">
+          <div className="text-2xl font-bold text-foreground mt-2">
             {snapshot?.metrics.active_signals_count || 14}
           </div>
-          <div className="text-[11px] text-cyan-400 mt-1">
+          <div className="text-[11px] text-cyan-600 dark:text-cyan-400 mt-1">
             5 Emerging • 3 Fatigue
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
+        <div className="bg-card border border-border rounded-xl p-5 shadow-xs">
           <div className="text-xs text-muted-foreground uppercase flex items-center justify-between">
             <span>Active Hypotheses</span>
-            <Cpu className="w-4 h-4 text-purple-400" />
+            <Cpu className="w-4 h-4 text-purple-500" />
           </div>
-          <div className="text-2xl font-bold text-white mt-2">
+          <div className="text-2xl font-bold text-foreground mt-2">
             {snapshot?.metrics.active_hypotheses_count || 6}
           </div>
-          <div className="text-[11px] text-purple-300 mt-1">
+          <div className="text-[11px] text-purple-600 dark:text-purple-300 mt-1">
             3 Supported in A/B Trials
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
+        <div className="bg-card border border-border rounded-xl p-5 shadow-xs">
           <div className="text-xs text-muted-foreground uppercase flex items-center justify-between">
             <span>Governance Queue</span>
-            <AlertTriangle className="w-4 h-4 text-amber-400" />
+            <AlertTriangle className="w-4 h-4 text-amber-500" />
           </div>
-          <div className="text-2xl font-bold text-white mt-2">
+          <div className="text-2xl font-bold text-foreground mt-2">
             {snapshot?.metrics.active_recommendations_count || 4}
           </div>
-          <div className="text-[11px] text-amber-400 mt-1">
+          <div className="text-[11px] text-amber-600 dark:text-amber-400 mt-1">
             2 Awaiting Operator Review
           </div>
         </div>
@@ -110,8 +110,8 @@ export default function StrategicObservatoryPage() {
         {/* Left 2 Cols: Live Signal Feed */}
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-              <Radio className="w-4 h-4 text-emerald-400" />
+            <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+              <Radio className="w-4 h-4 text-emerald-500" />
               Strategic Signal Timeline
             </h2>
             <span className="text-xs font-mono text-muted-foreground">Epistemic Status Calibrated</span>
@@ -121,35 +121,35 @@ export default function StrategicObservatoryPage() {
             {signals.map((sig) => (
               <div
                 key={sig.signal_id}
-                className="bg-card border border-border hover:border-emerald-500/30 transition-all rounded-xl p-5 space-y-3"
+                className="bg-card border border-border hover:border-emerald-500/30 transition-all rounded-xl p-5 space-y-3 shadow-xs"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-semibold ${
                       sig.signal_class === "EMERGING_PATTERN"
-                        ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
-                        : "bg-amber-500/15 text-amber-400 border border-amber-500/30"
+                        ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
+                        : "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30"
                     }`}>
                       {sig.signal_class}
                     </span>
-                    <span className="text-xs font-mono text-neutral-400">{sig.scope}</span>
+                    <span className="text-xs font-mono text-muted-foreground">{sig.scope}</span>
                   </div>
-                  <span className="font-mono text-xs text-neutral-400">
-                    Confidence: <strong className="text-white">{(sig.confidence * 100).toFixed(0)}%</strong>
+                  <span className="font-mono text-xs text-muted-foreground">
+                    Confidence: <strong className="text-foreground">{(sig.confidence * 100).toFixed(0)}%</strong>
                   </span>
                 </div>
 
-                <div className="text-sm text-neutral-200 leading-relaxed font-medium">
+                <div className="text-sm text-foreground leading-relaxed font-medium">
                   {sig.observed_pattern}
                 </div>
 
-                <div className="bg-neutral-950/60 rounded-lg p-3 border border-white/5 space-y-1.5 text-xs font-mono">
+                <div className="bg-muted/30 rounded-lg p-3 border border-border space-y-1.5 text-xs font-mono">
                   <div className="flex items-center justify-between text-muted-foreground">
-                    <span>Epistemic Status: <strong className="text-neutral-300">{sig.epistemic_status}</strong></span>
-                    <span>Freshness: <strong className="text-emerald-400">{sig.freshness * 100}%</strong></span>
+                    <span>Epistemic Status: <strong className="text-foreground">{sig.epistemic_status}</strong></span>
+                    <span>Freshness: <strong className="text-emerald-600 dark:text-emerald-400">{sig.freshness * 100}%</strong></span>
                   </div>
                   {sig.unknowns.length > 0 && (
-                    <div className="text-[11px] text-amber-400/90 pt-1 border-t border-white/5">
+                    <div className="text-[11px] text-amber-600 dark:text-amber-400 pt-1 border-t border-border">
                       <strong>Unobserved Unknowns:</strong> {sig.unknowns[0]}
                     </div>
                   )}
@@ -161,9 +161,9 @@ export default function StrategicObservatoryPage() {
 
         {/* Right Col: Contradiction & Knowledge Decay Map */}
         <div className="space-y-6">
-          <div className="bg-card border border-border rounded-xl p-5 space-y-4">
-            <h3 className="text-sm font-semibold text-white uppercase font-mono tracking-wider flex items-center gap-2">
-              <ShieldAlert className="w-4 h-4 text-cyan-400" />
+          <div className="bg-card border border-border rounded-xl p-5 space-y-4 shadow-xs">
+            <h3 className="text-sm font-semibold text-foreground uppercase font-mono tracking-wider flex items-center gap-2">
+              <ShieldAlert className="w-4 h-4 text-cyan-500" />
               Contradiction Radar
             </h3>
             <p className="text-xs text-muted-foreground">
@@ -171,38 +171,38 @@ export default function StrategicObservatoryPage() {
             </p>
 
             <div className="space-y-2.5">
-              <div className="p-3 rounded-lg bg-neutral-950/60 border border-white/5 text-xs font-mono space-y-1">
-                <div className="text-cyan-300 font-semibold">Brutalist vs Heritage Typography</div>
+              <div className="p-3 rounded-lg bg-muted/30 border border-border text-xs font-mono space-y-1">
+                <div className="text-cyan-600 dark:text-cyan-300 font-semibold">Brutalist vs Heritage Typography</div>
                 <div className="text-muted-foreground text-[11px]">
                   • Brutalist Sans: +22% lift on Gen-Z Streetwear<br />
                   • Serif Minimal: +14% lift on High-Net-Worth Heritage
                 </div>
-                <div className="text-[10px] text-emerald-400 pt-1">
+                <div className="text-[10px] text-emerald-600 dark:text-emerald-400 pt-1 font-semibold">
                   Status: Scope Split Resolved (Zero Overwrite)
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-xl p-5 space-y-4">
-            <h3 className="text-sm font-semibold text-white uppercase font-mono tracking-wider flex items-center gap-2">
-              <Activity className="w-4 h-4 text-purple-400" />
+          <div className="bg-card border border-border rounded-xl p-5 space-y-4 shadow-xs">
+            <h3 className="text-sm font-semibold text-foreground uppercase font-mono tracking-wider flex items-center gap-2">
+              <Activity className="w-4 h-4 text-purple-500" />
               Exponential Freshness Decay
             </h3>
             <div className="space-y-2 text-xs font-mono">
               <div className="flex justify-between items-center">
-                <span className="text-neutral-400">Meta Video Formats (Half-life 35d)</span>
-                <span className="text-emerald-400">92% Fresh</span>
+                <span className="text-muted-foreground">Meta Video Formats (Half-life 35d)</span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">92% Fresh</span>
               </div>
-              <div className="w-full bg-neutral-900 rounded-full h-1.5">
+              <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
                 <div className="bg-emerald-500 h-1.5 rounded-full" style={{ width: "92%" }} />
               </div>
 
               <div className="flex justify-between items-center pt-2">
-                <span className="text-neutral-400">TikTok Pacing Models (Half-life 14d)</span>
-                <span className="text-amber-400">54% (Recalibrating)</span>
+                <span className="text-muted-foreground">TikTok Pacing Models (Half-life 14d)</span>
+                <span className="text-amber-600 dark:text-amber-400 font-semibold">54% (Recalibrating)</span>
               </div>
-              <div className="w-full bg-neutral-900 rounded-full h-1.5">
+              <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
                 <div className="bg-amber-500 h-1.5 rounded-full" style={{ width: "54%" }} />
               </div>
             </div>

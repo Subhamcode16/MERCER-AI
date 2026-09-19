@@ -54,28 +54,28 @@ export function CampaignStudioHeader({
   ];
 
   return (
-    <div className="border-b border-white/10 bg-[#0D0D0E]/90 backdrop-blur-md sticky top-0 z-30">
+    <div className="border-b border-border/40 bg-card/80 backdrop-blur-md sticky top-0 z-30 transition-colors duration-200">
       {/* Top Utility & Identity Bar */}
-      <div className="px-6 py-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-white/5">
+      <div className="px-6 py-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-border/20">
         
         {/* Left: Brand, Campaign Title & Status */}
         <div className="space-y-1.5 max-w-2xl">
           <div className="flex items-center gap-2.5 flex-wrap">
-            <span className="text-[10px] font-mono tracking-widest uppercase text-[#E1D4C0]/70 bg-[#E1D4C0]/10 border border-[#E1D4C0]/20 px-2 py-0.5 rounded">
+            <span className="text-[10px] font-mono tracking-widest uppercase text-primary/80 bg-primary/10 border border-primary/20 px-2 py-0.5 rounded">
               {campaign.brand}
             </span>
-            <span className="text-white/20 text-xs">•</span>
-            <h1 className="text-lg font-serif text-white font-normal tracking-wide">
+            <span className="text-muted-foreground/30 text-xs">•</span>
+            <h1 className="text-lg font-serif text-foreground font-normal tracking-wide">
               {campaign.name}
             </h1>
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-mono tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-mono tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
               {campaign.status.toUpperCase()}
             </span>
           </div>
 
-          <p className="text-xs text-white/50 font-light line-clamp-1">
-            <span className="text-white/70 font-medium">Objective:</span> {campaign.objective}
+          <p className="text-xs text-muted-foreground font-light line-clamp-1">
+            <span className="text-foreground/80 font-medium">Objective:</span> {campaign.objective}
           </p>
         </div>
 
@@ -83,24 +83,24 @@ export function CampaignStudioHeader({
         <div className="flex items-center gap-4 flex-wrap self-start lg:self-auto">
           
           {/* Human Decision Maker Authority Badge */}
-          <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs">
-            <div className="w-6 h-6 rounded-full bg-amber-500/20 text-[#E1D4C0] border border-amber-500/30 flex items-center justify-center text-[10px] font-mono font-medium">
+          <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-accent/30 border border-border/40 text-xs">
+            <div className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-300 border border-amber-500/30 flex items-center justify-center text-[10px] font-mono font-medium">
               {campaign.humanOwner.avatar}
             </div>
             <div className="text-left leading-tight">
-              <div className="text-white/90 text-[11px] font-medium flex items-center gap-1">
+              <div className="text-foreground text-[11px] font-medium flex items-center gap-1">
                 {campaign.humanOwner.name}
-                <Lock className="w-3 h-3 text-[#E1D4C0]" />
+                <Lock className="w-3 h-3 text-primary" />
               </div>
-              <div className="text-[9px] text-white/40 font-mono">
+              <div className="text-[9px] text-muted-foreground font-mono">
                 Sole Strategic Authority
               </div>
             </div>
           </div>
 
           {/* Active AI Crew HUD */}
-          <div className="relative flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-white/[0.02] border border-white/5">
-            <span className="text-[9px] font-mono uppercase tracking-wider text-white/40 mr-1.5 hidden sm:inline">
+          <div className="relative flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-accent/20 border border-border/40">
+            <span className="text-[9px] font-mono uppercase tracking-wider text-muted-foreground mr-1.5 hidden sm:inline">
               Active Crew:
             </span>
             <div className="flex -space-x-1.5">
@@ -112,16 +112,16 @@ export function CampaignStudioHeader({
                   className="relative group focus:outline-none"
                 >
                   <div 
-                    className="w-6 h-6 rounded-full border border-black/80 flex items-center justify-center text-[9px] font-mono font-bold transition-transform hover:scale-110 shadow-sm"
+                    className="w-6 h-6 rounded-full border border-background flex items-center justify-center text-[9px] font-mono font-bold transition-transform hover:scale-110 shadow-xs"
                     style={{ backgroundColor: `${worker.avatarColor}20`, color: worker.avatarColor }}
                   >
                     {worker.name[0]}
                   </div>
                   {worker.status === 'active' && (
-                    <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-400 border border-black" />
+                    <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-500 border border-background" />
                   )}
                   {worker.status === 'awaiting_human_gate' && (
-                    <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-amber-400 border border-black" />
+                    <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-amber-500 border border-background" />
                   )}
                 </button>
               ))}
@@ -129,16 +129,16 @@ export function CampaignStudioHeader({
 
             {/* Expandable Hover Tooltip for Active AI Worker */}
             {hoveredWorker && (
-              <div className="absolute right-0 top-11 w-72 p-3 rounded-xl bg-[#141416] border border-white/10 shadow-2xl z-50 text-xs space-y-2 pointer-events-none animate-in fade-in zoom-in-95 duration-150">
-                <div className="flex items-center justify-between border-b border-white/5 pb-1.5">
-                  <span className="font-medium text-white">{hoveredWorker.name}</span>
-                  <span className="text-[9px] font-mono text-[#E1D4C0]">{hoveredWorker.role}</span>
+              <div className="absolute right-0 top-11 w-72 p-3 rounded-xl bg-card border border-border shadow-xl z-50 text-xs space-y-2 pointer-events-none animate-in fade-in zoom-in-95 duration-150">
+                <div className="flex items-center justify-between border-b border-border/40 pb-1.5">
+                  <span className="font-medium text-foreground">{hoveredWorker.name}</span>
+                  <span className="text-[9px] font-mono text-primary">{hoveredWorker.role}</span>
                 </div>
-                <div className="space-y-1 text-[11px] text-white/70">
-                  <p><span className="text-white/40 font-mono">Current:</span> {hoveredWorker.currentTask}</p>
-                  <p><span className="text-white/40 font-mono">Recent:</span> {hoveredWorker.recentContribution}</p>
+                <div className="space-y-1 text-[11px] text-foreground/80">
+                  <p><span className="text-muted-foreground font-mono">Current:</span> {hoveredWorker.currentTask}</p>
+                  <p><span className="text-muted-foreground font-mono">Recent:</span> {hoveredWorker.recentContribution}</p>
                 </div>
-                <div className="text-[10px] font-mono text-emerald-400/90 pt-1 border-t border-white/5 flex items-center gap-1">
+                <div className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 pt-1 border-t border-border/40 flex items-center gap-1">
                   <span>&rarr;</span> {hoveredWorker.nextHandoff}
                 </div>
               </div>
@@ -148,7 +148,7 @@ export function CampaignStudioHeader({
           {/* Ask VYREN Entry Trigger */}
           <button
             onClick={onOpenAskVyren}
-            className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/10 to-amber-600/20 hover:from-amber-500/20 hover:to-amber-600/30 text-[#E1D4C0] border border-[#E1D4C0]/30 text-xs font-medium flex items-center gap-1.5 transition-all shadow-lg hover:border-[#E1D4C0]/60"
+            className="px-3 py-1.5 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 text-xs font-medium flex items-center gap-1.5 transition-all shadow-xs hover:border-primary/60 cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>Ask VYREN</span>
@@ -156,7 +156,7 @@ export function CampaignStudioHeader({
         </div>
       </div>
 
-      {/* Internal 8-Tab Lifecycle Navigation */}
+      {/* Internal 5-Tab Lifecycle Navigation */}
       <div className="px-6 flex items-center gap-1 overflow-x-auto scrollbar-none py-1.5">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
@@ -164,24 +164,24 @@ export function CampaignStudioHeader({
             <button
               key={tab.id}
               onClick={() => onSelectTab(tab.id)}
-              className={`px-3.5 py-2 rounded-lg text-xs font-medium transition-all flex items-center gap-2 whitespace-nowrap relative ${
+              className={`px-3.5 py-2 rounded-lg text-xs font-medium transition-all flex items-center gap-2 whitespace-nowrap relative cursor-pointer ${
                 isActive
-                  ? "text-[#E1D4C0] bg-white/[0.06] shadow-inner font-semibold"
-                  : "text-white/50 hover:text-white hover:bg-white/[0.02]"
+                  ? "text-primary bg-accent/60 shadow-xs font-semibold"
+                  : "text-muted-foreground hover:text-foreground hover:bg-accent/30"
               }`}
             >
               <span>{tab.label}</span>
               {tab.badge && (
                 <span className={`text-[9px] font-mono px-1.5 py-0.2 rounded-full ${
                   isActive
-                    ? "bg-[#E1D4C0]/20 text-[#E1D4C0] border border-[#E1D4C0]/30"
-                    : "bg-white/5 text-white/40"
+                    ? "bg-primary/15 text-primary border border-primary/25"
+                    : "bg-muted text-muted-foreground"
                 }`}>
                   {tab.badge}
                 </span>
               )}
               {isActive && (
-                <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-[#E1D4C0] rounded-full shadow-[0_0_8px_rgba(225,212,192,0.8)]" />
+                <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full shadow-[0_0_8px_rgba(var(--primary),0.6)]" />
               )}
             </button>
           );
@@ -190,3 +190,4 @@ export function CampaignStudioHeader({
     </div>
   );
 }
+

@@ -85,28 +85,28 @@ export const PinterestMoodboardDrawer: React.FC<PinterestMoodboardDrawerProps> =
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden bg-black/60 backdrop-blur-sm transition-opacity flex justify-end">
-      <div className="w-full max-w-lg bg-[#0E1015] border-l border-white/10 h-full shadow-2xl flex flex-col transform transition-transform duration-300">
+    <div className="fixed inset-0 z-50 overflow-hidden bg-background/80 backdrop-blur-sm transition-opacity flex justify-end">
+      <div className="w-full max-w-lg bg-card border-l border-border h-full shadow-2xl flex flex-col transform transition-transform duration-300">
         
         {/* Header */}
-        <div className="p-5 border-b border-white/10 flex items-center justify-between">
+        <div className="p-5 border-b border-border flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#E60023]/10 border border-[#E60023]/30 flex items-center justify-center text-[#E60023]">
               <Layers className="w-4 h-4" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-sm font-semibold text-white tracking-wide">Pinterest Moodboard Engine</h3>
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+                <h3 className="text-sm font-semibold text-foreground tracking-wide">Pinterest Moodboard Engine</h3>
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-semibold">
                   MCP ONLINE
                 </span>
               </div>
-              <p className="text-xs text-white/50">Ingest pins, palettes, and aesthetic tokens directly into room memory</p>
+              <p className="text-xs text-muted-foreground">Ingest pins, palettes, and aesthetic tokens directly into room memory</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/5 transition-colors"
+            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -115,8 +115,8 @@ export const PinterestMoodboardDrawer: React.FC<PinterestMoodboardDrawerProps> =
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-5 space-y-4">
           <div className="flex items-center justify-between">
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-white/60">Connected Moodboards</h4>
-            <span className="text-xs text-white/40">{boards.length} Boards available</span>
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Connected Moodboards</h4>
+            <span className="text-xs text-muted-foreground/60">{boards.length} Boards available</span>
           </div>
 
           <div className="grid grid-cols-1 gap-3.5">
@@ -128,39 +128,39 @@ export const PinterestMoodboardDrawer: React.FC<PinterestMoodboardDrawerProps> =
                   className={`group relative rounded-xl border p-3.5 transition-all overflow-hidden ${
                     isSelected
                       ? 'border-[#E60023]/50 bg-[#E60023]/5'
-                      : 'border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04]'
+                      : 'border-border bg-muted/30 hover:border-border/80 hover:bg-accent/40'
                   }`}
                 >
                   <div className="flex gap-3.5">
                     <img
                       src={board.image_cover_url}
                       alt={board.name}
-                      className="w-20 h-24 rounded-lg object-cover border border-white/10 shadow-md shrink-0"
+                      className="w-20 h-24 rounded-lg object-cover border border-border shadow-sm shrink-0"
                     />
                     <div className="flex-1 flex flex-col justify-between">
                       <div>
                         <div className="flex items-start justify-between gap-2">
-                          <h5 className="text-sm font-medium text-white group-hover:text-white transition-colors">
+                          <h5 className="text-sm font-medium text-foreground transition-colors">
                             {board.name}
                           </h5>
-                          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/5 text-white/50">
+                          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
                             {board.pin_count} pins
                           </span>
                         </div>
-                        <p className="text-xs text-white/50 mt-1 line-clamp-2 leading-relaxed">
+                        <p className="text-xs text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
                           {board.description}
                         </p>
                       </div>
 
                       <div className="mt-3 flex items-center justify-between">
-                        <span className="text-[10px] text-white/40 flex items-center gap-1">
-                          <Palette className="w-3 h-3 text-amber-400/80" />
+                        <span className="text-[10px] text-muted-foreground/80 flex items-center gap-1">
+                          <Palette className="w-3 h-3 text-amber-500" />
                           Auto-extracts palette & drape
                         </span>
                         <button
                           onClick={() => handleIngest(board)}
                           disabled={isIngesting}
-                          className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[#E60023] hover:bg-[#c9001f] text-white transition-colors flex items-center gap-1.5 shadow-lg shadow-[#E60023]/20 disabled:opacity-50"
+                          className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[#E60023] hover:bg-[#c9001f] text-white transition-colors flex items-center gap-1.5 shadow-sm shadow-[#E60023]/20 disabled:opacity-50"
                         >
                           {isIngesting && isSelected ? (
                             <>
@@ -188,35 +188,35 @@ export const PinterestMoodboardDrawer: React.FC<PinterestMoodboardDrawerProps> =
           </div>
 
           {/* Editorial Trends Preview */}
-          <div className="mt-6 pt-5 border-t border-white/10 space-y-3">
+          <div className="mt-6 pt-5 border-t border-border space-y-3">
             <div className="flex items-center justify-between">
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-white/60 flex items-center gap-1.5">
-                <TrendingUp className="w-3.5 h-3.5 text-indigo-400" />
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                <TrendingUp className="w-3.5 h-3.5 text-indigo-500" />
                 Live Editorial Trends
               </h4>
-              <span className="text-[10px] text-indigo-400/90 font-mono">Pinterest Signals</span>
+              <span className="text-[10px] text-indigo-600 dark:text-indigo-400 font-mono font-medium">Pinterest Signals</span>
             </div>
 
             <div className="grid grid-cols-2 gap-2.5">
-              <div className="p-3 rounded-lg border border-white/5 bg-white/[0.02]">
-                <span className="text-[10px] font-mono text-emerald-400">+44.8% MoM</span>
-                <p className="text-xs font-medium text-white mt-0.5">Modern Royalty</p>
-                <p className="text-[10px] text-white/40 mt-1">Architectural shoulders & gilded accents</p>
+              <div className="p-3 rounded-lg border border-border bg-muted/40">
+                <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-semibold">+44.8% MoM</span>
+                <p className="text-xs font-medium text-foreground mt-0.5">Modern Royalty</p>
+                <p className="text-[10px] text-muted-foreground mt-1">Architectural shoulders & gilded accents</p>
               </div>
-              <div className="p-3 rounded-lg border border-white/5 bg-white/[0.02]">
-                <span className="text-[10px] font-mono text-emerald-400">+31.2% MoM</span>
-                <p className="text-xs font-medium text-white mt-0.5">Matte Metallic Weaves</p>
-                <p className="text-[10px] text-white/40 mt-1">Textured Khadi & diffuse sunlight</p>
+              <div className="p-3 rounded-lg border border-border bg-muted/40">
+                <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-semibold">+31.2% MoM</span>
+                <p className="text-xs font-medium text-foreground mt-0.5">Matte Metallic Weaves</p>
+                <p className="text-[10px] text-muted-foreground mt-1">Textured Khadi & diffuse sunlight</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-white/10 bg-white/[0.01] flex items-center justify-between text-xs text-white/40">
-          <span>Tenant Scope: <code className="text-white/60 font-mono">isolated</code></span>
-          <span className="flex items-center gap-1 text-[11px]">
-            <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+        <div className="p-4 border-t border-border bg-muted/20 flex items-center justify-between text-xs text-muted-foreground">
+          <span>Tenant Scope: <code className="text-foreground font-mono">isolated</code></span>
+          <span className="flex items-center gap-1 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
+            <CheckCircle2 className="w-3 h-3" />
             T-013 Invariant Gated
           </span>
         </div>

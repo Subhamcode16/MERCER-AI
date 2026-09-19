@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Cormorant_Garamond } from "next/font/google";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import "./globals.css";
 
 const cormorantGaramond = Cormorant_Garamond({
@@ -105,7 +106,7 @@ const nohemi = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Creative Intelligence Institute",
+  title: "VYREN — Brand Intelligence & Creative OS",
   description: "Where Creativity Becomes Intelligence",
 };
 
@@ -116,12 +117,35 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className={`${neueHaas.variable} ${cormorantGaramond.variable} ${butler.variable} ${nohemi.variable}`}>
-      <body suppressHydrationWarning className={`font-sans font-medium antialiased`}>
-        <AuthProvider>
-          {children}
-          <div className="film-grain" />
-        </AuthProvider>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const t = localStorage.getItem('vyren-theme') || 'dark';
+                const r = t === 'system' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : t;
+                document.documentElement.setAttribute('data-theme', r);
+                if (r === 'light') {
+                  document.documentElement.classList.add('light');
+                  document.documentElement.classList.remove('dark');
+                } else {
+                  document.documentElement.classList.add('dark');
+                  document.documentElement.classList.remove('light');
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
+      </head>
+      <body suppressHydrationWarning className="font-sans font-medium antialiased bg-background text-foreground transition-colors duration-200">
+        <ThemeProvider>
+          <AuthProvider>
+            {children}
+            <div className="film-grain" />
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
 }
+

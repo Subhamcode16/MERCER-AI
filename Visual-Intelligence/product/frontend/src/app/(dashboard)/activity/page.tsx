@@ -57,17 +57,17 @@ export default function ActivityPage() {
   ];
 
   return (
-    <div className="h-full overflow-y-auto bg-[#0A0A0A] text-white/90 p-8 lg:p-12 scrollbar-thin scrollbar-thumb-white/10">
+    <div className="h-full overflow-y-auto bg-background text-foreground p-8 lg:p-12 scrollbar-thin">
       <div className="max-w-4xl mx-auto space-y-8">
         
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-white/5">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-border">
           <div>
             <div className="flex items-center gap-2">
-              <Activity className="w-5 h-5 text-[#E1D4C0]" />
-              <h1 className="text-2xl font-serif text-white font-light">Workspace Activity</h1>
+              <Activity className="w-5 h-5 text-primary" />
+              <h1 className="text-2xl font-serif text-foreground font-light">Workspace Activity</h1>
             </div>
-            <p className="text-xs text-white/50 font-light mt-1">
+            <p className="text-xs text-muted-foreground font-light mt-1">
               Live event stream of AI coworker contributions, human governance decisions, and organizational audit logs.
             </p>
           </div>
@@ -76,7 +76,7 @@ export default function ActivityPage() {
             <button
               onClick={() => setFilter("all")}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                filter === "all" ? "bg-white/10 text-white" : "text-white/40 hover:text-white"
+                filter === "all" ? "bg-primary/10 text-primary border border-primary/20" : "text-muted-foreground hover:text-foreground"
               }`}
             >
               All Events
@@ -84,7 +84,7 @@ export default function ActivityPage() {
             <button
               onClick={() => setFilter("team")}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                filter === "team" ? "bg-white/10 text-white" : "text-white/40 hover:text-white"
+                filter === "team" ? "bg-primary/10 text-primary border border-primary/20" : "text-muted-foreground hover:text-foreground"
               }`}
             >
               AI Team
@@ -92,7 +92,7 @@ export default function ActivityPage() {
             <button
               onClick={() => setFilter("decisions")}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                filter === "decisions" ? "bg-white/10 text-white" : "text-white/40 hover:text-white"
+                filter === "decisions" ? "bg-primary/10 text-primary border border-primary/20" : "text-muted-foreground hover:text-foreground"
               }`}
             >
               Decisions
@@ -105,26 +105,26 @@ export default function ActivityPage() {
           {events.map((evt) => (
             <div 
               key={evt.id}
-              className="p-5 rounded-2xl border border-white/10 bg-[#111111]/80 hover:bg-[#151515] transition-all space-y-2"
+              className="p-5 rounded-2xl border border-border bg-card hover:border-primary/30 transition-all space-y-2 shadow-xs"
             >
               <div className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
                   <span className={`w-2 h-2 rounded-full ${
-                    evt.type === "decision" ? "bg-emerald-400" :
-                    evt.type === "team" ? "bg-[#E1D4C0]" : "bg-purple-400"
+                    evt.type === "decision" ? "bg-emerald-500" :
+                    evt.type === "team" ? "bg-primary" : "bg-purple-500"
                   }`} />
-                  <span className="font-medium text-white">{evt.author}</span>
+                  <span className="font-medium text-foreground">{evt.author}</span>
                 </div>
-                <span className="text-[10px] text-white/40 font-mono">{evt.time}</span>
+                <span className="text-[10px] text-muted-foreground font-mono">{evt.time}</span>
               </div>
 
-              <h3 className="text-sm font-medium text-white/90">{evt.title}</h3>
-              <p className="text-xs text-white/50 font-light">{evt.details}</p>
+              <h3 className="text-sm font-medium text-foreground">{evt.title}</h3>
+              <p className="text-xs text-muted-foreground font-light">{evt.details}</p>
 
-              <div className="pt-2 flex items-center justify-between text-[10px] text-white/40 font-mono">
+              <div className="pt-2 flex items-center justify-between text-[10px] text-muted-foreground font-mono">
                 <span>{evt.id} • {evt.tag}</span>
                 {evt.type === "team" && (
-                  <Link href="/team" className="text-[#E1D4C0] hover:underline flex items-center gap-1 font-medium">
+                  <Link href="/team" className="text-primary hover:underline flex items-center gap-1 font-medium">
                     View in Team Room <ArrowRight className="w-2.5 h-2.5" />
                   </Link>
                 )}

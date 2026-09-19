@@ -30,6 +30,7 @@ build/
 out/
 
 # Local data & ledgers
+data/
 data/phase*_ledger/
 data/phase*_checkpoints/
 data/phase*_feedback/

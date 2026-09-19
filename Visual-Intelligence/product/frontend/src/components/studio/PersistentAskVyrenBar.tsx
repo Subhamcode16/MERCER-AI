@@ -75,11 +75,11 @@ export function PersistentAskVyrenBar({
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-full max-w-3xl px-4 pointer-events-auto">
-      <div className="rounded-2xl bg-[#121214]/92 backdrop-blur-xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.7)] p-2.5 transition-all hover:border-[#E1D4C0]/30 group">
+      <div className="rounded-2xl bg-card/90 backdrop-blur-xl border border-border shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.7)] p-2.5 transition-all hover:border-primary/40 group">
         
         {/* Input Bar */}
-        <div className="flex items-center gap-3 px-3 py-1.5 bg-black/40 rounded-xl border border-white/5">
-          <div className="w-7 h-7 rounded-lg bg-[#E1D4C0]/15 text-[#E1D4C0] flex items-center justify-center shrink-0 border border-[#E1D4C0]/20">
+        <div className="flex items-center gap-3 px-3 py-1.5 bg-muted/50 rounded-xl border border-border/40">
+          <div className="w-7 h-7 rounded-lg bg-primary/15 text-primary flex items-center justify-center shrink-0 border border-primary/25">
             <Sparkles className="w-3.5 h-3.5 animate-pulse" />
           </div>
 
@@ -89,7 +89,7 @@ export function PersistentAskVyrenBar({
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={`Ask VYREN anything about ${campaign.name}... (e.g. "Make it more editorial")`}
-            className="flex-1 bg-transparent text-xs text-white placeholder-white/40 focus:outline-none font-light"
+            className="flex-1 bg-transparent text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none font-light"
           />
 
           <div className="flex items-center gap-2 shrink-0">
@@ -99,7 +99,7 @@ export function PersistentAskVyrenBar({
                   onOpenAskVyrenModal(inputValue.trim());
                   setInputValue("");
                 }}
-                className="px-2.5 py-1 rounded-lg bg-[#E1D4C0] text-[#0A0A0A] text-[11px] font-semibold hover:opacity-90 transition-opacity flex items-center gap-1"
+                className="px-2.5 py-1 rounded-lg bg-primary text-primary-foreground text-[11px] font-semibold hover:opacity-90 transition-opacity flex items-center gap-1 shadow-sm"
               >
                 <span>Ask</span>
                 <CornerDownLeft className="w-3 h-3" />
@@ -107,9 +107,9 @@ export function PersistentAskVyrenBar({
             ) : (
               <button
                 onClick={() => onOpenAskVyrenModal()}
-                className="px-2.5 py-1 rounded-lg bg-white/[0.06] hover:bg-white/10 text-white/70 hover:text-white text-[11px] font-medium transition-colors flex items-center gap-1.5"
+                className="px-2.5 py-1 rounded-lg bg-accent/60 hover:bg-accent text-accent-foreground text-[11px] font-medium transition-colors flex items-center gap-1.5 border border-border/50"
               >
-                <MessageSquare className="w-3 h-3 text-[#E1D4C0]" />
+                <MessageSquare className="w-3 h-3 text-primary" />
                 <span>Ask VYREN</span>
               </button>
             )}
@@ -118,17 +118,17 @@ export function PersistentAskVyrenBar({
 
         {/* Suggestion Chips */}
         <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pt-2 px-1">
-          <span className="text-[9px] font-mono uppercase tracking-widest text-white/30 shrink-0">
+          <span className="text-[9px] font-mono uppercase tracking-widest text-muted-foreground/60 shrink-0">
             Suggestions:
           </span>
           {suggestions.map((suggestion, idx) => (
             <button
               key={idx}
               onClick={() => handleChipClick(suggestion)}
-              className="text-[10.5px] font-light text-white/60 hover:text-[#E1D4C0] bg-white/[0.03] hover:bg-white/[0.07] border border-white/5 hover:border-[#E1D4C0]/30 px-2.5 py-0.5 rounded-full whitespace-nowrap transition-all flex items-center gap-1 shrink-0"
+              className="text-[10.5px] font-light text-muted-foreground hover:text-foreground bg-accent/40 hover:bg-accent border border-border/60 hover:border-primary/40 px-2.5 py-0.5 rounded-full whitespace-nowrap transition-all flex items-center gap-1 shrink-0"
             >
               <span>{suggestion}</span>
-              <ArrowRight className="w-2.5 h-2.5 opacity-40 group-hover:opacity-100" />
+              <ArrowRight className="w-2.5 h-2.5 opacity-50 group-hover:opacity-100 text-primary" />
             </button>
           ))}
         </div>

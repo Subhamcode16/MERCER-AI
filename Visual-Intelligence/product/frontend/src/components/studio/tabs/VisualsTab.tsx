@@ -64,7 +64,7 @@ export function VisualsTab({ campaign, onNavigateTab }: VisualsTabProps) {
     <div className="space-y-6 animate-in fade-in duration-200 pb-20 max-w-7xl mx-auto">
       
       {/* 1. Shot Selector Tabs */}
-      <div className="flex items-center justify-between border-b border-white/5 pb-4">
+      <div className="flex items-center justify-between border-b border-border pb-4">
         <div className="flex items-center gap-2">
           {shots.map((shot) => (
             <button
@@ -72,8 +72,8 @@ export function VisualsTab({ campaign, onNavigateTab }: VisualsTabProps) {
               onClick={() => setSelectedShot(shot.id)}
               className={`px-4 py-2 rounded-xl text-xs font-medium transition-all ${
                 selectedShot === shot.id
-                  ? "bg-[#E1D4C0] text-[#0A0A0A] font-semibold shadow-md"
-                  : "bg-white/[0.03] text-white/50 hover:text-white hover:bg-white/[0.07]"
+                  ? "bg-primary text-primary-foreground font-semibold shadow-sm"
+                  : "bg-muted/40 text-muted-foreground hover:text-foreground hover:bg-accent border border-border/50"
               }`}
             >
               <span>{shot.label}</span>
@@ -84,7 +84,7 @@ export function VisualsTab({ campaign, onNavigateTab }: VisualsTabProps) {
         <div className="flex items-center gap-2">
           <button
             onClick={() => onNavigateTab('review')}
-            className="px-4 py-2 rounded-xl bg-white/[0.06] hover:bg-white/10 text-white text-xs font-medium transition-colors flex items-center gap-1.5"
+            className="px-4 py-2 rounded-xl bg-accent/60 hover:bg-accent text-accent-foreground text-xs font-medium transition-colors flex items-center gap-1.5 border border-border"
           >
             <span>Proceed to Review</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -94,8 +94,8 @@ export function VisualsTab({ campaign, onNavigateTab }: VisualsTabProps) {
 
       {/* Feedback Toast */}
       {feedbackNotice && (
-        <div className="p-3.5 rounded-xl bg-[#141416] border border-[#E1D4C0]/40 text-[#E1D4C0] text-xs flex items-center gap-2.5 animate-in slide-in-from-top-2">
-          <Sparkles className="w-4 h-4 text-[#E1D4C0] shrink-0 animate-pulse" />
+        <div className="p-3.5 rounded-xl bg-card border border-primary/40 text-primary text-xs flex items-center gap-2.5 animate-in slide-in-from-top-2 shadow-sm">
+          <Sparkles className="w-4 h-4 text-primary shrink-0 animate-pulse" />
           <span>{feedbackNotice}</span>
         </div>
       )}
@@ -105,10 +105,10 @@ export function VisualsTab({ campaign, onNavigateTab }: VisualsTabProps) {
         
         {/* Left: Large Visual Canvas (7 Cols) */}
         <div className="lg:col-span-8 space-y-4">
-          <div className="relative aspect-[16/10] rounded-3xl bg-gradient-to-br from-[#18181D] via-[#0E0E10] to-black border border-white/10 overflow-hidden flex flex-col items-center justify-center p-8 group shadow-2xl">
+          <div className="relative aspect-[16/10] rounded-3xl bg-gradient-to-br from-card via-card/90 to-muted border border-border overflow-hidden flex flex-col items-center justify-center p-8 group shadow-xl">
             
             {/* Ambient Shader Glow */}
-            <div className="absolute inset-0 bg-[radial-gradient(#E1D4C0_1px,transparent_1px)] [background-size:28px_28px] opacity-10 pointer-events-none" />
+            <div className="absolute inset-0 bg-[radial-gradient(var(--primary)_1px,transparent_1px)] [background-size:28px_28px] opacity-10 pointer-events-none" />
             <div 
               className="absolute -top-20 -right-20 w-80 h-80 rounded-full blur-3xl pointer-events-none transition-all duration-700" 
               style={{ backgroundColor: `rgba(225, 212, 192, ${lightingVal / 600})` }}
@@ -116,37 +116,37 @@ export function VisualsTab({ campaign, onNavigateTab }: VisualsTabProps) {
 
             {/* Specimen Visual Centerpiece */}
             <div className="relative z-10 flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="w-44 h-44 rounded-3xl border border-[#E1D4C0]/40 bg-black/70 backdrop-blur-xl flex items-center justify-center shadow-2xl relative overflow-hidden transition-transform duration-500 group-hover:scale-105">
-                <div className="absolute inset-0 bg-gradient-to-tr from-[#D4AF37]/25 via-transparent to-transparent" />
-                <svg viewBox="0 0 100 100" className="w-28 h-28 stroke-[#E1D4C0] fill-none stroke-[1.5]">
-                  <path d="M 30 20 L 70 20 L 62 85 L 35 85 Z" className="fill-[#E1D4C0]/10" />
+              <div className="w-44 h-44 rounded-3xl border border-primary/40 bg-card/80 backdrop-blur-xl flex items-center justify-center shadow-lg relative overflow-hidden transition-transform duration-500 group-hover:scale-105">
+                <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 via-transparent to-transparent" />
+                <svg viewBox="0 0 100 100" className="w-28 h-28 stroke-primary fill-none stroke-[1.5]">
+                  <path d="M 30 20 L 70 20 L 62 85 L 35 85 Z" className="fill-primary/10" />
                   <path d="M 40 20 Q 50 40 35 85 M 48 20 Q 50 45 48 85 M 58 20 Q 50 40 62 85" />
                 </svg>
               </div>
 
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#E1D4C0]">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-primary font-bold">
                   Modern Sovereign &bull; {selectedShot} SHOT
                 </span>
-                <h3 className="text-xl font-serif text-white mt-0.5">{activeStudy.title}</h3>
+                <h3 className="text-xl font-serif text-foreground mt-0.5">{activeStudy.title}</h3>
               </div>
             </div>
 
             {/* Canvas Badges */}
-            <div className="absolute top-4 left-4 px-3 py-1.5 rounded-xl bg-black/70 border border-white/10 text-[11px] font-mono text-white/80 backdrop-blur-md">
+            <div className="absolute top-4 left-4 px-3 py-1.5 rounded-xl bg-card/80 border border-border text-[11px] font-mono text-foreground backdrop-blur-md shadow-sm">
               DNA COMPLIANCE: 98%
             </div>
 
-            <div className="absolute top-4 right-4 px-3 py-1.5 rounded-xl bg-black/70 border border-white/10 text-[11px] font-mono text-emerald-400 backdrop-blur-md flex items-center gap-1.5">
+            <div className="absolute top-4 right-4 px-3 py-1.5 rounded-xl bg-card/80 border border-border text-[11px] font-mono text-emerald-500 dark:text-emerald-400 backdrop-blur-md flex items-center gap-1.5 shadow-sm font-medium">
               <ShieldCheck className="w-3.5 h-3.5" /> PRINT-SAFE
             </div>
 
             {/* Canvas Bottom Strip */}
-            <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs text-white/60 bg-black/70 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-white/10">
+            <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs text-muted-foreground bg-card/80 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-border shadow-sm">
               <span className="truncate">{activeStudy.lightingShader}</span>
               <button
                 onClick={() => setShowAdvancedControls(true)}
-                className="text-[11px] text-[#E1D4C0] hover:underline font-medium flex items-center gap-1 shrink-0 ml-2"
+                className="text-[11px] text-primary hover:underline font-medium flex items-center gap-1 shrink-0 ml-2"
               >
                 <span>Advanced optical controls</span>
                 <ChevronRight className="w-3 h-3" />
@@ -156,8 +156,8 @@ export function VisualsTab({ campaign, onNavigateTab }: VisualsTabProps) {
           </div>
 
           {/* Natural Language Creative Control Box */}
-          <form onSubmit={handleApplyNlCommand} className="p-4 rounded-2xl bg-[#111113]/90 border border-white/10 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-[#E1D4C0]/10 text-[#E1D4C0] flex items-center justify-center shrink-0">
+          <form onSubmit={handleApplyNlCommand} className="p-4 rounded-2xl bg-card border border-border flex items-center gap-3 shadow-sm">
+            <div className="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
               <Sparkles className="w-4 h-4" />
             </div>
             <input
@@ -165,12 +165,12 @@ export function VisualsTab({ campaign, onNavigateTab }: VisualsTabProps) {
               value={nlCommand}
               onChange={(e) => setNlCommand(e.target.value)}
               placeholder='Describe creative adjustments in plain language... (e.g. "Make the hero more commanding")'
-              className="flex-1 bg-transparent text-xs text-white placeholder-white/40 focus:outline-none font-light"
+              className="flex-1 bg-transparent text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none font-light"
             />
             <button
               type="submit"
               disabled={isApplyingTweak || !nlCommand.trim()}
-              className="px-4 py-2 rounded-xl bg-[#E1D4C0] text-[#0A0A0A] font-semibold text-xs hover:opacity-90 disabled:opacity-40 transition-opacity flex items-center gap-1.5"
+              className="px-4 py-2 rounded-xl bg-primary text-primary-foreground font-semibold text-xs hover:opacity-90 disabled:opacity-40 transition-opacity flex items-center gap-1.5 shadow-sm"
             >
               {isApplyingTweak ? (
                 <>
@@ -189,10 +189,10 @@ export function VisualsTab({ campaign, onNavigateTab }: VisualsTabProps) {
 
         {/* Right: Simple Intuitive Creative Sliders (4 Cols) */}
         <div className="lg:col-span-4 space-y-4">
-          <div className="p-6 rounded-3xl bg-[#111113]/90 border border-white/10 space-y-6">
-            <div className="space-y-1 border-b border-white/5 pb-3">
-              <h4 className="text-sm font-serif text-white">Creative Tuning Controls</h4>
-              <p className="text-[11px] text-white/40 font-light">
+          <div className="p-6 rounded-3xl bg-card border border-border space-y-6 shadow-sm">
+            <div className="space-y-1 border-b border-border pb-3">
+              <h4 className="text-sm font-serif text-foreground">Creative Tuning Controls</h4>
+              <p className="text-[11px] text-muted-foreground font-light">
                 Directly modulate aesthetic atmosphere. VYREN translates these into camera, lighting, and physics constraints.
               </p>
             </div>
@@ -200,8 +200,8 @@ export function VisualsTab({ campaign, onNavigateTab }: VisualsTabProps) {
             {/* Slider 1: Lighting */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-white font-medium">Lighting Tone</span>
-                <span className="text-[#E1D4C0] font-mono text-[11px]">
+                <span className="text-foreground font-medium">Lighting Tone</span>
+                <span className="text-primary font-mono text-[11px]">
                   {lightingVal < 40 ? "Cinematic Dramatic" : lightingVal > 70 ? "Editorial High-Key" : "Balanced Chiaroscuro"}
                 </span>
               </div>
@@ -211,9 +211,9 @@ export function VisualsTab({ campaign, onNavigateTab }: VisualsTabProps) {
                 max="100"
                 value={lightingVal}
                 onChange={(e) => setLightingVal(Number(e.target.value))}
-                className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#E1D4C0]"
+                className="w-full h-1.5 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
               />
-              <div className="flex justify-between text-[9px] font-mono uppercase text-white/30">
+              <div className="flex justify-between text-[9px] font-mono uppercase text-muted-foreground/60">
                 <span>Cinematic</span>
                 <span>Editorial</span>
               </div>
@@ -222,8 +222,8 @@ export function VisualsTab({ campaign, onNavigateTab }: VisualsTabProps) {
             {/* Slider 2: Composition */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-white font-medium">Composition</span>
-                <span className="text-[#E1D4C0] font-mono text-[11px]">
+                <span className="text-foreground font-medium">Composition</span>
+                <span className="text-primary font-mono text-[11px]">
                   {compositionVal < 40 ? "Minimal Architectural" : "Dynamic Angles"}
                 </span>
               </div>
@@ -233,9 +233,9 @@ export function VisualsTab({ campaign, onNavigateTab }: VisualsTabProps) {
                 max="100"
                 value={compositionVal}
                 onChange={(e) => setCompositionVal(Number(e.target.value))}
-                className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#E1D4C0]"
+                className="w-full h-1.5 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
               />
-              <div className="flex justify-between text-[9px] font-mono uppercase text-white/30">
+              <div className="flex justify-between text-[9px] font-mono uppercase text-muted-foreground/60">
                 <span>Minimal</span>
                 <span>Dramatic</span>
               </div>
@@ -244,8 +244,8 @@ export function VisualsTab({ campaign, onNavigateTab }: VisualsTabProps) {
             {/* Slider 3: Material Sheen */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-white font-medium">Material Sheen</span>
-                <span className="text-[#E1D4C0] font-mono text-[11px]">
+                <span className="text-foreground font-medium">Material Sheen</span>
+                <span className="text-primary font-mono text-[11px]">
                   {materialVal > 60 ? "Reflective Gold Zari" : "Soft Matte Silk"}
                 </span>
               </div>
@@ -255,9 +255,9 @@ export function VisualsTab({ campaign, onNavigateTab }: VisualsTabProps) {
                 max="100"
                 value={materialVal}
                 onChange={(e) => setMaterialVal(Number(e.target.value))}
-                className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#E1D4C0]"
+                className="w-full h-1.5 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
               />
-              <div className="flex justify-between text-[9px] font-mono uppercase text-white/30">
+              <div className="flex justify-between text-[9px] font-mono uppercase text-muted-foreground/60">
                 <span>Matte</span>
                 <span>Reflective</span>
               </div>
@@ -266,8 +266,8 @@ export function VisualsTab({ campaign, onNavigateTab }: VisualsTabProps) {
             {/* Slider 4: Atmosphere */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-white font-medium">Atmospheric Depth</span>
-                <span className="text-[#E1D4C0] font-mono text-[11px]">
+                <span className="text-foreground font-medium">Atmospheric Depth</span>
+                <span className="text-primary font-mono text-[11px]">
                   {atmosphereVal > 50 ? "Warm Tungsten Haze" : "Crisp Minimal Studio"}
                 </span>
               </div>
@@ -277,9 +277,9 @@ export function VisualsTab({ campaign, onNavigateTab }: VisualsTabProps) {
                 max="100"
                 value={atmosphereVal}
                 onChange={(e) => setAtmosphereVal(Number(e.target.value))}
-                className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#E1D4C0]"
+                className="w-full h-1.5 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
               />
-              <div className="flex justify-between text-[9px] font-mono uppercase text-white/30">
+              <div className="flex justify-between text-[9px] font-mono uppercase text-muted-foreground/60">
                 <span>Clean Studio</span>
                 <span>Atmospheric</span>
               </div>
@@ -292,44 +292,44 @@ export function VisualsTab({ campaign, onNavigateTab }: VisualsTabProps) {
 
       {/* Advanced Optical & Physics Modal (Layer 3 Progressive Disclosure) */}
       {showAdvancedControls && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-150">
-          <div className="w-full max-w-2xl rounded-3xl bg-[#141416] border border-white/10 p-6 space-y-5 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-white/5 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md animate-in fade-in duration-150">
+          <div className="w-full max-w-2xl rounded-3xl bg-card border border-border p-6 space-y-5 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-border pb-3">
               <div className="flex items-center gap-2">
-                <Camera className="w-4 h-4 text-[#E1D4C0]" />
-                <h3 className="text-base font-serif text-white">Advanced Optical &amp; Physical Specifications</h3>
+                <Camera className="w-4 h-4 text-primary" />
+                <h3 className="text-base font-serif text-foreground">Advanced Optical &amp; Physical Specifications</h3>
               </div>
               <button
                 onClick={() => setShowAdvancedControls(false)}
-                className="p-1 rounded-lg text-white/40 hover:text-white hover:bg-white/5"
+                className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <div className="grid grid-cols-2 gap-4 text-xs">
-              <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
-                <span className="text-[10px] font-mono uppercase text-white/40">Sensor &amp; Lens Setup</span>
-                <p className="text-white">Full Frame 35mm &bull; 85mm Prime @ f/2.0</p>
+              <div className="p-3.5 rounded-xl bg-muted/40 border border-border space-y-1">
+                <span className="text-[10px] font-mono uppercase text-muted-foreground/70">Sensor &amp; Lens Setup</span>
+                <p className="text-foreground">Full Frame 35mm &bull; 85mm Prime @ f/2.0</p>
               </div>
-              <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
-                <span className="text-[10px] font-mono uppercase text-white/40">Textile Modulus</span>
-                <p className="text-emerald-400 font-mono">38.4 N/m (Banarasi Brocade Shearing)</p>
+              <div className="p-3.5 rounded-xl bg-muted/40 border border-border space-y-1">
+                <span className="text-[10px] font-mono uppercase text-muted-foreground/70">Textile Modulus</span>
+                <p className="text-emerald-500 dark:text-emerald-400 font-mono font-medium">38.4 N/m (Banarasi Brocade Shearing)</p>
               </div>
-              <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
-                <span className="text-[10px] font-mono uppercase text-white/40">Colorimetry</span>
-                <p className="text-white">Wide Gamut DCI-P3 calibrated for 300 DPI CMYK</p>
+              <div className="p-3.5 rounded-xl bg-muted/40 border border-border space-y-1">
+                <span className="text-[10px] font-mono uppercase text-muted-foreground/70">Colorimetry</span>
+                <p className="text-foreground">Wide Gamut DCI-P3 calibrated for 300 DPI CMYK</p>
               </div>
-              <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
-                <span className="text-[10px] font-mono uppercase text-white/40">Lighting Shader</span>
-                <p className="text-white">Warm Tungsten Key + Soft Fill Rim (2800K)</p>
+              <div className="p-3.5 rounded-xl bg-muted/40 border border-border space-y-1">
+                <span className="text-[10px] font-mono uppercase text-muted-foreground/70">Lighting Shader</span>
+                <p className="text-foreground">Warm Tungsten Key + Soft Fill Rim (2800K)</p>
               </div>
             </div>
 
             <div className="pt-2 flex justify-end">
               <button
                 onClick={() => setShowAdvancedControls(false)}
-                className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-medium"
+                className="px-4 py-2 rounded-xl bg-primary text-primary-foreground hover:opacity-90 text-xs font-medium shadow-sm"
               >
                 Close Specifications
               </button>

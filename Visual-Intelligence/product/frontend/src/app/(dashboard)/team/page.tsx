@@ -49,7 +49,7 @@ export default function TeamPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white/90 flex flex-col">
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
       
       {/* Slide-over Coworker Detail & Chat Drawer */}
       <CoworkerDrawer

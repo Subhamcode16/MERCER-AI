@@ -66,24 +66,24 @@ export default function ProjectsPage() {
   ];
 
   return (
-    <div className="h-full overflow-y-auto bg-[#0A0A0A] text-white/90 p-8 lg:p-12 scrollbar-thin scrollbar-thumb-white/10">
+    <div className="h-full overflow-y-auto bg-background text-foreground p-8 lg:p-12 scrollbar-thin">
       <div className="max-w-6xl mx-auto space-y-8">
         
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-white/5">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-border">
           <div>
             <div className="flex items-center gap-2">
-              <FolderKanban className="w-5 h-5 text-[#E1D4C0]" />
-              <h1 className="text-2xl font-serif text-white font-light">Creative Projects</h1>
+              <FolderKanban className="w-5 h-5 text-primary" />
+              <h1 className="text-2xl font-serif text-foreground font-light">Creative Projects</h1>
             </div>
-            <p className="text-xs text-white/50 font-light mt-1">
+            <p className="text-xs text-muted-foreground font-light mt-1">
               Track creative briefs, asset development pipelines, and multi-agent production workflows.
             </p>
           </div>
 
           <Link
             href="/studio"
-            className="px-4 py-2 rounded-xl bg-[#E1D4C0] text-[#0A0A0A] text-xs font-semibold hover:opacity-90 transition-opacity flex items-center gap-2"
+            className="px-4 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-semibold hover:opacity-90 transition-opacity flex items-center gap-2 shadow-sm"
           >
             <Plus className="w-4 h-4" /> New Creative Project
           </Link>
@@ -94,32 +94,32 @@ export default function ProjectsPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setFilter("all")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                filter === "all" ? "bg-white/10 text-white" : "text-white/40 hover:text-white"
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                filter === "all" ? "bg-primary text-primary-foreground font-semibold" : "bg-muted text-muted-foreground hover:text-foreground"
               }`}
             >
               All Projects
             </button>
             <button
               onClick={() => setFilter("active")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                filter === "active" ? "bg-white/10 text-white" : "text-white/40 hover:text-white"
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                filter === "active" ? "bg-primary text-primary-foreground font-semibold" : "bg-muted text-muted-foreground hover:text-foreground"
               }`}
             >
               Active
             </button>
             <button
               onClick={() => setFilter("review")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                filter === "review" ? "bg-white/10 text-white" : "text-white/40 hover:text-white"
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                filter === "review" ? "bg-primary text-primary-foreground font-semibold" : "bg-muted text-muted-foreground hover:text-foreground"
               }`}
             >
               In Review
             </button>
             <button
               onClick={() => setFilter("completed")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                filter === "completed" ? "bg-white/10 text-white" : "text-white/40 hover:text-white"
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                filter === "completed" ? "bg-primary text-primary-foreground font-semibold" : "bg-muted text-muted-foreground hover:text-foreground"
               }`}
             >
               Completed
@@ -127,11 +127,11 @@ export default function ProjectsPage() {
           </div>
 
           <div className="relative">
-            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
               placeholder="Search projects..."
-              className="pl-9 pr-4 py-1.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs text-white placeholder-white/30 outline-none focus:border-[#E1D4C0]"
+              className="pl-9 pr-4 py-1.5 rounded-xl bg-card border border-border text-xs text-foreground placeholder:text-muted-foreground outline-none focus:border-primary shadow-xs"
             />
           </div>
         </div>
@@ -141,35 +141,35 @@ export default function ProjectsPage() {
           {projects.map((p) => (
             <div 
               key={p.id}
-              className="rounded-2xl border border-white/10 bg-[#111111]/80 hover:bg-[#151515] p-6 space-y-4 transition-all duration-300 hover:border-[#E1D4C0]/40 flex flex-col justify-between"
+              className="rounded-2xl border border-border bg-card hover:border-primary/40 p-6 space-y-4 transition-all duration-300 flex flex-col justify-between shadow-sm"
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-[10px] font-mono text-[#E1D4C0]/80 uppercase tracking-wider">{p.category}</span>
-                  <span className={`px-2 py-0.5 rounded text-[9px] font-mono tracking-wider ${
-                    p.status === "In Review" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" :
-                    p.status === "Completed" ? "bg-blue-500/10 text-blue-400 border border-blue-500/20" :
-                    "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+                  <span className="text-[10px] font-mono text-primary uppercase tracking-wider font-semibold">{p.category}</span>
+                  <span className={`px-2 py-0.5 rounded text-[9px] font-mono tracking-wider font-medium ${
+                    p.status === "In Review" ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20" :
+                    p.status === "Completed" ? "bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/20" :
+                    "bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20"
                   }`}>
                     {p.status}
                   </span>
                 </div>
 
-                <h3 className="text-base font-medium text-white">{p.title}</h3>
+                <h3 className="text-base font-medium text-foreground">{p.title}</h3>
                 
                 {/* Progress bar */}
                 <div className="space-y-1">
-                  <div className="flex items-center justify-between text-[10px] text-white/40 font-mono">
+                  <div className="flex items-center justify-between text-[10px] text-muted-foreground font-mono">
                     <span>Progress</span>
-                    <span>{p.progress}%</span>
+                    <span className="text-foreground font-medium">{p.progress}%</span>
                   </div>
-                  <div className="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
-                    <div className="bg-gradient-to-r from-[#E1D4C0] to-[#C9B99A] h-full rounded-full" style={{ width: `${p.progress}%` }} />
+                  <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
+                    <div className="bg-primary h-full rounded-full" style={{ width: `${p.progress}%` }} />
                   </div>
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-white/5 flex items-center justify-between text-xs text-white/40">
+              <div className="pt-4 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
                 <div className="flex items-center gap-1.5">
                   <span className="text-[10px] font-mono">{p.assets} Assets</span>
                   <span>•</span>
@@ -178,7 +178,7 @@ export default function ProjectsPage() {
 
                 <Link 
                   href="/studio"
-                  className="text-[11px] text-[#E1D4C0] hover:underline flex items-center gap-1 font-medium"
+                  className="text-[11px] text-primary hover:underline flex items-center gap-1 font-medium"
                 >
                   Open Studio <ArrowRight className="w-3 h-3" />
                 </Link>

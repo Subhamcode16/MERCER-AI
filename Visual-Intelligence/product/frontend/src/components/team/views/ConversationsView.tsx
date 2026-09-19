@@ -80,23 +80,23 @@ export function ConversationsView({ coworkers }: ConversationsViewProps) {
     <div className="space-y-6 animate-in fade-in duration-200 max-w-5xl mx-auto">
       
       {/* Overview & Quick Mention Strip */}
-      <div className="p-5 rounded-2xl bg-[#111113]/80 border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 rounded-2xl bg-card border border-border flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
         <div className="space-y-0.5">
-          <h2 className="text-base font-serif text-white font-medium flex items-center gap-2">
-            <MessageSquare className="w-4 h-4 text-[#E1D4C0]" /> Team Conversations & Task Delegation
+          <h2 className="text-base font-serif text-foreground font-medium flex items-center gap-2">
+            <MessageSquare className="w-4 h-4 text-primary" /> Team Conversations & Task Delegation
           </h2>
-          <p className="text-xs text-white/50 font-light">
+          <p className="text-xs text-muted-foreground font-light">
             Communicate with your creative organization or address specific coworkers with targeted tasks.
           </p>
         </div>
 
         {/* Recipient Selector */}
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-mono text-white/40 uppercase">Direct to:</span>
+          <span className="text-[10px] font-mono text-muted-foreground uppercase">Direct to:</span>
           <select
             value={selectedRecipient}
             onChange={(e) => setSelectedRecipient(e.target.value)}
-            className="p-1.5 px-3 rounded-xl bg-white/[0.03] border border-white/10 text-xs text-white focus:outline-none focus:border-[#E1D4C0]/50 font-mono"
+            className="p-1.5 px-3 rounded-xl bg-background border border-border text-xs text-foreground focus:outline-none focus:border-primary/50 font-mono shadow-xs"
           >
             <option value="all">@Entire Creative Team</option>
             {coworkers.map((c) => (
@@ -108,7 +108,7 @@ export function ConversationsView({ coworkers }: ConversationsViewProps) {
 
       {/* Suggested Fast Prompts */}
       <div className="flex items-center gap-2 flex-wrap text-xs">
-        <span className="text-[10px] font-mono text-white/40 uppercase">Suggested Inquiries:</span>
+        <span className="text-[10px] font-mono text-muted-foreground uppercase">Suggested Inquiries:</span>
         {[
           "Ask @Marcus Vance why Direction 02 was chosen",
           "Ask @Aura Chen to verify Banarasi zari reflection angles",
@@ -118,7 +118,7 @@ export function ConversationsView({ coworkers }: ConversationsViewProps) {
           <button
             key={pIdx}
             onClick={() => handleSuggestionClick(prompt)}
-            className="px-3 py-1 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] text-white/70 hover:text-white border border-white/5 transition-colors text-[11px]"
+            className="px-3 py-1 rounded-xl bg-card hover:bg-muted text-muted-foreground hover:text-foreground border border-border transition-colors text-[11px] shadow-xs"
           >
             {prompt}
           </button>
@@ -126,10 +126,10 @@ export function ConversationsView({ coworkers }: ConversationsViewProps) {
       </div>
 
       {/* Messages Feed Container */}
-      <div className="p-6 rounded-2xl bg-[#111113]/90 border border-white/10 min-h-[420px] flex flex-col justify-between space-y-6">
+      <div className="p-6 rounded-2xl bg-card border border-border min-h-[420px] flex flex-col justify-between space-y-6 shadow-sm">
         
         {/* Messages Stream */}
-        <div className="space-y-4 overflow-y-auto max-h-[460px] pr-2 scrollbar-thin scrollbar-thumb-white/10">
+        <div className="space-y-4 overflow-y-auto max-h-[460px] pr-2 scrollbar-thin">
           {messages.map((msg) => {
             const isUser = msg.sender.isUser;
             return (
@@ -139,7 +139,7 @@ export function ConversationsView({ coworkers }: ConversationsViewProps) {
               >
                 {!isUser && (
                   <div 
-                    className="w-9 h-9 rounded-xl flex items-center justify-center font-serif text-xs font-semibold border border-black/60 shrink-0 mt-0.5"
+                    className="w-9 h-9 rounded-xl flex items-center justify-center font-serif text-xs font-semibold border border-border shrink-0 mt-0.5 shadow-xs"
                     style={{ backgroundColor: `${msg.sender.avatarColor}20`, color: msg.sender.avatarColor }}
                   >
                     {msg.sender.name[0]}
@@ -147,8 +147,8 @@ export function ConversationsView({ coworkers }: ConversationsViewProps) {
                 )}
 
                 <div className={`space-y-1 max-w-xl ${isUser ? 'items-end text-right' : 'items-start text-left'}`}>
-                  <div className="flex items-center gap-2 text-[10px] font-mono text-white/40">
-                    <span className="font-semibold text-white/80">{msg.sender.name}</span>
+                  <div className="flex items-center gap-2 text-[10px] font-mono text-muted-foreground">
+                    <span className="font-semibold text-foreground/90">{msg.sender.name}</span>
                     <span>&bull;</span>
                     <span>{msg.sender.role}</span>
                     <span>&bull;</span>
@@ -157,21 +157,21 @@ export function ConversationsView({ coworkers }: ConversationsViewProps) {
 
                   <div className={`p-4 rounded-2xl text-xs leading-relaxed ${
                     isUser
-                      ? 'bg-[#E1D4C0] text-[#0A0A0A] font-medium rounded-tr-none shadow-md'
-                      : 'bg-white/[0.03] text-white/90 border border-white/5 rounded-tl-none font-light'
+                      ? 'bg-primary text-primary-foreground font-medium rounded-tr-none shadow-md'
+                      : 'bg-muted/40 text-foreground border border-border rounded-tl-none font-light'
                   }`}>
                     {msg.text}
                   </div>
 
                   {msg.evidenceNote && (
-                    <div className="text-[10px] font-mono text-emerald-400/80 flex items-center gap-1 pt-0.5">
+                    <div className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400/80 flex items-center gap-1 pt-0.5">
                       <ShieldCheck className="w-3 h-3" /> {msg.evidenceNote}
                     </div>
                   )}
                 </div>
 
                 {isUser && (
-                  <div className="w-9 h-9 rounded-xl bg-amber-500/20 text-[#E1D4C0] border border-amber-500/30 flex items-center justify-center font-serif text-xs font-semibold shrink-0 mt-0.5">
+                  <div className="w-9 h-9 rounded-xl bg-primary/20 text-primary border border-primary/30 flex items-center justify-center font-serif text-xs font-semibold shrink-0 mt-0.5 shadow-xs">
                     EV
                   </div>
                 )}
@@ -181,17 +181,17 @@ export function ConversationsView({ coworkers }: ConversationsViewProps) {
         </div>
 
         {/* Input Bar */}
-        <form onSubmit={handleSend} className="pt-4 border-t border-white/5 flex items-center gap-3">
+        <form onSubmit={handleSend} className="pt-4 border-t border-border flex items-center gap-3">
           <input
             type="text"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             placeholder="Type a message or use @mention to direct specific tasks..."
-            className="flex-1 p-3 rounded-xl bg-white/[0.02] border border-white/10 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#E1D4C0]/50"
+            className="flex-1 p-3 rounded-xl bg-background border border-border text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 shadow-xs"
           />
           <button
             type="submit"
-            className="px-5 py-3 rounded-xl bg-[#E1D4C0] text-[#0A0A0A] font-semibold text-xs hover:opacity-90 transition-opacity flex items-center gap-2 shrink-0 shadow-lg"
+            className="px-5 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-xs hover:opacity-90 transition-opacity flex items-center gap-2 shrink-0 shadow-sm"
           >
             <span>Send</span>
             <Send className="w-3.5 h-3.5" />

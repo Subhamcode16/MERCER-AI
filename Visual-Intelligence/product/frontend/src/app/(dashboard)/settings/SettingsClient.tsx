@@ -18,20 +18,20 @@ export default function SettingsClient() {
   return (
     <div className="w-full">
       {/* Tabs Navigation */}
-      <div className="flex border-b border-white/10 mb-8 overflow-x-auto hide-scrollbar">
+      <div className="flex border-b border-border mb-8 overflow-x-auto hide-scrollbar">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`relative px-4 py-3 text-sm font-medium tracking-wide transition-colors whitespace-nowrap ${
-              activeTab === tab.id ? "text-[#E1D4C0]" : "text-white/40 hover:text-white/80"
+              activeTab === tab.id ? "text-primary font-semibold" : "text-muted-foreground hover:text-foreground"
             }`}
           >
             {tab.label}
             {activeTab === tab.id && (
               <motion.div
                 layoutId="activeTabIndicator"
-                className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#E1D4C0]"
+                className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
                 initial={false}
                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
               />

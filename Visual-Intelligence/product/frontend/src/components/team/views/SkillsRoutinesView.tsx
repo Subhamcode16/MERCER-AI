@@ -26,14 +26,14 @@ export function SkillsRoutinesView({ skills, routines }: SkillsRoutinesViewProps
     <div className="space-y-8 animate-in fade-in duration-200">
       
       {/* Overview & Governance Alert */}
-      <div className="p-6 rounded-2xl bg-[#111113]/80 border border-white/10 space-y-4">
+      <div className="p-6 rounded-2xl bg-card border border-border space-y-4 shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <Cpu className="w-5 h-5 text-[#E1D4C0]" />
-              <h2 className="text-lg font-serif text-white font-medium">Governed Skills & Automated Routines</h2>
+              <Cpu className="w-5 h-5 text-primary" />
+              <h2 className="text-lg font-serif text-foreground font-medium">Governed Skills & Automated Routines</h2>
             </div>
-            <p className="text-xs text-white/50 font-light">
+            <p className="text-xs text-muted-foreground font-light">
               Reusable computational capabilities and scheduled organizational cadences operated under strict human boundaries.
             </p>
           </div>
@@ -41,20 +41,20 @@ export function SkillsRoutinesView({ skills, routines }: SkillsRoutinesViewProps
           <div className="flex items-center gap-2">
             <button
               onClick={() => setActiveSection('skills')}
-              className={`px-4 py-2 rounded-xl text-xs font-mono transition-all border ${
+              className={`px-4 py-2 rounded-xl text-xs font-mono transition-all border shadow-xs ${
                 activeSection === 'skills'
-                  ? "bg-[#E1D4C0] text-[#0A0A0A] font-bold border-[#E1D4C0]"
-                  : "bg-white/[0.02] text-white/50 border-white/5 hover:text-white"
+                  ? "bg-primary text-primary-foreground font-bold border-primary"
+                  : "bg-muted/40 text-muted-foreground border-border hover:text-foreground hover:bg-muted"
               }`}
             >
               Governed Skills ({skills.length})
             </button>
             <button
               onClick={() => setActiveSection('routines')}
-              className={`px-4 py-2 rounded-xl text-xs font-mono transition-all border ${
+              className={`px-4 py-2 rounded-xl text-xs font-mono transition-all border shadow-xs ${
                 activeSection === 'routines'
-                  ? "bg-[#E1D4C0] text-[#0A0A0A] font-bold border-[#E1D4C0]"
-                  : "bg-white/[0.02] text-white/50 border-white/5 hover:text-white"
+                  ? "bg-primary text-primary-foreground font-bold border-primary"
+                  : "bg-muted/40 text-muted-foreground border-border hover:text-foreground hover:bg-muted"
               }`}
             >
               Automated Routines ({routines.length})
@@ -62,12 +62,12 @@ export function SkillsRoutinesView({ skills, routines }: SkillsRoutinesViewProps
           </div>
         </div>
 
-        <div className="p-3.5 rounded-xl bg-black/40 border border-white/5 flex items-center justify-between text-xs text-white/60">
+        <div className="p-3.5 rounded-xl bg-muted/30 border border-border flex items-center justify-between text-xs text-muted-foreground">
           <div className="flex items-center gap-2">
-            <Lock className="w-4 h-4 text-amber-400" />
-            <span>Invariants: <strong className="text-white">Skill &ne; Authority</strong> &bull; <strong className="text-white">Routine &ne; Execution Permission</strong></span>
+            <Lock className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+            <span>Invariants: <strong className="text-foreground">Skill &ne; Authority</strong> &bull; <strong className="text-foreground">Routine &ne; Execution Permission</strong></span>
           </div>
-          <span className="text-[10px] font-mono text-white/40">Zero Self-Authorization</span>
+          <span className="text-[10px] font-mono text-muted-foreground">Zero Self-Authorization</span>
         </div>
       </div>
 
@@ -77,21 +77,21 @@ export function SkillsRoutinesView({ skills, routines }: SkillsRoutinesViewProps
           {skills.map((skill) => (
             <div
               key={skill.id}
-              className="p-5 rounded-2xl bg-[#111113]/90 border border-white/10 space-y-4 hover:border-white/20 transition-all flex flex-col justify-between"
+              className="p-5 rounded-2xl bg-card border border-border space-y-4 hover:border-primary/40 transition-all flex flex-col justify-between shadow-sm"
             >
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-purple-300 bg-purple-500/10 border border-purple-500/20 px-2 py-0.5 rounded">
+                  <span className="text-[10px] font-mono text-purple-700 dark:text-purple-300 bg-purple-500/10 border border-purple-500/20 px-2 py-0.5 rounded font-medium">
                     {skill.category}
                   </span>
-                  <span className="text-[10px] font-mono text-white/40">{skill.version}</span>
+                  <span className="text-[10px] font-mono text-muted-foreground">{skill.version}</span>
                 </div>
-                <h3 className="text-sm font-medium text-white">{skill.name}</h3>
-                <p className="text-xs text-white/60 font-light leading-relaxed">{skill.governanceScope}</p>
+                <h3 className="text-sm font-medium text-foreground">{skill.name}</h3>
+                <p className="text-xs text-muted-foreground font-light leading-relaxed">{skill.governanceScope}</p>
               </div>
 
-              <div className="pt-3 border-t border-white/5 flex items-center justify-between text-[11px] font-mono text-white/40">
-                <span>Owner: <strong className="text-white/80">{skill.owner}</strong></span>
+              <div className="pt-3 border-t border-border flex items-center justify-between text-[11px] font-mono text-muted-foreground">
+                <span>Owner: <strong className="text-foreground/80">{skill.owner}</strong></span>
                 <span>{skill.usageCount} Operations Executed</span>
               </div>
             </div>
@@ -105,17 +105,17 @@ export function SkillsRoutinesView({ skills, routines }: SkillsRoutinesViewProps
           {routines.map((routine) => (
             <div
               key={routine.id}
-              className="p-5 rounded-2xl bg-[#111113]/90 border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-white/20 transition-all"
+              className="p-5 rounded-2xl bg-card border border-border flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-primary/40 transition-all shadow-sm"
             >
               <div className="space-y-1.5 max-w-xl">
                 <div className="flex items-center gap-2.5">
-                  <h3 className="text-sm font-medium text-white">{routine.name}</h3>
-                  <span className="px-2 py-0.5 rounded text-[9px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <h3 className="text-sm font-medium text-foreground">{routine.name}</h3>
+                  <span className="px-2 py-0.5 rounded text-[9px] font-mono bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 font-medium">
                     {routine.status.toUpperCase()}
                   </span>
                 </div>
-                <p className="text-xs text-white/60 font-light">{routine.purpose}</p>
-                <div className="flex items-center gap-3 text-[10px] font-mono text-white/40 pt-0.5">
+                <p className="text-xs text-muted-foreground font-light">{routine.purpose}</p>
+                <div className="flex items-center gap-3 text-[10px] font-mono text-muted-foreground pt-0.5">
                   <span>Trigger: {routine.triggerCadence}</span>
                   <span>•</span>
                   <span>Last Run: {routine.lastRun}</span>
@@ -125,7 +125,7 @@ export function SkillsRoutinesView({ skills, routines }: SkillsRoutinesViewProps
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono text-white/40 px-3 py-1.5 rounded-xl bg-white/[0.02] border border-white/5">
+                <span className="text-[10px] font-mono text-muted-foreground px-3 py-1.5 rounded-xl bg-muted border border-border">
                   Auto-Governed
                 </span>
               </div>

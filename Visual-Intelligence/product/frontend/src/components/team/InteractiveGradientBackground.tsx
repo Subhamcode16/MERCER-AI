@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import { useTheme } from "@/contexts/ThemeContext";
 
 export function InteractiveGradientBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouseRef = useRef({ x: 0, y: 0, targetX: 0, targetY: 0 });
+  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -22,27 +24,50 @@ export function InteractiveGradientBackground() {
     mouseRef.current.targetX = width / 2;
     mouseRef.current.targetY = height / 2;
 
-    // Soft colored blobs (Crimson, Deep Purple, Amber Gold)
-    const blobs = [
-      {
-        x: width * 0.3,
-        y: height * 0.4,
-        r: 450,
-        color: "rgba(124, 45, 18, 0.35)", // Crimson
-      },
-      {
-        x: width * 0.7,
-        y: height * 0.3,
-        r: 500,
-        color: "rgba(76, 29, 149, 0.3)", // Violet
-      },
-      {
-        x: width * 0.5,
-        y: height * 0.7,
-        r: 400,
-        color: "rgba(120, 53, 15, 0.25)", // Amber Gold
-      },
-    ];
+    const isLight = resolvedTheme === "light";
+
+    // Soft colored blobs adjusted for theme
+    const blobs = isLight
+      ? [
+          {
+            x: width * 0.3,
+            y: height * 0.4,
+            r: 480,
+            color: "rgba(225, 175, 120, 0.22)", // Warm Champagne / Amber
+          },
+          {
+            x: width * 0.7,
+            y: height * 0.3,
+            r: 520,
+            color: "rgba(180, 140, 210, 0.18)", // Muted Lilac
+          },
+          {
+            x: width * 0.5,
+            y: height * 0.7,
+            r: 420,
+            color: "rgba(235, 190, 160, 0.2)", // Soft Peach
+          },
+        ]
+      : [
+          {
+            x: width * 0.3,
+            y: height * 0.4,
+            r: 450,
+            color: "rgba(124, 45, 18, 0.35)", // Crimson
+          },
+          {
+            x: width * 0.7,
+            y: height * 0.3,
+            r: 500,
+            color: "rgba(76, 29, 149, 0.3)", // Violet
+          },
+          {
+            x: width * 0.5,
+            y: height * 0.7,
+            r: 400,
+            color: "rgba(120, 53, 15, 0.25)", // Amber Gold
+          },
+        ];
 
     const handleMouseMove = (e: MouseEvent) => {
       mouseRef.current.targetX = e.clientX;
@@ -62,7 +87,7 @@ export function InteractiveGradientBackground() {
       time += 0.003;
       
       // Paint background
-      ctx.fillStyle = "#050505";
+      ctx.fillStyle = isLight ? "#FBF9F5" : "#050505";
       ctx.fillRect(0, 0, width, height);
 
       // Smooth cursor spring physics
@@ -93,7 +118,7 @@ export function InteractiveGradientBackground() {
           blob.r
         );
         grad.addColorStop(0, blob.color);
-        grad.addColorStop(1, "rgba(5, 5, 5, 0)");
+        grad.addColorStop(1, isLight ? "rgba(251, 249, 245, 0)" : "rgba(5, 5, 5, 0)");
 
         ctx.fillStyle = grad;
         ctx.beginPath();
@@ -111,7 +136,8 @@ export function InteractiveGradientBackground() {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [resolvedTheme]);
+
 
   return (
     <canvas

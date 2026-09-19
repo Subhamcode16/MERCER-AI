@@ -33,9 +33,9 @@ export default function ProfileTab() {
       {/* Avatar Section */}
       <div className="flex items-center gap-6">
         <div className="relative group cursor-pointer">
-          <div className="w-24 h-24 rounded-full bg-[#111111] border border-white/10 flex items-center justify-center overflow-hidden">
+          <div className="w-24 h-24 rounded-full bg-card border border-border flex items-center justify-center overflow-hidden shadow-xs">
              {/* Initials Placeholder */}
-             <span className="text-3xl font-bold tracking-widest text-[#E1D4C0]">
+             <span className="text-3xl font-bold tracking-widest text-primary">
                {name.substring(0, 2).toUpperCase()}
              </span>
           </div>
@@ -44,18 +44,18 @@ export default function ProfileTab() {
           </div>
         </div>
         <div>
-          <h3 className="text-xl font-semibold text-white/90">Profile Picture</h3>
-          <p className="text-xs text-white/40 mt-1">PNG, JPG or GIF under 5MB.</p>
+          <h3 className="text-xl font-semibold text-foreground">Profile Picture</h3>
+          <p className="text-xs text-muted-foreground mt-1">PNG, JPG or GIF under 5MB.</p>
         </div>
       </div>
 
-      <div className="h-[1px] w-full bg-white/5" />
+      <div className="h-[1px] w-full bg-border" />
 
       {/* Form Fields */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl">
         {/* Full Name */}
         <div className="space-y-2">
-          <label className="text-xs font-medium text-white/60 tracking-wider uppercase flex items-center gap-2">
+          <label className="text-xs font-medium text-muted-foreground tracking-wider uppercase flex items-center gap-2">
             <User size={12} />
             Full Name
           </label>
@@ -63,14 +63,14 @@ export default function ProfileTab() {
             type="text" 
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full bg-[#111111] border border-white/10 rounded-lg px-4 py-3 text-sm text-white focus:outline-none focus:border-[#E1D4C0]/50 focus:ring-1 focus:ring-[#E1D4C0]/20 transition-all placeholder:text-white/20"
+            className="w-full bg-card border border-border rounded-lg px-4 py-3 text-sm text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all placeholder:text-muted-foreground/40 shadow-xs"
             placeholder="John Doe"
           />
         </div>
 
         {/* Email Address */}
         <div className="space-y-2">
-          <label className="text-xs font-medium text-white/60 tracking-wider uppercase flex items-center gap-2">
+          <label className="text-xs font-medium text-muted-foreground tracking-wider uppercase flex items-center gap-2">
             <Mail size={12} />
             Email Address
           </label>
@@ -78,20 +78,20 @@ export default function ProfileTab() {
             type="email" 
             value={user?.email || "user@example.com"}
             disabled
-            className="w-full bg-[#111111]/50 border border-white/5 rounded-lg px-4 py-3 text-sm text-white/50 cursor-not-allowed"
+            className="w-full bg-muted/50 border border-border rounded-lg px-4 py-3 text-sm text-muted-foreground cursor-not-allowed"
           />
-          <p className="text-[10px] text-white/30">Email cannot be changed directly.</p>
+          <p className="text-[10px] text-muted-foreground/70">Email cannot be changed directly.</p>
         </div>
 
         {/* Role */}
         <div className="space-y-2">
-          <label className="text-xs font-medium text-white/60 tracking-wider uppercase flex items-center gap-2">
+          <label className="text-xs font-medium text-muted-foreground tracking-wider uppercase flex items-center gap-2">
             <Shield size={12} />
             Account Role
           </label>
-          <div className="w-full bg-[#111111] border border-white/10 rounded-lg px-4 py-3 flex items-center justify-between">
-            <span className="text-sm text-white/80 capitalize">{profile?.role || "User"}</span>
-            <span className="text-[10px] bg-[#E1D4C0]/10 text-[#E1D4C0] px-2 py-0.5 rounded-full font-semibold tracking-wider">VERIFIED</span>
+          <div className="w-full bg-card border border-border rounded-lg px-4 py-3 flex items-center justify-between shadow-xs">
+            <span className="text-sm text-foreground capitalize">{profile?.role || "User"}</span>
+            <span className="text-[10px] bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-full font-semibold tracking-wider">VERIFIED</span>
           </div>
         </div>
       </div>
@@ -100,10 +100,10 @@ export default function ProfileTab() {
         <button 
           onClick={handleUpdate}
           disabled={isUpdating}
-          className="bg-[#E1D4C0] hover:bg-white text-black text-sm font-bold px-6 py-3 rounded-lg transition-all active:scale-[0.98] disabled:opacity-70 flex items-center justify-center min-w-[140px]"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-bold px-6 py-3 rounded-lg transition-all active:scale-[0.98] disabled:opacity-70 flex items-center justify-center min-w-[140px] shadow-sm"
         >
           {isUpdating ? (
-            <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-primary-foreground/20 border-t-primary-foreground rounded-full animate-spin" />
           ) : (
             "Save Changes"
           )}
