@@ -4,7 +4,8 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { apiFetch } from "@/lib/api";
 import { AuthSlider } from "@/components/AuthSlider";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, X, ArrowRight, Sparkles } from "lucide-react";
+import { useTactileAudio } from "@/components/dashboard/useTactileAudio";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -14,6 +15,7 @@ interface AuthModalProps {
 }
 
 export function AuthModal({ isOpen, onClose, initialView = "login", onSuccess }: AuthModalProps) {
+  const { playHoverSound, playFocusSound, playSubmitSound, playKeypressSound } = useTactileAudio();
   const [view, setView] = useState<"login" | "signup">(initialView);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,6 +29,7 @@ export function AuthModal({ isOpen, onClose, initialView = "login", onSuccess }:
   const [receiveMarketing, setReceiveMarketing] = useState(false);
 
   const handleSwitchView = (newView: "login" | "signup") => {
+    playHoverSound();
     setView(newView);
     setError(null);
     setSuccessMessage(null);
@@ -63,10 +66,9 @@ export function AuthModal({ isOpen, onClose, initialView = "login", onSuccess }:
             },
             body: JSON.stringify({ receive_marketing: receiveMarketing })
           });
+          playSubmitSound();
           onSuccess();
         } else {
-          // No session returned (means email verification is enabled by Supabase)
-          // Store preference so it's applied when they click the email link
           localStorage.setItem("atelier_pending_marketing", receiveMarketing ? "true" : "false");
           setSuccessMessage("Confirmation email sent! Please check your email to verify your account, then log in.");
           setView("login");
@@ -81,7 +83,6 @@ export function AuthModal({ isOpen, onClose, initialView = "login", onSuccess }:
 
         if (authError) throw authError;
 
-        // Call /auth/provision on successful login to ensure user is in MongoDB
         await apiFetch("/auth/provision", {
           method: "POST",
           headers: {
@@ -89,82 +90,97 @@ export function AuthModal({ isOpen, onClose, initialView = "login", onSuccess }:
           },
           body: JSON.stringify({ receive_marketing: receiveMarketing })
         });
+        playSubmitSound();
         onSuccess();
       }
-    } catch (err: any) {
-      setError(err.message || `An error occurred during ${view}`);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : `An error occurred during ${view}`;
+      setError(message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-8">
-      {/* Backdrop */}
+    <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-6 lg:p-8">
+      {/* Soft atmospheric backdrop */}
       <div 
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity animate-in fade-in duration-300"
         onClick={onClose}
       />
 
-      {/* Modal Container */}
-      <div className="w-full max-w-5xl h-[650px] bg-[#0c0c0c] border border-white/10 rounded-[24px] flex overflow-hidden shadow-2xl relative z-10 animate-in fade-in zoom-in-95 duration-200">
+      {/* Modal Container — Frosted Warm-Ivory Luxury OS Aesthetic */}
+      <div className="w-full max-w-5xl h-[660px] bg-[#faf8f5]/95 backdrop-blur-3xl border border-white/90 rounded-[28px] flex overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.22),inset_0_1.5px_2px_rgba(255,255,255,1)] relative z-10 animate-in fade-in zoom-in-95 duration-200">
         
-        {/* Left side: Image Slider */}
+        {/* Left side: Image Showcase Slider */}
         <AuthSlider />
 
-        {/* Right side: Form */}
-        <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-8 sm:p-12 overflow-y-auto">
-          <div className="w-full max-w-sm relative">
-            
-            {/* Close Button */}
-            <button 
-              onClick={onClose}
-              className="absolute -top-4 -right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white/50 hover:text-white transition-colors"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
+        {/* Right side: Editorial Form */}
+        <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-8 sm:p-12 overflow-y-auto relative">
+          
+          {/* Close Button */}
+          <button 
+            onClick={onClose}
+            aria-label="Close authentication modal"
+            className="absolute top-6 right-6 w-9 h-9 flex items-center justify-center rounded-full bg-black/[0.04] hover:bg-black/[0.08] border border-black/[0.06] text-[#0f1419]/60 hover:text-[#0f1419] transition-all duration-200 hover:scale-105"
+          >
+            <X className="w-4 h-4" />
+          </button>
 
-            <div className="mb-10 text-center mt-4">
-              <h2 className="text-3xl font-serif text-[#E1D4C0] mb-2">
-                {view === "login" ? "Welcome Back" : "Create Account"}
+          <div className="w-full max-w-sm">
+            
+            {/* Dual-Register Masthead */}
+            <div className="mb-8 text-left">
+              <h2 className="text-3xl font-sans font-extrabold text-[#0f1419] tracking-[-0.03em] leading-tight">
+                {view === "login" ? "Welcome Back," : "Create Account,"}
+                <span className="block font-serif italic text-xl sm:text-2xl font-semibold text-[#0f1419]/75 mt-0.5">
+                  {view === "login" ? "to the creative intelligence studio." : "join the brand operating system."}
+                </span>
               </h2>
-              <p className="text-zinc-500 text-sm">
-                {view === "login" ? "Enter the studio to resume your work." : "Join the creative intelligence engine."}
-              </p>
             </div>
 
             {successMessage && (
-              <div className="mb-6 p-4 border border-emerald-500/20 bg-emerald-500/10 text-emerald-400 text-sm rounded">
+              <div className="mb-5 p-3.5 border border-emerald-500/20 bg-emerald-500/10 text-emerald-800 text-xs font-medium rounded-xl">
                 {successMessage}
               </div>
             )}
 
             {error && (
-              <div className="mb-6 p-4 border border-red-500/20 bg-red-500/10 text-red-400 text-sm rounded">
+              <div className="mb-5 p-3.5 border border-red-500/20 bg-red-500/10 text-red-700 text-xs font-medium rounded-xl">
                 {error}
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-[11px] uppercase tracking-widest text-zinc-500 mb-1">Email</label>
+                <label className="block text-[10.5px] uppercase tracking-[0.16em] font-bold text-[#0f1419]/70 mb-1.5 font-sans">
+                  Work Email
+                </label>
                 <input 
                   type="email" 
                   name="email"
                   autoComplete="username"
                   required
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-transparent border-b border-white/10 py-2 text-[#E1D4C0] focus:outline-none focus:border-white/50 transition-colors text-sm"
-                  placeholder="designer@VYREN.space"
+                  onFocus={playFocusSound}
+                  onChange={(e) => {
+                    playKeypressSound();
+                    setEmail(e.target.value);
+                  }}
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/80 border border-black/[0.08] text-[#0f1419] placeholder:text-[#0f1419]/35 focus:outline-none focus:border-[#0f1419]/40 focus:bg-white focus:ring-1 focus:ring-black/10 transition-all duration-200 text-sm font-medium shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)]"
+                  placeholder="designer@vyren.ai"
                 />
               </div>
               
               <div>
-                <div className="flex items-center justify-between mb-1">
-                   <label className="block text-[11px] uppercase tracking-widest text-zinc-500">Password</label>
+                <div className="flex items-center justify-between mb-1.5">
+                   <label className="block text-[10.5px] uppercase tracking-[0.16em] font-bold text-[#0f1419]/70 font-sans">
+                     Password
+                   </label>
                    {view === "login" && (
-                     <a href="#" className="text-[11px] text-[#E1D4C0]/70 hover:text-[#E1D4C0] transition-colors">Recover Password?</a>
+                     <a href="#" className="text-[11px] text-[#0f1419]/60 hover:text-[#0f1419] font-medium transition-colors">
+                       Recover Password?
+                     </a>
                    )}
                 </div>
                 <div className="relative w-full">
@@ -174,14 +190,18 @@ export function AuthModal({ isOpen, onClose, initialView = "login", onSuccess }:
                     autoComplete={view === "login" ? "current-password" : "new-password"}
                     required
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-transparent border-b border-white/10 py-2 pr-10 text-[#E1D4C0] focus:outline-none focus:border-white/50 transition-colors text-sm"
-                    placeholder="••••••••"
+                    onFocus={playFocusSound}
+                    onChange={(e) => {
+                      playKeypressSound();
+                      setPassword(e.target.value);
+                    }}
+                    className="w-full px-4 py-2.5 pr-11 rounded-xl bg-white/80 border border-black/[0.08] text-[#0f1419] placeholder:text-[#0f1419]/35 focus:outline-none focus:border-[#0f1419]/40 focus:bg-white focus:ring-1 focus:ring-black/10 transition-all duration-200 text-sm font-medium shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)]"
+                    placeholder="••••••••••••"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors p-1"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#0f1419]/45 hover:text-[#0f1419] transition-colors p-1"
                   >
                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
@@ -190,7 +210,9 @@ export function AuthModal({ isOpen, onClose, initialView = "login", onSuccess }:
 
               {view === "signup" && (
                 <div>
-                  <label className="block text-[11px] uppercase tracking-widest text-zinc-500 mb-1">Confirm Password</label>
+                  <label className="block text-[10.5px] uppercase tracking-[0.16em] font-bold text-[#0f1419]/70 mb-1.5 font-sans">
+                    Confirm Password
+                  </label>
                   <div className="relative w-full">
                     <input 
                       type={showPassword ? "text" : "password"} 
@@ -198,14 +220,18 @@ export function AuthModal({ isOpen, onClose, initialView = "login", onSuccess }:
                       autoComplete="new-password"
                       required
                       value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full bg-transparent border-b border-white/10 py-2 pr-10 text-[#E1D4C0] focus:outline-none focus:border-white/50 transition-colors text-sm"
-                      placeholder="••••••••"
+                      onFocus={playFocusSound}
+                      onChange={(e) => {
+                        playKeypressSound();
+                        setConfirmPassword(e.target.value);
+                      }}
+                      className="w-full px-4 py-2.5 pr-11 rounded-xl bg-white/80 border border-black/[0.08] text-[#0f1419] placeholder:text-[#0f1419]/35 focus:outline-none focus:border-[#0f1419]/40 focus:bg-white focus:ring-1 focus:ring-black/10 transition-all duration-200 text-sm font-medium shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)]"
+                      placeholder="••••••••••••"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-0 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors p-1"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#0f1419]/45 hover:text-[#0f1419] transition-colors p-1"
                     >
                       {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                     </button>
@@ -214,17 +240,17 @@ export function AuthModal({ isOpen, onClose, initialView = "login", onSuccess }:
               )}
 
               {view === "signup" && (
-                <div className="pt-2 space-y-3">
+                <div className="pt-2 space-y-2.5">
                   <div className="flex items-start gap-2.5">
                     <input 
                       type="checkbox" 
                       id="acceptTerms"
                       checked={acceptTerms}
                       onChange={(e) => setAcceptTerms(e.target.checked)}
-                      className="w-4 h-4 mt-0.5 bg-transparent border-white/20 rounded-sm accent-[#E1D4C0] focus:ring-1 focus:ring-[#E1D4C0]/50 cursor-pointer"
+                      className="w-4 h-4 mt-0.5 bg-white border-black/20 rounded accent-[#0f1419] focus:ring-1 focus:ring-black/20 cursor-pointer"
                     />
-                    <label htmlFor="acceptTerms" className="text-[12px] text-zinc-400 cursor-pointer hover:text-zinc-300 transition-colors leading-snug">
-                      I accept the <a href="#" className="underline hover:text-[#E1D4C0]">Terms of Service</a> & <a href="#" className="underline hover:text-[#E1D4C0]">Privacy Policy</a>
+                    <label htmlFor="acceptTerms" className="text-[12px] text-[#0f1419]/70 cursor-pointer hover:text-[#0f1419] transition-colors leading-snug">
+                      I accept the <a href="#" className="underline font-semibold hover:text-black">Terms of Service</a> & <a href="#" className="underline font-semibold hover:text-black">Privacy Policy</a>
                     </label>
                   </div>
 
@@ -234,37 +260,26 @@ export function AuthModal({ isOpen, onClose, initialView = "login", onSuccess }:
                       id="receiveMarketing"
                       checked={receiveMarketing}
                       onChange={(e) => setReceiveMarketing(e.target.checked)}
-                      className="w-4 h-4 mt-0.5 bg-transparent border-white/20 rounded-sm accent-[#E1D4C0] focus:ring-1 focus:ring-[#E1D4C0]/50 cursor-pointer"
+                      className="w-4 h-4 mt-0.5 bg-white border-black/20 rounded accent-[#0f1419] focus:ring-1 focus:ring-black/20 cursor-pointer"
                     />
-                    <label htmlFor="receiveMarketing" className="text-[12px] text-zinc-400 cursor-pointer hover:text-zinc-300 transition-colors leading-snug">
-                      Send me creative updates, visual blueprints & newsletter (Optional)
+                    <label htmlFor="receiveMarketing" className="text-[12px] text-[#0f1419]/70 cursor-pointer hover:text-[#0f1419] transition-colors leading-snug">
+                      Send me creative updates & visual system releases (Optional)
                     </label>
                   </div>
-                  
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setAcceptTerms(true);
-                      setReceiveMarketing(true);
-                    }}
-                    className="text-[10px] text-[#E1D4C0]/70 hover:text-[#E1D4C0] transition-colors block text-left pt-1 font-semibold tracking-widest uppercase hover:underline"
-                  >
-                    ⚡ Accept & Agree to All Settings
-                  </button>
                 </div>
               )}
 
               {view === "login" && (
-                <div className="flex items-center gap-2 pt-2">
+                <div className="flex items-center gap-2 pt-1">
                   <input 
                     type="checkbox" 
                     id="rememberMe"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="w-4 h-4 bg-transparent border-white/20 rounded-sm accent-[#E1D4C0] focus:ring-1 focus:ring-[#E1D4C0]/50 cursor-pointer"
+                    className="w-4 h-4 bg-white border-black/20 rounded accent-[#0f1419] focus:ring-1 focus:ring-black/20 cursor-pointer"
                   />
-                  <label htmlFor="rememberMe" className="text-[13px] text-zinc-500 cursor-pointer hover:text-zinc-300 transition-colors">
-                    Remember me
+                  <label htmlFor="rememberMe" className="text-[12.5px] text-[#0f1419]/70 cursor-pointer hover:text-[#0f1419] transition-colors font-medium">
+                    Remember my workspace session
                   </label>
                 </div>
               )}
@@ -272,23 +287,25 @@ export function AuthModal({ isOpen, onClose, initialView = "login", onSuccess }:
               <button 
                 type="submit" 
                 disabled={loading || (view === "signup" && !acceptTerms)}
-                className="w-full py-3.5 mt-8 bg-[#E1D4C0] rounded-full text-black font-medium text-xs tracking-widest uppercase hover:bg-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                onMouseEnter={playHoverSound}
+                className="w-full py-3.5 mt-6 bg-[#0f1419] hover:bg-black rounded-full text-white font-bold text-xs tracking-widest uppercase transition-all duration-200 shadow-[0_4px_16px_rgba(0,0,0,0.15)] hover:scale-[1.01] hover:shadow-[0_6px_20px_rgba(0,0,0,0.2)] disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                {loading ? "Authenticating..." : (view === "login" ? "Log In" : "Sign Up")}
+                {loading ? "Authenticating..." : (view === "login" ? "Enter Studio" : "Create Account")}
+                {!loading && <ArrowRight className="w-3.5 h-3.5" />}
               </button>
             </form>
 
-            <div className="mt-8 flex items-center gap-4">
-              <div className="h-px bg-white/10 flex-1"></div>
-              <span className="text-[10px] uppercase tracking-widest text-zinc-600">OR</span>
-              <div className="h-px bg-white/10 flex-1"></div>
+            <div className="mt-7 flex items-center gap-4">
+              <div className="h-px bg-black/[0.08] flex-1"></div>
+              <span className="text-[9.5px] uppercase tracking-[0.2em] font-bold text-[#0f1419]/40">OR</span>
+              <div className="h-px bg-black/[0.08] flex-1"></div>
             </div>
 
-            <p className="mt-8 text-sm text-zinc-500 text-center">
+            <p className="mt-6 text-xs text-[#0f1419]/60 text-center font-medium">
               {view === "login" ? (
-                <>New to VYREN? <button onClick={() => handleSwitchView("signup")} className="text-[#E1D4C0] hover:underline">Create an account</button></>
+                <>New to VYREN? <button onClick={() => handleSwitchView("signup")} className="text-[#0f1419] font-bold hover:underline ml-1">Create an account</button></>
               ) : (
-                <>Already have an account? <button onClick={() => handleSwitchView("login")} className="text-[#E1D4C0] hover:underline">Log in</button></>
+                <>Already have an account? <button onClick={() => handleSwitchView("login")} className="text-[#0f1419] font-bold hover:underline ml-1">Log in</button></>
               )}
             </p>
           </div>

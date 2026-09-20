@@ -1,0 +1,240 @@
+.chapter-scrubber-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  position: relative;
+  user-select: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.chapter-scrubber-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+  position: relative;
+  min-height: 480px;
+  padding: 24px;
+}
+
+/* Vertical Tick Rail */
+.scrubber-rail {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  cursor: ns-resize;
+  padding: 12px 16px;
+  touch-action: none;
+  outline: none;
+}
+
+.scrubber-rail:focus-visible {
+  border-radius: 8px;
+  outline: 2px solid var(--accent, #102620);
+  outline-offset: 4px;
+}
+
+/* Individual Tick Line */
+.scrubber-tick {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
+  outline: none;
+  position: relative;
+  width: 64px;
+}
+
+.scrubber-tick-line {
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  background-color: currentColor;
+  transform-origin: left center;
+  transition: width 120ms cubic-bezier(0.2, 0, 0, 1),
+              height 120ms cubic-bezier(0.2, 0, 0, 1),
+              opacity 120ms ease,
+              background-color 150ms ease;
+  will-change: width, opacity;
+}
+
+.scrubber-tick:focus-visible .scrubber-tick-line {
+  box-shadow: 0 0 0 2px var(--accent, #102620);
+}
+
+/* Chapter marker dot/accent on tick */
+.scrubber-tick.has-chapter .scrubber-tick-line {
+  position: relative;
+}
+
+.scrubber-tick.is-active .scrubber-tick-line {
+  background-color: var(--ink, #111111);
+}
+
+/* Floating Chapter Tooltip Card */
+.scrubber-card-anchor {
+  position: relative;
+  width: 320px;
+  pointer-events: auto;
+}
+
+.scrubber-card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--line, rgba(0, 0, 0, 0.08));
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 150ms ease;
+  will-change: transform;
+  backdrop-filter: blur(12px);
+  box-sizing: border-box;
+}
+
+.scrubber-card-time {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted, #666666);
+  margin-bottom: 6px;
+  letter-spacing: 0.02em;
+}
+
+.scrubber-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--ink, #111111);
+  margin: 0 0 6px;
+  letter-spacing: -0.01em;
+}
+
+.scrubber-card-desc {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted, #666666);
+  margin: 0;
+}
+
+/* Screen reader announcement helper */
+.scrubber-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Interactive scrubber modal / standalone demo panel */
+.scrubber-demo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--bg, #fbfbfb);
+  border-radius: 20px;
+  padding: 32px 24px;
+  border: 1px solid var(--line, rgba(0, 0, 0, 0.08));
+  max-width: 580px;
+  margin: 0 auto;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.05);
+}
+
+.scrubber-demo-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.scrubber-demo-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 6px;
+  color: var(--ink, #111111);
+}
+
+.scrubber-demo-header p {
+  font-size: 13px;
+  color: var(--muted, #666666);
+  margin: 0;
+}
+
+.scrubber-demo-footer {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 440px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: var(--soft, rgba(0, 0, 0, 0.03));
+  border: 1px solid var(--line, rgba(0, 0, 0, 0.06));
+  font-size: 12px;
+  color: var(--muted, #666666);
+}
+
+.scrubber-demo-footer kbd {
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--line, rgba(0, 0, 0, 0.12));
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink, #111111);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+/* Floating Chapter Scrubber on workspace right edge */
+.workspace-chapter-scrubber {
+  position: fixed;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 15;
+  display: flex;
+  align-items: center;
+}
+
+.workspace-chapter-scrubber .chapter-scrubber-container {
+  padding: 8px 0;
+  min-height: auto;
+  gap: 16px;
+}
+
+/* Position card on left when scrubber is anchored to the right */
+.workspace-chapter-scrubber.card-left .chapter-scrubber-container {
+  flex-direction: row-reverse;
+}
+
+.workspace-chapter-scrubber.card-left .scrubber-card-anchor {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.workspace-chapter-scrubber.card-left .scrubber-card {
+  right: 0;
+  left: auto;
+}
+
+@media (max-width: 1100px) {
+  .workspace-chapter-scrubber {
+    display: none;
+  }
+}
+

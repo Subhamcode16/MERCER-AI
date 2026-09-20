@@ -1,35 +1,13 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { useState, createContext, useContext, useMemo } from "react";
+import { usePathname } from "next/navigation";
+import { useState, createContext, useMemo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { UserPopover } from "@/components/UserPopover";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { 
-  Home,
-  Fingerprint,
-  FolderKanban,
-  Target,
-  Palette,
-  Dna,
-  Box,
-  Search,
-  Brain,
-  Users,
-  Bell,
-  Settings,
-  Sparkles,
-  Compass,
-  Layers,
-  Archive,
-  BookOpen,
-  HelpCircle,
-  Activity,
-  LogIn
-} from "lucide-react";
+import { useTactileAudio } from "@/components/dashboard/useTactileAudio";
+import { LogIn, Volume2, VolumeX } from "lucide-react";
 
-// Sidebar context to allow children (like studio page) to toggle collapse state
 export const SidebarContext = createContext<{
   isInWorkspace: boolean;
   setIsInWorkspace: (val: boolean) => void;
@@ -40,169 +18,131 @@ export const SidebarContext = createContext<{
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const isWorkspace = pathname?.startsWith("/studio");
   const { session, profile, isLoading, logout, openAuthModal } = useAuth();
-  
+  const { isMuted, toggleMute, playHoverSound } = useTactileAudio();
   const [isInWorkspace, setIsInWorkspace] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
 
   const contextValue = useMemo(() => ({ isInWorkspace, setIsInWorkspace }), [isInWorkspace]);
 
-  const isCollapsed = isInWorkspace && !isHovered;
-
   if (isLoading) {
     return (
-      <div className="min-h-[100dvh] bg-background flex items-center justify-center">
-        <div className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground animate-pulse">Loading VYREN</div>
+      <div className="min-h-[100dvh] bg-[#87a8b8] flex items-center justify-center">
+        <div className="text-xs tracking-[0.25em] uppercase text-white/80 animate-pulse font-mono">
+          Loading VYREN...
+        </div>
       </div>
     );
   }
 
   return (
     <SidebarContext.Provider value={contextValue}>
-      <div className="flex h-screen overflow-hidden bg-background text-foreground font-sans font-light selection:bg-accent">
+      <div className={`flex flex-col h-screen overflow-hidden font-sans selection:bg-black selection:text-white ${isWorkspace ? "bg-[var(--paper)] text-[var(--ink)]" : "bg-[#87a8b8]"}`}>
         
-        {/* Architectural Navigation - Strict typography, 5-group hierarchy */}
-        <aside 
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          className={`flex flex-col shrink-0 py-7 border-r border-border/40 bg-card/95 backdrop-blur-md relative z-20 transition-all duration-300 ease-in-out shadow-sm ${
-            isCollapsed ? "w-[72px] px-3 items-center" : "w-[260px] pl-7 pr-5"
+        {/* Top Header Bar: Wordmark on very left, Auth & Audio on very right */}
+        <header 
+          className={`fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-8 py-3.5 pointer-events-auto transition-colors duration-200 animate-reveal-down ${
+            isWorkspace 
+              ? "bg-[var(--paper)]/92 backdrop-blur-xl border-b border-[var(--line)]/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)]" 
+              : "bg-gradient-to-b from-black/20 via-black/5 to-transparent"
           }`}
         >
           
-          {/* Brand Wordmark */}
-          <div className={`mb-7 transition-all duration-300 ${isCollapsed ? "text-center" : ""}`}>
-            <Link href="/home" className="font-serif text-2xl tracking-[0.1em] text-foreground hover:opacity-90 transition-opacity">
-              {isCollapsed ? "V" : "V Y R E N"}
+          {/* Very Left: Logomark on workspace page (/studio), Brand Wordmark on home page */}
+          {isWorkspace ? (
+            <Link 
+              href="/home" 
+              className="flex items-center gap-2.5 hover:opacity-85 transition-opacity"
+              title="VYREN Home"
+            >
+              <img 
+                src="/logo.png" 
+                alt="VYREN Logomark" 
+                className="h-9 w-auto object-contain rounded-md" 
+              />
             </Link>
-            {!isCollapsed && (
-              <div className="text-[8.5px] tracking-[0.25em] uppercase text-muted-foreground mt-1 font-medium transition-all duration-300">
+          ) : (
+            <div className="flex flex-col">
+              <Link 
+                href="/home" 
+                className="font-serif text-2xl tracking-[0.24em] text-white hover:opacity-90 transition-opacity drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)] font-semibold"
+              >
+                V Y R E N
+              </Link>
+              <span className="text-[9px] tracking-[0.32em] uppercase text-white/85 font-mono font-bold -mt-0.5 drop-shadow-[0_1px_4px_rgba(0,0,0,0.2)]">
                 Brand Intelligence OS
-              </div>
-            )}
-          </div>
+              </span>
+            </div>
+          )}
 
-          {/* Canonical 3-Group Minimalist Primary Navigation */}
-          <nav className="flex flex-col gap-5 flex-1 w-full overflow-y-auto scrollbar-none pr-1">
+          {/* Very Right: Workspace Actions, Audio Toggle & Auth Buttons */}
+          <div className="flex items-center gap-2.5">
             
-            {/* 1. ROOM */}
-            <div>
-              <div className="flex flex-col gap-1">
-                <NavLink href="/home" active={pathname === '/home' || pathname === '/' || pathname === '/room'} collapsed={isCollapsed} icon={Sparkles}>VYREN Room</NavLink>
-              </div>
-            </div>
+            {/* Slot for Workspace Action Buttons (moved up from workspace header) */}
+            <div id="top-header-workspace-actions" className="flex items-center gap-2" />
 
-            {/* 2. STUDIO */}
-            <div>
-              {!isCollapsed && (
-                <div className="text-[9px] tracking-[0.22em] uppercase text-muted-foreground mb-2 font-semibold px-2">Studio</div>
+            {/* Elegant Hairline Divider on Workspace */}
+            {isWorkspace && (
+              <div className="h-4 w-[1px] bg-[var(--line)] mx-1" aria-hidden="true" />
+            )}
+
+            {/* Audio Toggle Button - Taste Skill tactile treatment */}
+            <button
+              onClick={toggleMute}
+              onMouseEnter={playHoverSound}
+              title={isMuted ? "Unmute Sound" : "Mute Sound"}
+              aria-label={isMuted ? "Unmute Sound" : "Mute Sound"}
+              className={
+                isWorkspace
+                  ? "w-[34px] h-[34px] rounded-full flex items-center justify-center bg-[var(--surface)] border border-[var(--line)] text-[var(--ink)] shadow-[0_1px_2px_rgba(0,0,0,0.06)] hover:border-[var(--accent)] hover:text-[var(--accent)] hover:shadow transition-all focus:outline-none hover:-translate-y-0.5 active:translate-y-0"
+                  : "w-9 h-9 rounded-full flex items-center justify-center bg-white/25 hover:bg-white/40 border border-white/60 text-white backdrop-blur-xl shadow-[0_2px_8px_rgba(0,0,0,0.1)] hover:scale-105 transition-all focus:outline-none"
+              }
+            >
+              {isMuted ? (
+                <VolumeX className={isWorkspace ? "w-4 h-4 text-[var(--muted)]" : "w-4 h-4 text-white/70"} />
+              ) : (
+                <Volume2 className={isWorkspace ? "w-4 h-4 text-[var(--ink)]" : "w-4 h-4 text-white"} />
               )}
-              <div className="flex flex-col gap-1">
-                <NavLink href="/studio" active={pathname.includes('/studio')} collapsed={isCollapsed} icon={Palette}>Creative Studio</NavLink>
-                <NavLink href="/projects" active={pathname.includes('/projects')} collapsed={isCollapsed} icon={FolderKanban}>Projects</NavLink>
-                <NavLink href="/campaigns" active={pathname.includes('/campaigns') || pathname.includes('/attribution')} collapsed={isCollapsed} icon={Target}>Campaigns</NavLink>
-                <NavLink href="/team" active={pathname.includes('/team')} collapsed={isCollapsed} icon={Users}>AI Team</NavLink>
-              </div>
-            </div>
+            </button>
 
-            {/* 3. INTELLIGENCE & SYSTEM */}
-            <div>
-              {!isCollapsed && (
-                <div className="text-[9px] tracking-[0.22em] uppercase text-muted-foreground mb-2 font-semibold px-2">Intelligence</div>
-              )}
-              <div className="flex flex-col gap-1">
-                <NavLink href="/brand" active={pathname.includes('/brand')} collapsed={isCollapsed} icon={Fingerprint}>Brand Identity</NavLink>
-                <NavLink href="/visual-dna" active={pathname.includes('/visual-dna')} collapsed={isCollapsed} icon={Dna}>Visual DNA</NavLink>
-                <NavLink href="/assets" active={pathname.includes('/assets') || pathname.includes('/materials') || pathname.includes('/archive')} collapsed={isCollapsed} icon={Box}>Assets</NavLink>
-                <NavLink href="/activity" active={pathname.includes('/activity') || pathname.includes('/notifications')} collapsed={isCollapsed} icon={Activity}>Activity</NavLink>
-                <NavLink href="/settings" active={pathname.includes('/settings') || pathname.includes('/gateways') || pathname.includes('/faq')} collapsed={isCollapsed} icon={Settings}>Settings</NavLink>
-              </div>
-            </div>
-
-          </nav>
-
-          {/* Theme Switcher & User Status / Auth Footer */}
-          <div className="pt-4 mt-auto border-t border-border/40 relative w-full flex flex-col gap-3">
-            {/* Theme Toggle Pill */}
-            <div className={`flex ${isCollapsed ? "justify-center" : "justify-between items-center px-1"}`}>
-              {!isCollapsed && (
-                <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Theme</span>
-              )}
-              <ThemeToggle showLabel={!isCollapsed} />
-            </div>
-
+            {/* User Auth Controls */}
             {session && profile ? (
-              <UserPopover profile={profile} logout={logout} isCollapsed={isCollapsed} />
+              <UserPopover profile={profile} logout={logout} isCollapsed={false} />
             ) : (
-              <div className={`flex ${isCollapsed ? "justify-center" : "gap-2 px-1"}`}>
-                {isCollapsed ? (
-                  <button 
-                    onClick={() => openAuthModal("login")}
-                    title="Log In / Sign Up"
-                    className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                  >
-                    <LogIn className="w-4 h-4" />
-                  </button>
-                ) : (
-                  <>
-                    <button 
-                      onClick={() => openAuthModal("login")}
-                      className="flex-1 py-1.5 px-3 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors border border-border/50 text-center"
-                    >
-                      Log In
-                    </button>
-                    <button 
-                      onClick={() => openAuthModal("signup")}
-                      className="flex-1 py-1.5 px-3 rounded-lg text-xs font-medium bg-primary text-primary-foreground hover:opacity-90 transition-opacity text-center shadow-sm"
-                    >
-                      Sign Up
-                    </button>
-                  </>
-                )}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => openAuthModal("login")}
+                  onMouseEnter={playHoverSound}
+                  className={
+                    isWorkspace
+                      ? "h-[34px] px-3.5 rounded-full text-xs font-medium tracking-wide bg-[var(--surface)] text-[var(--ink)] border border-[var(--line)] hover:border-[var(--accent)] hover:bg-[var(--soft)] shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:shadow transition-all hover:-translate-y-0.5 active:translate-y-0"
+                      : "py-1.5 px-4.5 rounded-full text-xs font-semibold text-white hover:text-white bg-white/20 hover:bg-white/35 border border-white/60 backdrop-blur-xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:scale-105 transition-all"
+                  }
+                >
+                  Log In
+                </button>
+                <button
+                  onClick={() => openAuthModal("signup")}
+                  onMouseEnter={playHoverSound}
+                  className={
+                    isWorkspace
+                      ? "h-[34px] px-4 rounded-full text-xs font-semibold tracking-wide bg-[var(--accent)] text-[var(--accent-ink)] shadow-[0_2px_6px_rgba(0,0,0,0.18)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.28)] transition-all hover:-translate-y-0.5 active:translate-y-0"
+                      : "py-1.5 px-5 rounded-full text-xs font-bold bg-white text-[#0f1419] hover:bg-white/95 border border-white shadow-[0_4px_14px_rgba(0,0,0,0.15)] hover:scale-105 transition-all"
+                  }
+                >
+                  Sign Up
+                </button>
               </div>
             )}
           </div>
-        </aside>
+        </header>
 
-        {/* Main Workspace Surface */}
-        <main className="flex-1 h-full min-h-0 relative flex flex-col min-w-0 bg-background overflow-hidden">
+        {/* Main Workspace Viewport */}
+        <main className="flex-1 h-full min-h-0 relative flex flex-col min-w-0 overflow-hidden">
           {children}
         </main>
 
       </div>
     </SidebarContext.Provider>
-  );
-}
-
-function NavLink({ 
-  href, 
-  active, 
-  collapsed, 
-  icon: Icon, 
-  children 
-}: { 
-  href: string, 
-  active: boolean, 
-  collapsed?: boolean, 
-  icon: React.ComponentType<any>, 
-  children: React.ReactNode 
-}) {
-  return (
-    <Link 
-      href={href}
-      className={`text-[12.5px] tracking-wide transition-all duration-200 flex items-center rounded-lg ${
-        collapsed ? "justify-center p-2.5" : "gap-3 px-3 py-2"
-      } ${
-        active 
-          ? 'bg-primary text-primary-foreground font-semibold shadow-sm' 
-          : 'text-muted-foreground hover:bg-accent hover:text-foreground font-light'
-      }`}
-    >
-      <Icon className={`w-4 h-4 shrink-0 transition-transform duration-200 ${active ? "scale-105" : ""}`} />
-      
-      {!collapsed && (
-        <span className="truncate">{children}</span>
-      )}
-    </Link>
   );
 }
