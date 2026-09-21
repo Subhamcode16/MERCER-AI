@@ -38,13 +38,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <SidebarContext.Provider value={contextValue}>
-      <div className={`flex flex-col h-screen overflow-hidden font-sans selection:bg-black selection:text-white ${isWorkspace ? "bg-[var(--paper)] text-[var(--ink)]" : "bg-[#87a8b8]"}`}>
+      <div className={`flex flex-col h-screen overflow-hidden font-sans selection:bg-black selection:text-white ${isWorkspace ? "workspace-theme bg-[#f8f6f0] text-[#0f1419]" : "bg-[#87a8b8]"}`}>
         
         {/* Top Header Bar: Wordmark on very left, Auth & Audio on very right */}
         <header 
           className={`fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-8 py-3.5 pointer-events-auto transition-colors duration-200 animate-reveal-down ${
             isWorkspace 
-              ? "bg-[var(--paper)]/92 backdrop-blur-xl border-b border-[var(--line)]/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)]" 
+              ? "bg-[#f8f6f0]/95 backdrop-blur-xl border-b border-[#e3dfd4] shadow-[0_1px_3px_rgba(0,0,0,0.04)] text-[#0f1419]" 
               : "bg-gradient-to-b from-black/20 via-black/5 to-transparent"
           }`}
         >
@@ -117,6 +117,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {/* User Auth Controls */}
             {session && profile ? (
               <UserPopover profile={profile} logout={logout} isCollapsed={false} />
+            ) : isSettings ? (
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-[#e3dfd4] shadow-2xs">
+                <div className="w-5 h-5 rounded-full bg-[#1e3a34] text-white flex items-center justify-center text-[10px] font-bold font-mono">
+                  DJ
+                </div>
+                <span className="text-xs font-semibold text-[#0f1419] font-sans">Dr. Julian Mercer</span>
+              </div>
             ) : (
               <div className="flex items-center gap-2">
                 <button

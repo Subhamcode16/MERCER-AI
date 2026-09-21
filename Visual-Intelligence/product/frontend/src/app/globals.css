@@ -57,6 +57,33 @@ body {
   --input: rgba(255, 255, 255, 0.4);
   --ring: #ffffff;
   --accent-ivory: #ffffff;
+
+  /* Studio & Workspace Tokens */
+  --paper: #f8f6f0;
+  --surface: #ffffff;
+  --soft: #f0ebe1;
+  --ink: #0f1419;
+  --line: #e3dfd4;
+  --activity: #059669;
+}
+
+/* Workspace Theme Class */
+.workspace-theme {
+  --background: #f8f6f0;
+  --foreground: #0f1419;
+  --paper: #f8f6f0;
+  --surface: #ffffff;
+  --soft: #f0ebe1;
+  --ink: #0f1419;
+  --muted: #5e6d68;
+  --muted-foreground: #5e6d68;
+  --line: #e3dfd4;
+  --border: #e3dfd4;
+  --accent: #1e3a34;
+  --accent-ink: #ffffff;
+  --activity: #059669;
+  background-color: #f8f6f0 !important;
+  color: #0f1419 !important;
 }
 
 /* Authentic iOS 18 Liquid Glass Design System */

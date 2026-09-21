@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function SettingsPage() {
   return (
-    <div className="w-full h-full min-h-screen flex flex-col bg-[var(--paper)] text-[var(--ink)] overflow-y-auto pt-16">
+    <div className="w-full h-full min-h-screen flex flex-col workspace-theme bg-[#f8f6f0] text-[#0f1419] font-sans overflow-y-auto pt-16">
       <SettingsClient />
     </div>
   );
