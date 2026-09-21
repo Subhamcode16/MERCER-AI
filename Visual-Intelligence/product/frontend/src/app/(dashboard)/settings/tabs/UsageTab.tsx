@@ -1,107 +1,288 @@
 "use client";
 
-import React from "react";
-import { Activity, Clock, Zap } from "lucide-react";
+import React, { useState } from "react";
+import {
+  Activity,
+  Clock,
+  Zap,
+  TrendingUp,
+  RefreshCw,
+  Coins,
+  ShieldCheck,
+  CheckCircle2,
+  AlertCircle,
+  Filter,
+} from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTactileAudio } from "@/components/dashboard/useTactileAudio";
 
-// Mock data for the ledger
-const usageLog = [
-  { id: "gen_1", type: "Generation", model: "World I", cost: -1, date: "2026-07-25T14:22:00Z", status: "Success" },
-  { id: "gen_2", type: "Generation", model: "World II", cost: -2, date: "2026-07-24T09:15:00Z", status: "Success" },
-  { id: "refill", type: "Subscription", model: "Pro Plan", cost: "+1000", date: "2026-07-01T00:00:00Z", status: "Completed" },
-  { id: "gen_3", type: "Generation", model: "World I", cost: -1, date: "2026-06-29T18:45:00Z", status: "Success" },
-  { id: "gen_4", type: "Generation", model: "Character Concept", cost: -3, date: "2026-06-28T11:20:00Z", status: "Failed (Refunded)" },
+interface LedgerEvent {
+  id: string;
+  type: string;
+  model: string;
+  cost: number | string;
+  date: string;
+  status: "Success" | "Completed" | "Failed (Refunded)" | "Processing";
+}
+
+const usageLog: LedgerEvent[] = [
+  {
+    id: "gen_1",
+    type: "Generation",
+    model: "Banarasi Drape Physics // World I",
+    cost: -1,
+    date: "2026-07-25T14:22:00Z",
+    status: "Success",
+  },
+  {
+    id: "gen_2",
+    type: "Generation",
+    model: "Tungsten Lighting Array // World II",
+    cost: -2,
+    date: "2026-07-24T09:15:00Z",
+    status: "Success",
+  },
+  {
+    id: "refill_1",
+    type: "Subscription",
+    model: "Institutional Pro Plan Allocation",
+    cost: "+1000",
+    date: "2026-07-01T00:00:00Z",
+    status: "Completed",
+  },
+  {
+    id: "gen_3",
+    type: "Generation",
+    model: "Volumetric Lookbook Render",
+    cost: -1,
+    date: "2026-06-29T18:45:00Z",
+    status: "Success",
+  },
+  {
+    id: "gen_4",
+    type: "Generation",
+    model: "Character Concept Latent Walk",
+    cost: -3,
+    date: "2026-06-28T11:20:00Z",
+    status: "Failed (Refunded)",
+  },
 ];
 
 export default function UsageTab() {
   const { profile } = useAuth();
-  
-  // Real values from DB profile
+  const { playHoverSound, playFocusSound } = useTactileAudio();
+  const [filter, setFilter] = useState<"all" | "generation" | "subscription">("all");
+
   const maxCredits = profile?.max_credits || 1000;
-  const currentCredits = profile?.credit_balance !== undefined ? profile.credit_balance : 854;
-  
+  const currentCredits =
+    profile?.credit_balance !== undefined ? profile.credit_balance : 854;
+  const consumedCredits = maxCredits - currentCredits;
   const percentage = Math.round((currentCredits / maxCredits) * 100);
 
+  const filteredLogs = usageLog.filter((log) => {
+    if (filter === "generation") return log.type === "Generation";
+    if (filter === "subscription") return log.type === "Subscription";
+    return true;
+  });
+
   return (
-    <div className="space-y-10 animate-in fade-in duration-500">
-      
-      {/* Credit Summary Block */}
-      <div className="bg-card border border-border rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-8 shadow-xs">
-        <div>
-          <h2 className="text-4xl font-bold tracking-tight text-foreground flex items-baseline gap-2">
-            {currentCredits} <span className="text-base font-normal text-muted-foreground tracking-wide uppercase">Credits Remaining</span>
-          </h2>
-          <p className="text-sm text-muted-foreground mt-2">Your next billing cycle resets on August 1st, 2026.</p>
-        </div>
-        
-        <div className="w-full md:w-64 space-y-3">
-          <div className="flex justify-between text-xs font-medium text-muted-foreground">
-            <span>Usage</span>
-            <span>{maxCredits - currentCredits} / {maxCredits}</span>
+    <div className="space-y-8">
+      {/* Hero Metric Liquid Glass Card */}
+      <div className="rounded-3xl bg-white/70 backdrop-blur-2xl border border-white/80 p-6 sm:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.06),inset_0_1.5px_2px_rgba(255,255,255,0.95)]">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+          {/* Main Counter */}
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-slate-900/5 border border-slate-900/10 text-[10px] font-mono uppercase tracking-widest text-slate-700 font-bold">
+              <Coins size={11} className="text-amber-600" />
+              Live Ledger Balance
+            </div>
+            <div className="flex items-baseline gap-3">
+              <span className="font-serif text-5xl sm:text-6xl text-[#0f172a] font-normal tracking-tight">
+                {currentCredits}
+              </span>
+              <span className="text-sm font-semibold uppercase tracking-wider text-slate-600">
+                Credits Remaining
+              </span>
+            </div>
+            <p className="text-xs text-slate-600 font-light">
+              Automatic computational reset occurs on <strong className="text-slate-800">August 1st, 2026</strong>.
+            </p>
           </div>
-          <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-primary rounded-full transition-all duration-1000 ease-out"
-              style={{ width: `${100 - percentage}%` }}
-            />
+
+          {/* Linear Meter with Glow */}
+          <div className="w-full lg:w-80 space-y-3 p-4 rounded-2xl bg-white/60 border border-white/90 shadow-xs">
+            <div className="flex justify-between text-xs font-semibold text-slate-700">
+              <span className="flex items-center gap-1.5">
+                <TrendingUp size={13} className="text-emerald-700" />
+                Consumption Capacity
+              </span>
+              <span className="font-mono text-slate-900">{percentage}% Available</span>
+            </div>
+
+            <div className="h-2.5 w-full bg-slate-200/80 rounded-full overflow-hidden p-[1px]">
+              <div
+                className="h-full bg-gradient-to-r from-emerald-600 to-teal-600 rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(16,185,129,0.4)]"
+                style={{ width: `${percentage}%` }}
+              />
+            </div>
+
+            <div className="flex justify-between text-[11px] font-mono text-slate-500 pt-1">
+              <span>Used: {consumedCredits}</span>
+              <span>Total: {maxCredits}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* 3 Micro Stat Pillars */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 pt-6 border-t border-slate-200/80">
+          <div className="p-4 rounded-2xl bg-white/50 border border-white/80">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-bold">
+              Base Limit
+            </span>
+            <p className="font-serif text-2xl text-[#0f172a] font-medium mt-1">
+              {maxCredits.toLocaleString()} <span className="text-xs font-sans text-slate-600 font-normal">credits</span>
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-white/50 border border-white/80">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-bold">
+              Average Cost / Gen
+            </span>
+            <p className="font-serif text-2xl text-[#0f172a] font-medium mt-1">
+              1.4 <span className="text-xs font-sans text-slate-600 font-normal">units</span>
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-white/50 border border-white/80">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-bold">
+              Compute Node Status
+            </span>
+            <div className="flex items-center gap-2 mt-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-600" />
+              <span className="text-xs font-semibold text-emerald-800">
+                100% Operational
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Consumption Ledger */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-2 mb-2">
-          <Activity size={16} className="text-primary" />
-          <h3 className="text-lg font-semibold text-foreground">Activity Ledger</h3>
-        </div>
-        
-        <div className="border border-border rounded-xl overflow-hidden bg-card shadow-xs">
-          <div className="grid grid-cols-12 gap-4 p-4 border-b border-border text-xs font-semibold tracking-wider text-muted-foreground uppercase bg-muted/50">
-            <div className="col-span-5 md:col-span-4">Event</div>
-            <div className="col-span-4 hidden md:block">Date</div>
-            <div className="col-span-4 md:col-span-2">Status</div>
-            <div className="col-span-3 md:col-span-2 text-right">Credits</div>
+      {/* Activity Ledger Table Card */}
+      <div className="rounded-3xl bg-white/70 backdrop-blur-2xl border border-white/80 p-6 sm:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.06),inset_0_1.5px_2px_rgba(255,255,255,0.95)] space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-slate-900 text-white shadow-xs">
+              <Activity size={16} />
+            </div>
+            <div>
+              <h3 className="font-serif text-xl text-[#0f172a] font-medium">
+                Activity &amp; Consensus Ledger
+              </h3>
+              <p className="text-xs text-slate-600 font-light">
+                Cryptographic record of neural inference and monthly allocations.
+              </p>
+            </div>
           </div>
-          
-          <div className="divide-y divide-border">
-            {usageLog.map((log) => (
-              <div key={log.id} className="grid grid-cols-12 gap-4 p-4 items-center hover:bg-muted/30 transition-colors">
-                <div className="col-span-5 md:col-span-4 flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${log.type === 'Subscription' ? 'bg-primary/10 text-primary' : 'bg-muted text-foreground'}`}>
-                    {log.type === 'Subscription' ? <Zap size={14} /> : <Activity size={14} />}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium text-foreground truncate">{log.type}</p>
-                    <p className="text-xs text-muted-foreground truncate">{log.model}</p>
-                  </div>
-                </div>
-                
-                <div className="col-span-4 hidden md:flex items-center gap-2 text-sm text-muted-foreground">
-                  <Clock size={12} />
-                  {new Date(log.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                </div>
-                
-                <div className="col-span-4 md:col-span-2">
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium tracking-wide ${
-                    log.status === 'Success' || log.status === 'Completed' 
-                      ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' 
-                      : 'bg-muted text-muted-foreground border border-border'
-                  }`}>
-                    {log.status}
-                  </span>
-                </div>
-                
-                <div className="col-span-3 md:col-span-2 text-right">
-                  <span className={`text-sm font-bold ${log.cost.toString().startsWith('+') ? 'text-primary' : 'text-foreground'}`}>
-                    {log.cost}
-                  </span>
-                </div>
-              </div>
+
+          {/* Filter Pills */}
+          <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-white/80 border border-slate-200 shadow-xs self-start sm:self-center text-xs">
+            {(["all", "generation", "subscription"] as const).map((mode) => (
+              <button
+                key={mode}
+                onClick={() => {
+                  playFocusSound();
+                  setFilter(mode);
+                }}
+                onMouseEnter={playHoverSound}
+                className={`px-3 py-1.5 rounded-lg font-medium capitalize transition-all ${
+                  filter === mode
+                    ? "bg-[#0f172a] text-white shadow-xs font-semibold"
+                    : "text-slate-600 hover:text-[#0f172a]"
+                }`}
+              >
+                {mode === "all" ? "All Logs" : mode + "s"}
+              </button>
             ))}
           </div>
         </div>
+
+        {/* Ledger Entries */}
+        <div className="rounded-2xl border border-slate-200/90 overflow-hidden bg-white/80 shadow-xs">
+          <div className="grid grid-cols-12 gap-4 px-5 py-3.5 border-b border-slate-200 bg-slate-100/70 text-[10px] font-mono font-bold tracking-widest text-slate-600 uppercase">
+            <div className="col-span-5 md:col-span-5">Event &amp; Workflow</div>
+            <div className="col-span-3 md:col-span-3 hidden sm:block">Timestamp</div>
+            <div className="col-span-4 md:col-span-2">Verification</div>
+            <div className="col-span-3 md:col-span-2 text-right">Debit / Credit</div>
+          </div>
+
+          <div className="divide-y divide-slate-200/70">
+            {filteredLogs.map((log) => {
+              const isRefill = String(log.cost).startsWith("+");
+              return (
+                <div
+                  key={log.id}
+                  className="grid grid-cols-12 gap-4 px-5 py-4 items-center hover:bg-slate-50/80 transition-colors"
+                >
+                  <div className="col-span-5 md:col-span-5 flex items-center gap-3">
+                    <div
+                      className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-xs ${
+                        isRefill
+                          ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
+                          : "bg-slate-100 text-slate-800 border border-slate-200"
+                      }`}
+                    >
+                      {isRefill ? <Zap size={15} /> : <Activity size={15} />}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs sm:text-sm font-semibold text-[#0f172a] truncate">
+                        {log.type}
+                      </p>
+                      <p className="text-xs text-slate-600 truncate font-light">
+                        {log.model}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="col-span-3 md:col-span-3 hidden sm:flex items-center gap-1.5 text-xs text-slate-600 font-mono">
+                    <Clock size={12} className="text-slate-400" />
+                    {new Date(log.date).toLocaleDateString(undefined, {
+                      month: "short",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </div>
+
+                  <div className="col-span-4 md:col-span-2">
+                    <span
+                      className={`inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full font-mono font-bold uppercase tracking-wider ${
+                        log.status === "Success" || log.status === "Completed"
+                          ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
+                          : "bg-slate-100 text-slate-700 border border-slate-200"
+                      }`}
+                    >
+                      {log.status === "Success" && <CheckCircle2 size={10} />}
+                      {log.status === "Completed" && <CheckCircle2 size={10} />}
+                      {log.status.includes("Refunded") && <AlertCircle size={10} />}
+                      {log.status}
+                    </span>
+                  </div>
+
+                  <div className="col-span-3 md:col-span-2 text-right">
+                    <span
+                      className={`font-mono text-xs sm:text-sm font-bold ${
+                        isRefill ? "text-emerald-700 font-extrabold" : "text-slate-800"
+                      }`}
+                    >
+                      {log.cost}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
-      
     </div>
   );
 }
