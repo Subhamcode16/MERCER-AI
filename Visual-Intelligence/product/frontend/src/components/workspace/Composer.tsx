@@ -134,6 +134,7 @@ export function Composer({
     caretAnchor = useRef<HTMLSpanElement>(null),
     picker = useRef<HTMLInputElement>(null),
     popup = useRef<HTMLDivElement>(null),
+    suggestionListRef = useRef<HTMLDivElement>(null),
     triggers = useRef<Record<string, HTMLButtonElement | null>>({}),
     recognition = useRef<Recognition | null>(null),
     audio = useRef<{ stream: MediaStream; context: AudioContext } | null>(null),
@@ -242,19 +243,39 @@ export function Composer({
       document.removeEventListener("keydown", key);
     };
   }, [open]);
+
   function toggle(type: typeof open) {
     setOpen((old) => (old === type ? null : type));
   }
+
+  const safeIndex = candidates.length
+    ? ((suggestionIndex % candidates.length) + candidates.length) % candidates.length
+    : 0;
+
+  useEffect(() => {
+    if (!candidates.length) return;
+    const activeBtn = suggestionListRef.current?.querySelector<HTMLButtonElement>(
+      'button[aria-selected="true"]',
+    );
+    activeBtn?.scrollIntoView({ block: "nearest" });
+  }, [safeIndex, candidates.length]);
+
   function chooseSuggestion(index: number) {
-    const item = candidates[index];
-    if (!item || !suggestionType) return;
+    if (!candidates.length || !suggestionType) return;
+    const safeIdx =
+      ((index % candidates.length) + candidates.length) % candidates.length;
+    const item = candidates[safeIdx];
+    if (!item) return;
     const trigger = suggestionType === "mention" ? "@" : "/",
-      start = before.lastIndexOf(trigger),
-      token = trigger + item.name,
+      beforeText = draft.slice(0, selection),
+      start = beforeText.lastIndexOf(trigger);
+    if (start === -1) return;
+    const token = trigger + item.name,
       text = draft.slice(0, start) + token + " " + draft.slice(selection),
       cursor = start + token.length + 1;
     onDraft(text);
     setSuggestionDismissed(true);
+    setSuggestionIndex(0);
     requestAnimationFrame(() => {
       input.current?.focus();
       input.current?.setSelectionRange(cursor, cursor);
@@ -263,19 +284,24 @@ export function Composer({
   }
   function onKey(e: KeyboardEvent<HTMLTextAreaElement>) {
     if (
-      candidates.length &&
+      candidates.length > 0 &&
       ["ArrowDown", "ArrowUp", "Enter", "Tab", "Escape"].includes(e.key)
     ) {
       e.preventDefault();
-      if (e.key === "Escape") setSuggestionDismissed(true);
-      else if (e.key === "Enter" || e.key === "Tab")
-        chooseSuggestion(suggestionIndex % candidates.length);
-      else
+      e.stopPropagation();
+      if (e.key === "Escape") {
+        setSuggestionDismissed(true);
+      } else if (e.key === "Enter" || e.key === "Tab") {
+        chooseSuggestion(safeIndex);
+      } else if (e.key === "ArrowDown") {
         setSuggestionIndex(
-          (i) =>
-            (i + (e.key === "ArrowDown" ? 1 : candidates.length - 1)) %
-            candidates.length,
+          (prev) => (prev + 1) % candidates.length,
         );
+      } else if (e.key === "ArrowUp") {
+        setSuggestionIndex(
+          (prev) => (prev - 1 + candidates.length) % candidates.length,
+        );
+      }
       return;
     }
     if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
@@ -588,6 +614,7 @@ export function Composer({
         )}
         {candidates.length > 0 && !listening && (
           <div
+            ref={suggestionListRef}
             className="suggestion-list"
             style={suggestionPosition}
             role="listbox"
@@ -602,7 +629,7 @@ export function Composer({
                 key={item.id}
                 type="button"
                 role="option"
-                aria-selected={i === suggestionIndex % candidates.length}
+                aria-selected={i === safeIndex}
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => chooseSuggestion(i)}
               >
@@ -708,6 +735,12 @@ export function Composer({
                 setSuggestionIndex(0);
               }}
               onSelect={(e) => setSelection(e.currentTarget.selectionStart)}
+              onClick={(e) => setSelection(e.currentTarget.selectionStart)}
+              onKeyUp={(e) => {
+                if (!["ArrowDown", "ArrowUp", "Enter", "Tab", "Escape"].includes(e.key)) {
+                  setSelection(e.currentTarget.selectionStart);
+                }
+              }}
               onKeyDown={onKey}
             />
           </div>
