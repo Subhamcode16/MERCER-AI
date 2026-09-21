@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import type { CSSProperties } from "react";
 import { useWorkspace } from "./useWorkspace";
@@ -21,6 +22,7 @@ import { Modal } from "./Modal";
 import { ChapterScrubber, ChapterScrubberDemo, getThreadChapters } from "./ChapterScrubber";
 
 export function VyrenWorkspace() {
+  const router = useRouter();
   const workspace = useWorkspace(),
     { state, dispatch } = workspace,
     theme = useTheme();
@@ -282,14 +284,20 @@ export function VyrenWorkspace() {
       <MouseTrails />
       <RadialMenu
         onAction={(id) => {
-          if (id === "appearance") setThemesOpen(true);
-          if (id === "workforce") newAssistant(false);
-          if (id === "groups")
+          if (id === "home") router.push("/home");
+          else if (id === "studio") router.push("/studio");
+          else if (id === "metrics") router.push("/activity");
+          else if (id === "kanban") router.push("/campaigns");
+          else if (id === "assets") router.push("/assets");
+          else if (id === "settings") router.push("/settings");
+          else if (id === "appearance") setThemesOpen(true);
+          else if (id === "workforce") newAssistant(false);
+          else if (id === "groups")
             setGroupDialog(
               thread.memberIds && !isBusy(thread.state) ? thread.id : "new",
             );
-          if (id === "projects") setProjectDialog(true);
-          if (id === "workspace" || id === "shortcuts") setQuickPanel(id);
+          else if (id === "projects") setProjectDialog(true);
+          else if (id === "workspace" || id === "shortcuts") setQuickPanel(id);
         }}
       />
       {themesOpen && (

@@ -1139,15 +1139,25 @@ dialog .dialogfoot .danger-action {
   stroke-width: 1.7;
 }
 .radial-settings-modal {
-  width: min(410px, calc(100vw - 28px)) !important;
+  width: min(430px, calc(100vw - 28px)) !important;
 }
 .radial-settings-intro {
-  margin: 0 0 15px;
+  margin: 0 0 10px;
   font-size: 11px !important;
 }
 .radial-settings-body {
   display: grid;
   gap: 14px;
+  max-height: min(65vh, 520px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.radial-settings-body::-webkit-scrollbar {
+  width: 4px;
+}
+.radial-settings-body::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 4px;
 }
 .radial-range {
   display: grid;
@@ -1171,7 +1181,7 @@ dialog .dialogfoot .danger-action {
 .radial-action-options {
   display: grid;
   gap: 2px;
-  margin: 2px 0 0;
+  margin: 4px 0 0;
   padding: 0;
   border: 0;
 }
@@ -1179,7 +1189,7 @@ dialog .dialogfoot .danger-action {
   margin-bottom: 6px;
   color: var(--muted);
   font-size: 10px;
-  font-weight: 650;
+  font-weight: 700;
   letter-spacing: 0.055em;
   text-transform: uppercase;
 }

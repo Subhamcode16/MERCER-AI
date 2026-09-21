@@ -295,14 +295,20 @@ export function App() {
       <MouseTrails />
       <RadialMenu
         onAction={(id) => {
-          if (id === "appearance") setThemesOpen(true);
-          if (id === "workforce") newAssistant(false);
-          if (id === "groups")
+          if (id === "home") window.location.href = "/home";
+          else if (id === "studio") window.location.href = "/studio";
+          else if (id === "metrics") window.location.href = "/activity";
+          else if (id === "kanban") window.location.href = "/campaigns";
+          else if (id === "assets") window.location.href = "/assets";
+          else if (id === "settings") window.location.href = "/settings";
+          else if (id === "appearance") setThemesOpen(true);
+          else if (id === "workforce") newAssistant(false);
+          else if (id === "groups")
             setGroupDialog(
               thread.memberIds && !isBusy(thread.state) ? thread.id : "new",
             );
-          if (id === "projects") setProjectDialog(true);
-          if (id === "workspace" || id === "shortcuts") setQuickPanel(id);
+          else if (id === "projects") setProjectDialog(true);
+          else if (id === "workspace" || id === "shortcuts") setQuickPanel(id);
         }}
       />
       {themesOpen && (

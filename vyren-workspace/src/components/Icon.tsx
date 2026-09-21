@@ -31,6 +31,11 @@ const paths = {
   scrubber: "M4 6h16M4 12h10M4 18h14",
   settings:
     "M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm8 3 2-1-2-4-2 .5-2-1L15 3h-6L8 7.5l-2 1L4 7l-2 4 2 1-2 1 2 4 2-1.5 2 1L9 21h6l1-4.5 2-1 2 1.5 2-4-2-1Z",
+  home: "M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1V9.5Z",
+  metrics: "M18 20V10M12 20V4M6 20v-6",
+  kanban: "M4 4h4v16H4zm6 0h4v16h-4zm6 0h4v16h-4z",
+  assets: "M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z",
+  grid: "M3 3h7v7H3zm11 0h7v7h-7zm0 11h7v7h-7zm-11 0h7v7H3z",
 };
 export type IconName = keyof typeof paths;
 export function Icon({
