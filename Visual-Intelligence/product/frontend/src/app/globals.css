@@ -493,15 +493,37 @@ body {
   align-items: center;
   gap: 9px;
   text-align: left;
-  padding: 7px 8px !important;
-  color: #0f172a;
-  border-radius: 10px !important;
+  padding: 7px 10px !important;
+  color: var(--ink, #0f172a);
+  border-radius: 9px !important;
   background: transparent;
+  border: 0 !important;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 120ms ease, transform 120ms ease;
 }
 
-.suggestion-list button[aria-selected="true"],
 .suggestion-list button:hover {
-  background: rgba(241, 245, 249, 0.9);
+  background: color-mix(in srgb, var(--ink, #0f172a) 6%, transparent) !important;
+}
+
+.suggestion-list button[aria-selected="true"] {
+  background: color-mix(in srgb, var(--accent, #245e54) 15%, var(--soft, #e2eae6)) !important;
+  box-shadow: inset 3px 0 0 var(--accent, #245e54) !important;
+  transform: translateX(2px);
+}
+
+.suggestion-list button[aria-selected="true"] strong {
+  color: var(--ink, #0f172a) !important;
+  font-weight: 700 !important;
+}
+
+.suggestion-list button[aria-selected="true"] kbd {
+  opacity: 1 !important;
+  background: var(--accent, #245e54) !important;
+  color: var(--accent-ink, #ffffff) !important;
+  border-color: transparent !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15) !important;
 }
 
 .suggestion-list button > span:nth-child(2) {
@@ -514,12 +536,12 @@ body {
 .suggestion-list strong {
   font-size: 13px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--ink, #0f172a);
 }
 
 .suggestion-list small {
   font-size: 11px;
-  color: #64748b;
+  color: var(--muted, #64748b);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -540,17 +562,20 @@ body {
 }
 
 .suggestion-icon {
-  background: rgba(241, 245, 249, 0.9);
-  color: #0f172a;
+  background: var(--soft, rgba(241, 245, 249, 0.9));
+  color: var(--ink, #0f172a);
 }
 
 .suggestion-list kbd {
   font: 10px monospace;
-  color: #64748b;
-  border: 1px solid #e2e8f0;
+  color: var(--muted, #64748b);
+  border: 0 !important;
+  background: color-mix(in srgb, var(--ink, #0f172a) 8%, transparent);
   border-radius: 6px;
-  padding: 2px 5px;
+  padding: 2px 6px;
   margin-left: auto;
+  opacity: 0.45;
+  transition: all 120ms ease;
 }
 
 .attachment-chips {

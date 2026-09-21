@@ -958,18 +958,33 @@ dialog .dialogfoot .danger-action {
   align-items: center;
   gap: 9px;
   text-align: left;
-  padding: 7px 8px !important;
+  padding: 7px 10px !important;
   color: var(--ink);
   background: transparent;
-  border: 1px solid transparent;
-  border-radius: 10px !important;
+  border: 0 !important;
+  border-radius: 9px !important;
   cursor: pointer;
-  transition: all 140ms ease;
+  position: relative;
+  transition: background-color 120ms ease, transform 120ms ease;
 }
-.suggestion-list button:hover,
+.suggestion-list button:hover {
+  background: color-mix(in srgb, var(--ink) 6%, transparent) !important;
+}
 .suggestion-list button[aria-selected="true"] {
-  background: var(--soft);
-  border-color: var(--line);
+  background: color-mix(in srgb, var(--accent) 15%, var(--soft, #e2eae6)) !important;
+  box-shadow: inset 3px 0 0 var(--accent) !important;
+  transform: translateX(2px);
+}
+.suggestion-list button[aria-selected="true"] strong {
+  color: var(--ink) !important;
+  font-weight: 700 !important;
+}
+.suggestion-list button[aria-selected="true"] kbd {
+  opacity: 1 !important;
+  background: var(--accent) !important;
+  color: var(--accent-ink, #ffffff) !important;
+  border-color: transparent !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15) !important;
 }
 .suggestion-list button > span:nth-child(2) {
   min-width: 0;
@@ -1004,7 +1019,7 @@ dialog .dialogfoot .danger-action {
 .suggestion-icon {
   background: var(--soft);
   color: var(--ink);
-  border: 1px solid var(--line);
+  border: 0 !important;
 }
 .suggestion-icon svg {
   width: 15px;
@@ -1013,12 +1028,15 @@ dialog .dialogfoot .danger-action {
   fill: none;
 }
 .suggestion-list kbd {
-  font: 10px inherit;
+  font: 10px monospace;
   color: var(--muted);
-  border: 1px solid var(--line);
-  background: var(--surface);
+  border: 0 !important;
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
   border-radius: 6px;
-  padding: 3px 5px;
+  padding: 2px 6px;
+  margin-left: auto;
+  opacity: 0.45;
+  transition: all 120ms ease;
 }
 .prompt-left {
   min-width: 0;
