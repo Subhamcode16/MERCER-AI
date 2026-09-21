@@ -2,12 +2,15 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, User, Activity, CreditCard } from "lucide-react";
 import ProfileTab from "./tabs/ProfileTab";
 import UsageTab from "./tabs/UsageTab";
 import SubscriptionTab from "./tabs/SubscriptionTab";
+import { RadialMenu } from "@/components/workspace/RadialMenu";
 import { useTactileAudio } from "@/components/dashboard/useTactileAudio";
+import "@/components/workspace/react-layout.css";
 
 const tabs = [
   { id: "profile", label: "Profile", icon: User },
@@ -16,11 +19,25 @@ const tabs = [
 ];
 
 export default function SettingsClient() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("profile");
   const { playHoverSound, playFocusSound } = useTactileAudio();
 
+  const handleRadialAction = (id: string) => {
+    if (id === "home") router.push("/home");
+    else if (id === "studio") router.push("/studio");
+    else if (id === "metrics") router.push("/metrics");
+    else if (id === "kanban") router.push("/kanban");
+    else if (id === "assets") router.push("/assets");
+    else if (id === "settings") setActiveTab("profile");
+    else {
+      // Workspace specific triggers redirect to studio
+      router.push("/studio");
+    }
+  };
+
   return (
-    <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 pt-6 pb-12 space-y-6 font-sans">
+    <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 pt-6 pb-12 space-y-6 font-sans relative">
       
       {/* Top Breadcrumb & Headline */}
       <div className="space-y-3">
@@ -92,6 +109,9 @@ export default function SettingsClient() {
           </motion.div>
         </AnimatePresence>
       </main>
+
+      {/* Floating Radial Quick Menu */}
+      <RadialMenu onAction={handleRadialAction} />
 
     </div>
   );
