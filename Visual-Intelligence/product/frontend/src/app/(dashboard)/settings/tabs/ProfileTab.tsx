@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   User,
   Mail,
@@ -9,6 +10,7 @@ import {
   Volume2,
   VolumeX,
   CheckCircle2,
+  Check,
   Lock,
   AlertCircle,
   X,
@@ -323,34 +325,87 @@ export default function ProfileTab() {
 
       {/* Action Footer */}
       <div className="pt-6 border-t border-[#e3dfd4] flex items-center justify-between flex-wrap gap-4">
-        <div className="text-xs text-[#5e6d68]">
-          {savedSuccess ? (
-            <span className="text-[#059669] font-semibold flex items-center gap-1.5 animate-in fade-in">
-              <CheckCircle2 size={14} /> Profile settings saved successfully.
-            </span>
-          ) : (
-            "All profile changes are synchronized to your account."
-          )}
+        <div className="text-xs text-[#5e6d68] min-h-[20px] flex items-center">
+          <AnimatePresence mode="wait">
+            {savedSuccess ? (
+              <motion.div
+                key="saved"
+                initial={{ opacity: 0, y: 3 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -3 }}
+                transition={{ duration: 0.2 }}
+                className="text-[#059669] font-semibold flex items-center gap-1.5 font-sans"
+              >
+                <CheckCircle2 size={14} /> Profile settings saved successfully.
+              </motion.div>
+            ) : (
+              <motion.div
+                key="idle"
+                initial={{ opacity: 0, y: 3 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -3 }}
+                transition={{ duration: 0.2 }}
+              >
+                All profile changes are synchronized to your account.
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
-        <button
+        <motion.button
           type="button"
+          layout
           onClick={handleUpdate}
           disabled={isUpdating}
           onMouseEnter={playHoverSound}
-          className="bg-[#1e3a34] hover:bg-[#142824] text-white text-xs sm:text-sm font-semibold px-6 py-2.5 rounded-xl shadow-xs transition-all active:scale-[0.98] disabled:opacity-70 flex items-center gap-2"
+          whileTap={{ scale: 0.97 }}
+          className={`text-white text-xs sm:text-sm font-semibold px-6 py-2.5 rounded-xl shadow-xs transition-colors duration-300 disabled:opacity-70 flex items-center gap-2 overflow-hidden ${
+            savedSuccess
+              ? "bg-[#059669] hover:bg-[#047857]"
+              : "bg-[#1e3a34] hover:bg-[#142824]"
+          }`}
         >
-          {isUpdating ? (
-            <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-          ) : (
-            <>
-              <span>Save Changes</span>
-              <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono bg-white/20 rounded ml-1 text-white/90">
-                ⌘S
-              </kbd>
-            </>
-          )}
-        </button>
+          <AnimatePresence mode="wait" initial={false}>
+            {isUpdating ? (
+              <motion.div
+                key="updating"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                className="flex items-center gap-2"
+              >
+                <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                <span>Saving...</span>
+              </motion.div>
+            ) : savedSuccess ? (
+              <motion.div
+                key="saved"
+                initial={{ opacity: 0, y: 4, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -4, scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 450, damping: 25 }}
+                className="flex items-center gap-1.5"
+              >
+                <Check size={14} className="stroke-[2.5]" />
+                <span>Changes Saved</span>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="idle"
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.15 }}
+                className="flex items-center gap-2"
+              >
+                <span>Save Changes</span>
+                <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono bg-white/20 rounded ml-1 text-white/90">
+                  ⌘S
+                </kbd>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.button>
       </div>
 
     </div>
