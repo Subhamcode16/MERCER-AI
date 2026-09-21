@@ -18,7 +18,8 @@ export const SidebarContext = createContext<{
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isWorkspace = pathname?.startsWith("/studio");
+  const isWorkspace = pathname?.startsWith("/studio") || pathname?.startsWith("/settings");
+  const isSettings = pathname?.startsWith("/settings");
   const { session, profile, isLoading, logout, openAuthModal } = useAuth();
   const { isMuted, toggleMute, playHoverSound } = useTactileAudio();
   const [isInWorkspace, setIsInWorkspace] = useState(false);
@@ -27,8 +28,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (isLoading) {
     return (
-      <div className="min-h-[100dvh] bg-[#87a8b8] flex items-center justify-center">
-        <div className="text-xs tracking-[0.25em] uppercase text-white/80 animate-pulse font-mono">
+      <div className="min-h-[100dvh] bg-[var(--paper)] flex items-center justify-center">
+        <div className="text-xs tracking-[0.25em] uppercase text-[var(--muted)] animate-pulse font-mono">
           Loading VYREN...
         </div>
       </div>
@@ -48,19 +49,27 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           }`}
         >
           
-          {/* Very Left: Logomark on workspace page (/studio), Brand Wordmark on home page */}
+          {/* Very Left: Logomark on workspace/settings, Brand Wordmark on home page */}
           {isWorkspace ? (
-            <Link 
-              href="/home" 
-              className="flex items-center gap-2.5 hover:opacity-85 transition-opacity"
-              title="VYREN Home"
-            >
-              <img 
-                src="/logo.png" 
-                alt="VYREN Logomark" 
-                className="h-9 w-auto object-contain rounded-md" 
-              />
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link 
+                href="/home" 
+                className="flex items-center gap-2.5 hover:opacity-85 transition-opacity"
+                title="VYREN Home"
+              >
+                <img 
+                  src="/logo.png" 
+                  alt="VYREN Logomark" 
+                  className="h-9 w-auto object-contain rounded-md" 
+                />
+              </Link>
+              {isSettings && (
+                <div className="flex items-center gap-2 text-xs font-mono text-[var(--muted)]">
+                  <span className="text-[var(--line)]">/</span>
+                  <span className="text-[var(--ink)] font-semibold uppercase tracking-wider">System Governance</span>
+                </div>
+              )}
+            </div>
           ) : (
             <div className="flex flex-col">
               <Link 

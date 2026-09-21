@@ -85,44 +85,44 @@ export default function UsageTab() {
   return (
     <div className="space-y-8">
       {/* Hero Metrics Row */}
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 pb-8 border-b border-slate-200/90">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 pb-6 border-b border-[var(--line)]">
         <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-[10px] font-mono uppercase tracking-widest text-slate-700 font-bold">
-            <Coins size={11} className="text-amber-600" />
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-[var(--soft)] border border-[var(--line)] text-[10px] font-mono uppercase tracking-widest text-[var(--ink)] font-bold">
+            <Coins size={11} className="text-[var(--activity)]" />
             Live Compute Allocation
           </div>
           <div className="flex items-baseline gap-3">
-            <span className="font-serif text-5xl sm:text-6xl text-[#0f172a] font-normal tracking-tight">
+            <span className="font-serif text-5xl sm:text-6xl text-[var(--ink)] font-normal tracking-tight">
               {currentCredits}
             </span>
-            <span className="text-sm font-semibold uppercase tracking-wider text-slate-600">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
               Credits Remaining
             </span>
           </div>
-          <p className="text-xs text-slate-600 font-light">
-            Automatic computational refresh on{" "}
-            <strong className="text-slate-900 font-semibold">August 1st, 2026</strong>.
+          <p className="text-xs text-[var(--muted)] font-light">
+            Automatic computational cycle refresh on{" "}
+            <strong className="text-[var(--ink)] font-semibold">August 1st, 2026</strong>.
           </p>
         </div>
 
         {/* Capacity Meter */}
-        <div className="w-full lg:w-80 space-y-3 p-4 rounded-2xl bg-slate-50 border border-slate-200/90 shadow-2xs">
-          <div className="flex justify-between text-xs font-semibold text-slate-800">
+        <div className="w-full lg:w-80 space-y-3 p-4 rounded-2xl bg-[var(--paper)] border border-[var(--line)] shadow-2xs">
+          <div className="flex justify-between text-xs font-semibold text-[var(--ink)]">
             <span className="flex items-center gap-1.5">
-              <TrendingUp size={13} className="text-emerald-700" />
+              <TrendingUp size={13} className="text-[var(--activity)]" />
               Available Quota
             </span>
-            <span className="font-mono text-slate-900">{percentage}%</span>
+            <span className="font-mono text-[var(--ink)]">{percentage}%</span>
           </div>
 
-          <div className="h-2.5 w-full bg-slate-200 rounded-full overflow-hidden p-[1px]">
+          <div className="h-2 w-full bg-[var(--soft)] rounded-full overflow-hidden p-[1px]">
             <div
-              className="h-full bg-gradient-to-r from-emerald-600 to-teal-600 rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(16,185,129,0.4)]"
+              className="h-full bg-[var(--activity)] rounded-full transition-all duration-1000 ease-out"
               style={{ width: `${percentage}%` }}
             />
           </div>
 
-          <div className="flex justify-between text-[11px] font-mono text-slate-600 pt-0.5">
+          <div className="flex justify-between text-[11px] font-mono text-[var(--muted)] pt-0.5">
             <span>Burned: {consumedCredits}</span>
             <span>Limit: {maxCredits}</span>
           </div>
@@ -131,33 +131,33 @@ export default function UsageTab() {
 
       {/* 3 Pillar Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/80">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-bold">
+        <div className="p-4 rounded-xl bg-[var(--paper)] border border-[var(--line)]">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--muted)] font-bold">
             Monthly Pool
           </span>
-          <p className="font-serif text-2xl text-[#0f172a] font-medium mt-1">
+          <p className="font-serif text-2xl text-[var(--ink)] font-medium mt-1">
             {maxCredits.toLocaleString()}{" "}
-            <span className="text-xs font-sans text-slate-600 font-normal">credits</span>
+            <span className="text-xs font-sans text-[var(--muted)] font-normal">credits</span>
           </p>
         </div>
 
-        <div className="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/80">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-bold">
+        <div className="p-4 rounded-xl bg-[var(--paper)] border border-[var(--line)]">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--muted)] font-bold">
             Average Cost / Gen
           </span>
-          <p className="font-serif text-2xl text-[#0f172a] font-medium mt-1">
+          <p className="font-serif text-2xl text-[var(--ink)] font-medium mt-1">
             1.4{" "}
-            <span className="text-xs font-sans text-slate-600 font-normal">units</span>
+            <span className="text-xs font-sans text-[var(--muted)] font-normal">units</span>
           </p>
         </div>
 
-        <div className="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/80">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-bold">
+        <div className="p-4 rounded-xl bg-[var(--paper)] border border-[var(--line)]">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--muted)] font-bold">
             Cluster Reliability
           </span>
           <div className="flex items-center gap-2 mt-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-600" />
-            <span className="text-xs font-semibold text-emerald-800">
+            <span className="w-2 h-2 rounded-full bg-[var(--activity)]" />
+            <span className="text-xs font-semibold text-[var(--activity)]">
               100% Operational
             </span>
           </div>
@@ -165,24 +165,24 @@ export default function UsageTab() {
       </div>
 
       {/* Cryptographic Activity Ledger */}
-      <div className="space-y-4 pt-4">
+      <div className="space-y-4 pt-2">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-slate-900 text-white shadow-xs">
-              <Activity size={16} />
+            <div className="p-2 rounded-lg bg-[var(--soft)] text-[var(--ink)]">
+              <Activity size={15} />
             </div>
             <div>
-              <h3 className="font-serif text-xl text-[#0f172a] font-medium">
+              <h3 className="font-serif text-lg sm:text-xl text-[var(--ink)] font-medium">
                 Activity Ledger &amp; Audit Log
               </h3>
-              <p className="text-xs text-slate-600 font-light">
-                Verifiable cryptographic record of neural inference and monthly allocations.
+              <p className="text-xs text-[var(--muted)] font-light">
+                Verifiable cryptographic record of neural inference and allocations.
               </p>
             </div>
           </div>
 
           {/* Filter Chips */}
-          <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-slate-100 border border-slate-200 text-xs">
+          <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-[var(--soft)] border border-[var(--line)] text-xs">
             {(["all", "generation", "subscription"] as const).map((mode) => (
               <button
                 key={mode}
@@ -193,8 +193,8 @@ export default function UsageTab() {
                 onMouseEnter={playHoverSound}
                 className={`px-3 py-1.5 rounded-lg font-semibold capitalize transition-all ${
                   filter === mode
-                    ? "bg-[#0f172a] text-white shadow-xs"
-                    : "text-slate-600 hover:text-[#0f172a]"
+                    ? "bg-[var(--surface)] text-[var(--ink)] shadow-2xs"
+                    : "text-[var(--muted)] hover:text-[var(--ink)]"
                 }`}
               >
                 {mode === "all" ? "All Logs" : mode + "s"}
@@ -204,44 +204,44 @@ export default function UsageTab() {
         </div>
 
         {/* Ledger Table */}
-        <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white shadow-xs">
-          <div className="grid grid-cols-12 gap-4 px-5 py-3.5 border-b border-slate-200 bg-slate-50 text-[10px] font-mono font-bold tracking-widest text-slate-600 uppercase">
+        <div className="rounded-xl border border-[var(--line)] overflow-hidden bg-[var(--surface)]">
+          <div className="grid grid-cols-12 gap-4 px-5 py-3 border-b border-[var(--line)] bg-[var(--soft)]/50 text-[10px] font-mono font-bold tracking-widest text-[var(--muted)] uppercase">
             <div className="col-span-5 md:col-span-5">Event &amp; Workflow</div>
             <div className="col-span-3 md:col-span-3 hidden sm:block">Timestamp</div>
             <div className="col-span-4 md:col-span-2">Verification</div>
             <div className="col-span-3 md:col-span-2 text-right">Debit / Credit</div>
           </div>
 
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-[var(--line)]">
             {filteredLogs.map((log) => {
               const isRefill = String(log.cost).startsWith("+");
               return (
                 <div
                   key={log.id}
-                  className="grid grid-cols-12 gap-4 px-5 py-4 items-center hover:bg-slate-50 transition-colors"
+                  className="grid grid-cols-12 gap-4 px-5 py-3.5 items-center hover:bg-[var(--soft)]/30 transition-colors"
                 >
                   <div className="col-span-5 md:col-span-5 flex items-center gap-3">
                     <div
-                      className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-xs ${
+                      className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
                         isRefill
-                          ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
-                          : "bg-slate-100 text-slate-800 border border-slate-200"
+                          ? "bg-[var(--soft)] text-[var(--activity)]"
+                          : "bg-[var(--soft)] text-[var(--ink)]"
                       }`}
                     >
-                      {isRefill ? <Zap size={15} /> : <Activity size={15} />}
+                      {isRefill ? <Zap size={14} /> : <Activity size={14} />}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-xs sm:text-sm font-semibold text-[#0f172a] truncate">
+                      <p className="text-xs sm:text-sm font-semibold text-[var(--ink)] truncate">
                         {log.type}
                       </p>
-                      <p className="text-xs text-slate-600 truncate font-light">
+                      <p className="text-xs text-[var(--muted)] truncate font-light">
                         {log.model}
                       </p>
                     </div>
                   </div>
 
-                  <div className="col-span-3 md:col-span-3 hidden sm:flex items-center gap-1.5 text-xs text-slate-600 font-mono">
-                    <Clock size={12} className="text-slate-400" />
+                  <div className="col-span-3 md:col-span-3 hidden sm:flex items-center gap-1.5 text-xs text-[var(--muted)] font-mono">
+                    <Clock size={12} />
                     {new Date(log.date).toLocaleDateString(undefined, {
                       month: "short",
                       day: "numeric",
@@ -252,10 +252,10 @@ export default function UsageTab() {
 
                   <div className="col-span-4 md:col-span-2">
                     <span
-                      className={`inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full font-mono font-bold uppercase tracking-wider ${
+                      className={`inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold uppercase tracking-wider ${
                         log.status === "Success" || log.status === "Completed"
-                          ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
-                          : "bg-slate-100 text-slate-700 border border-slate-200"
+                          ? "bg-[var(--soft)] text-[var(--activity)] border border-[var(--line)]"
+                          : "bg-[var(--soft)] text-[var(--muted)] border border-[var(--line)]"
                       }`}
                     >
                       {log.status === "Success" && <CheckCircle2 size={10} />}
@@ -268,7 +268,7 @@ export default function UsageTab() {
                   <div className="col-span-3 md:col-span-2 text-right">
                     <span
                       className={`font-mono text-xs sm:text-sm font-bold ${
-                        isRefill ? "text-emerald-700 font-extrabold" : "text-slate-800"
+                        isRefill ? "text-[var(--activity)]" : "text-[var(--ink)]"
                       }`}
                     >
                       {log.cost}
