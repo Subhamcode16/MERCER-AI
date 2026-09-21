@@ -10,7 +10,6 @@ import {
   VolumeX,
   CheckCircle2,
   Lock,
-  Sparkles,
   AlertCircle,
   X,
   Trash2,
@@ -345,7 +344,6 @@ export default function ProfileTab() {
             <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
           ) : (
             <>
-              <Sparkles size={14} />
               <span>Save Changes</span>
               <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono bg-white/20 rounded ml-1 text-white/90">
                 ⌘S
