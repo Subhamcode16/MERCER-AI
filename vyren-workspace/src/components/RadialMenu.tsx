@@ -241,52 +241,47 @@ export function RadialMenu({ onAction }: { onAction: (id: string) => void }) {
   return (
     <>
       <nav
-        className={"radial-nav" + (open ? " open" : "")}
+        className={"radial-menu" + (open ? " open" : "")}
         style={
           {
             left: `${position.x}px`,
             top: `${position.y}px`,
-            "--dial-size": `${preferences.size}px`,
-            "--dial-opacity": preferences.opacity / 100,
+            "--radial-size": `${preferences.size}px`,
+            "--radial-opacity": preferences.opacity / 100,
           } as CSSProperties
         }
         aria-label="Quick actions"
       >
-        <ul className="radial-items">
-          {menuItems.map((item, index) => {
-            const angle = (index / count) * Math.PI * 2 - Math.PI / 2;
-            const x = Math.round(Math.cos(angle) * dynamicRadius);
-            const y = Math.round(Math.sin(angle) * dynamicRadius);
-            return (
-              <li
-                key={item.id}
-                className="radial-item"
-                style={
-                  {
-                    "--item-x": `${x}px`,
-                    "--item-y": `${y}px`,
-                    "--item-delay": `${index * 24}ms`,
-                  } as CSSProperties
-                }
-              >
-                <button
-                  type="button"
-                  className="icon-only"
-                  title={item.label}
-                  aria-label={item.label}
-                  onClick={() => {
-                    setOpen(false);
-                    if (item.id === "menu-settings") setSettingsOpen(true);
-                    else onAction(item.id);
-                  }}
-                >
-                  <Icon name={item.icon} />
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-        <div ref={glassHost} className="radial-glass-host" />
+        {menuItems.map((item, index) => {
+          const angle = (index / count) * Math.PI * 2 - Math.PI / 2;
+          const x = Math.round(Math.cos(angle) * dynamicRadius);
+          const y = Math.round(Math.sin(angle) * dynamicRadius);
+          return (
+            <button
+              key={item.id}
+              type="button"
+              className="radial-action"
+              style={
+                {
+                  "--radial-x": `${x}px`,
+                  "--radial-y": `${y}px`,
+                  "--radial-delay": `${index * 24}ms`,
+                } as CSSProperties
+              }
+              title={item.label}
+              aria-label={item.label}
+              onClick={() => {
+                setOpen(false);
+                if (item.id === "menu-settings") setSettingsOpen(true);
+                else onAction(item.id);
+              }}
+            >
+              <Icon name={item.icon} />
+              <span>{item.label}</span>
+            </button>
+          );
+        })}
+        <div ref={glassHost} className="liquid-glass-host" />
         <button
           type="button"
           className="radial-trigger"
