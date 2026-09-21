@@ -92,12 +92,12 @@ app.add_middleware(
     allow_headers=["Authorization", "Content-Type", "X-Idempotency-Key"],
 )
 
-# Serve uploaded asset images as static files so the frontend can display them
+# Serve ONLY uploaded asset images as static files so internal data/ ledgers remain protected
 # e.g. GET /static/assets/campaign_abc/material.jpg
 assets_dir = os.path.join("data", "assets")
 if not os.path.exists(assets_dir):
     os.makedirs(assets_dir)
-app.mount("/static", StaticFiles(directory="data"), name="static")
+app.mount("/static/assets", StaticFiles(directory=assets_dir), name="static_assets")
 
 # Routers
 app.include_router(health.router)

@@ -14,11 +14,15 @@ class StartRequest(BaseModel):
     prompt: str
 
 @router.post("/start")
-async def start_team_session(request: StartRequest, background_tasks: BackgroundTasks):
+async def start_team_session(
+    request: StartRequest, 
+    background_tasks: BackgroundTasks,
+    user: AuthenticatedUser = Depends(get_current_user)
+):
     """
     Starts a new multi-agent session. Runs the initial analysis pipeline in the background.
     """
-    user_id = "default_user" # Mocked or taken from dependencies.
+    user_id = user.user_id
     
     try:
         session_id = await TeamOrchestrator.create_session(user_id, request.prompt)
@@ -68,13 +72,20 @@ async def stream_team_session(session_id: str):
     return StreamingResponse(sse_generator(), media_type="text/event-stream")
 
 @router.post("/approve/{session_id}")
-async def approve_team_session(session_id: str, background_tasks: BackgroundTasks):
+async def approve_team_session(
+    session_id: str, 
+    background_tasks: BackgroundTasks,
+    user: AuthenticatedUser = Depends(get_current_user)
+):
     """
     Handles user clicking the "Approve" button, updating state and kicking off renderer.
     """
     session = await TeamOrchestrator.get_session(session_id)
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
+        
+    if session.get("user_id") and session.get("user_id") != user.user_id and user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to approve this session")
         
     try:
         await TeamOrchestrator.update_status(session_id, "approved")

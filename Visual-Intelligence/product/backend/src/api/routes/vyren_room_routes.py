@@ -30,7 +30,33 @@ class RecordDecisionRequest(BaseModel):
     decided_by: str = "Elena Vance"
 
 
-def get_tenant_id(x_tenant_id: Optional[str] = Header("tenant_default")) -> str:
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from app.utils.jwt import decode_supabase_jwt
+
+_optional_bearer = HTTPBearer(auto_error=False)
+
+async def get_tenant_id(
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(_optional_bearer),
+    x_tenant_id: Optional[str] = Header(None, alias="X-Tenant-ID")
+) -> str:
+    """
+    Secure tenant resolution:
+    - If a valid JWT is present, derives tenant directly from validated claims (tenant_id or sub).
+    - Blocks tenant header spoofing if caller provides mismatched tenant header.
+    - Falls back safely to header or default for standalone development testing.
+    """
+    if credentials:
+        try:
+            claims = decode_supabase_jwt(credentials.credentials)
+            token_tenant = claims.get("tenant_id") or claims.get("sub")
+            if token_tenant:
+                if x_tenant_id and x_tenant_id != token_tenant and claims.get("role") != "admin":
+                    raise HTTPException(status_code=403, detail="Forbidden: X-Tenant-ID does not match authenticated token.")
+                return token_tenant
+        except HTTPException:
+            raise
+        except Exception:
+            pass
     return x_tenant_id or "tenant_default"
 
 

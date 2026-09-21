@@ -29,6 +29,9 @@ class ConnectOAuthRequest(BaseModel):
     tenant_id: Optional[str] = "tenant_vyren_luxury_01"
 
 
+from src.api.routes.vyren_room_routes import get_tenant_id
+
+
 @router.get("/servers")
 async def list_mcp_servers():
     """List registered and connected MCP servers."""
@@ -51,17 +54,20 @@ async def list_discovered_mcp_tools():
 
 @router.get("/pinterest/boards")
 async def get_pinterest_boards(
-    tenant_id: str = Query("tenant_vyren_luxury_01", description="Tenant ID")
+    tenant_id: str = Depends(get_tenant_id)
 ):
     """List moodboards for the specified tenant."""
     return await pinterest_server.list_boards(tenant_id=tenant_id)
 
 
 @router.post("/pinterest/ingest")
-async def ingest_pinterest_moodboard(request: IngestMoodboardRequest):
+async def ingest_pinterest_moodboard(
+    request: IngestMoodboardRequest,
+    tenant_id: str = Depends(get_tenant_id)
+):
     """Ingest a Pinterest moodboard and extract aesthetic tokens & color palettes."""
-    tenant_id = request.tenant_id or "tenant_vyren_luxury_01"
-    return await pinterest_server.ingest_moodboard(tenant_id=tenant_id, board_id=request.board_id)
+    active_tenant = tenant_id if tenant_id != "tenant_default" else (request.tenant_id or "tenant_default")
+    return await pinterest_server.ingest_moodboard(tenant_id=active_tenant, board_id=request.board_id)
 
 
 @router.get("/pinterest/trends")
@@ -74,11 +80,14 @@ async def get_pinterest_trends(
 
 
 @router.post("/oauth/connect")
-async def connect_oauth_service(request: ConnectOAuthRequest):
+async def connect_oauth_service(
+    request: ConnectOAuthRequest,
+    tenant_id: str = Depends(get_tenant_id)
+):
     """Store encrypted credentials in tenant OAuth vault."""
-    tenant_id = request.tenant_id or "tenant_vyren_luxury_01"
+    active_tenant = tenant_id if tenant_id != "tenant_default" else (request.tenant_id or "tenant_default")
     cred = OAuthCredential(
-        tenant_id=tenant_id,
+        tenant_id=active_tenant,
         service_name=request.service_name.lower(),
         access_token=request.access_token,
         refresh_token=request.refresh_token,
@@ -88,14 +97,14 @@ async def connect_oauth_service(request: ConnectOAuthRequest):
     return {
         "status": "SUCCESS",
         "message": f"Successfully stored encrypted credential for service '{request.service_name}'.",
-        "tenant_id": tenant_id,
+        "tenant_id": active_tenant,
         "service": request.service_name
     }
 
 
 @router.get("/oauth/status")
 async def get_oauth_status(
-    tenant_id: str = Query("tenant_vyren_luxury_01", description="Tenant ID")
+    tenant_id: str = Depends(get_tenant_id)
 ):
     """Check connection status for all creative and social gateways."""
     services = ["pinterest", "instagram", "threads", "x", "meta"]
