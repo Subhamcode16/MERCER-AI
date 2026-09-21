@@ -7,8 +7,6 @@ import {
   Zap,
   Coins,
   CheckCircle2,
-  ArrowUpRight,
-  Filter,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTactileAudio } from "@/components/dashboard/useTactileAudio";
@@ -83,34 +81,32 @@ export default function UsageTab() {
   });
 
   return (
-    <div className="space-y-10 font-sans pb-4">
+    <div className="space-y-8 font-sans">
       
-      {/* 1. Typographic Quota Balance & Allocation Bar */}
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 pb-7 border-b border-[#e3dfd4]">
+      {/* Hero Quota Overview */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-6 border-b border-[#e3dfd4]">
         <div className="space-y-1">
-          <div className="text-[10px] font-mono uppercase tracking-widest text-[#5e6d68] font-bold">
-            01 // Active Compute Pool Allocation
-          </div>
-          <div className="flex items-baseline gap-3">
-            <span className="font-serif text-5xl sm:text-6xl text-[#0f1419] font-normal tracking-tight">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#5e6d68] font-mono">
+            Active Compute Allocation
+          </span>
+          <div className="flex items-baseline gap-2">
+            <span className="font-serif text-4xl sm:text-5xl text-[#0f1419] font-normal tracking-tight">
               {currentCredits}
             </span>
-            <div className="space-y-0.5">
-              <div className="text-xs font-semibold uppercase tracking-wider text-[#0f1419] font-mono">
-                / {maxCredits} Units
-              </div>
-              <div className="text-[11px] text-[#5e6d68]">
-                Auto-refills on 1st of every month
-              </div>
-            </div>
+            <span className="text-xs font-semibold text-[#5e6d68] font-mono">
+              / {maxCredits} Credits
+            </span>
           </div>
+          <p className="text-xs text-[#5e6d68]">
+            Refills on the 1st of each calendar month.
+          </p>
         </div>
 
-        {/* Precision Progress Track */}
-        <div className="w-full lg:w-96 space-y-2.5">
-          <div className="flex justify-between items-center text-xs">
-            <span className="text-[#0f1419] font-medium font-sans">Pool Utilization</span>
-            <span className="font-mono text-[#059669] font-bold">{percentage}% Available</span>
+        {/* Progress Bar Block */}
+        <div className="w-full sm:w-72 space-y-2 p-4 rounded-xl bg-[#faf8f4] border border-[#e3dfd4]">
+          <div className="flex justify-between items-center text-xs font-medium">
+            <span className="text-[#0f1419]">Monthly Capacity</span>
+            <span className="font-mono text-[#059669] font-bold">{percentage}%</span>
           </div>
 
           <div className="w-full h-2 rounded-full bg-[#f0ebe1] overflow-hidden p-0.5 border border-[#e3dfd4]">
@@ -121,57 +117,18 @@ export default function UsageTab() {
           </div>
 
           <div className="flex justify-between items-center text-[10px] font-mono text-[#5e6d68]">
-            <span>{consumedCredits} consumed this cycle</span>
-            <span>0 throttled inferences</span>
+            <span>{consumedCredits} consumed</span>
+            <span>{currentCredits} available</span>
           </div>
         </div>
       </div>
 
-      {/* 2. Architectural 3-Column Metric Strip (Flush Dividers) */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[#e3dfd4] border-y border-[#e3dfd4] py-4 -my-2">
-        <div className="px-4 py-2 sm:py-0 first:pl-0">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[#5e6d68] font-bold">
-            Monthly Quota Floor
-          </span>
-          <p className="text-2xl font-serif text-[#0f1419] font-medium mt-1">
-            {maxCredits} Credits
-          </p>
-          <span className="text-[11px] text-[#5e6d68] font-mono">Tier-1 Institutional allocation</span>
-        </div>
-
-        <div className="px-4 py-2 sm:py-0">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[#5e6d68] font-bold">
-            Average Burn Rate
-          </span>
-          <p className="text-2xl font-serif text-[#0f1419] font-medium mt-1">
-            1.4 Credits
-          </p>
-          <span className="text-[11px] text-[#5e6d68] font-mono">Per volumetric render pass</span>
-        </div>
-
-        <div className="px-4 py-2 sm:py-0 last:pr-0">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[#5e6d68] font-bold">
-            Cluster Reliability
-          </span>
-          <p className="text-2xl font-serif text-[#059669] font-medium mt-1 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#059669] animate-pulse" />
-            100.0%
-          </p>
-          <span className="text-[11px] text-[#5e6d68] font-mono">US-East routing active</span>
-        </div>
-      </div>
-
-      {/* 3. Cryptographic Activity Ledger Table */}
-      <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <div className="text-[10px] font-mono uppercase tracking-widest text-[#5e6d68] font-bold">
-              02 // Cryptographic Activity Ledger
-            </div>
-            <h3 className="font-serif text-xl text-[#0f1419] font-medium mt-0.5">
-              Inference &amp; Refill Audit Log
-            </h3>
-          </div>
+      {/* Activity Table */}
+      <div className="space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <h3 className="font-serif text-lg text-[#0f1419] font-medium">
+            Recent Usage Activity
+          </h3>
 
           {/* Filter Chips */}
           <div className="inline-flex items-center gap-1 p-1 bg-[#f0ebe1] rounded-xl border border-[#e3dfd4] text-xs">
@@ -190,19 +147,18 @@ export default function UsageTab() {
                     : "text-[#5e6d68] hover:text-[#0f1419]"
                 }`}
               >
-                {mode === "all" ? "All Logs" : mode + "s"}
+                {mode === "all" ? "All" : mode + "s"}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Ledger Table */}
+        {/* Table */}
         <div className="rounded-xl border border-[#e3dfd4] overflow-hidden bg-white">
-          <div className="grid grid-cols-12 gap-4 px-5 py-3 border-b border-[#e3dfd4] bg-[#faf8f4] text-[10px] font-mono font-bold tracking-widest text-[#5e6d68] uppercase">
-            <div className="col-span-6 md:col-span-5">Event &amp; Model Target</div>
-            <div className="col-span-3 md:col-span-3 hidden sm:block">Timestamp</div>
-            <div className="col-span-3 md:col-span-2">Verification</div>
-            <div className="col-span-3 md:col-span-2 text-right">Debit / Credit</div>
+          <div className="grid grid-cols-12 gap-3 px-4 py-2.5 border-b border-[#e3dfd4] bg-[#faf8f4] text-[10px] font-mono font-bold tracking-widest text-[#5e6d68] uppercase">
+            <div className="col-span-6">Event</div>
+            <div className="col-span-3 hidden sm:block">Date</div>
+            <div className="col-span-3 text-right">Credits</div>
           </div>
 
           <div className="divide-y divide-[#e3dfd4]">
@@ -211,11 +167,11 @@ export default function UsageTab() {
               return (
                 <div
                   key={log.id}
-                  className="grid grid-cols-12 gap-4 px-5 py-3.5 items-center hover:bg-[#faf8f4]/60 transition-colors"
+                  className="grid grid-cols-12 gap-3 px-4 py-3 items-center hover:bg-[#faf8f4]/60 transition-colors"
                 >
-                  <div className="col-span-6 md:col-span-5 flex items-center gap-3">
+                  <div className="col-span-6 flex items-center gap-2.5">
                     <div
-                      className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 text-xs font-mono font-bold ${
+                      className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 text-xs font-mono font-bold ${
                         isRefill
                           ? "bg-[#f0ebe1] text-[#059669] border border-[#e3dfd4]"
                           : "bg-[#f0ebe1] text-[#0f1419] border border-[#e3dfd4]"
@@ -224,7 +180,7 @@ export default function UsageTab() {
                       {isRefill ? "+" : "↓"}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-xs font-semibold text-[#0f1419] truncate font-sans">
+                      <p className="text-xs font-semibold text-[#0f1419] truncate">
                         {log.type}
                       </p>
                       <p className="text-[11px] text-[#5e6d68] truncate font-mono">
@@ -233,36 +189,21 @@ export default function UsageTab() {
                     </div>
                   </div>
 
-                  <div className="col-span-3 md:col-span-3 hidden sm:flex items-center gap-1.5 text-xs text-[#5e6d68] font-mono">
-                    <Clock size={11} className="text-[#5e6d68]" />
+                  <div className="col-span-3 hidden sm:flex items-center gap-1 text-xs text-[#5e6d68] font-mono">
+                    <Clock size={11} />
                     {new Date(log.date).toLocaleDateString(undefined, {
                       month: "short",
                       day: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
                     })}
                   </div>
 
-                  <div className="col-span-3 md:col-span-2">
-                    <span
-                      className={`inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-md font-mono font-bold uppercase tracking-wider ${
-                        log.status === "Success" || log.status === "Completed"
-                          ? "bg-[#f0ebe1] text-[#059669] border border-[#e3dfd4]"
-                          : "bg-[#f0ebe1] text-[#5e6d68] border border-[#e3dfd4]"
-                      }`}
-                    >
-                      {log.status === "Success" && <CheckCircle2 size={9} />}
-                      {log.status}
-                    </span>
-                  </div>
-
-                  <div className="col-span-3 md:col-span-2 text-right">
+                  <div className="col-span-6 sm:col-span-3 text-right">
                     <span
                       className={`font-mono text-xs font-bold ${
                         isRefill ? "text-[#059669]" : "text-[#0f1419]"
                       }`}
                     >
-                      {log.cost} Units
+                      {log.cost} Credits
                     </span>
                   </div>
                 </div>
