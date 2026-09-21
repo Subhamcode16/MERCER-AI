@@ -298,7 +298,7 @@ export function App() {
           if (id === "home") window.location.href = "/home";
           else if (id === "studio") window.location.href = "/studio";
           else if (id === "metrics") window.location.href = "/activity";
-          else if (id === "kanban") window.location.href = "/campaigns";
+          else if (id === "kanban") window.location.href = "/kanban";
           else if (id === "assets") window.location.href = "/assets";
           else if (id === "settings") window.location.href = "/settings";
           else if (id === "appearance") setThemesOpen(true);

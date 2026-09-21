@@ -58,7 +58,7 @@ body {
   --ring: #ffffff;
   --accent-ivory: #ffffff;
 
-  /* Studio & Workspace Tokens */
+  /* Studio & Workspace Tokens (Light Mode Default) */
   --paper: #f8f6f0;
   --surface: #ffffff;
   --soft: #f0ebe1;
@@ -67,23 +67,32 @@ body {
   --activity: #059669;
 }
 
+:root.dark,
+html.dark,
+body.night {
+  --background: #090e0d;
+  --foreground: #f0f4ec;
+  --paper: #0e1715;
+  --surface: #162421;
+  --soft: #1f332f;
+  --ink: #f0f4ec;
+  --muted: #b0cfc2;
+  --muted-foreground: #8fa89e;
+  --line: #2e4741;
+  --border: #2e4741;
+  --accent: #34d399;
+  --accent-ink: #0b1c17;
+  --accent-foreground: #0b1c17;
+  --activity: #10b981;
+  --card: #162421;
+  --card-foreground: #f0f4ec;
+  color-scheme: dark;
+}
+
 /* Workspace Theme Class */
 .workspace-theme {
-  --background: #f8f6f0;
-  --foreground: #0f1419;
-  --paper: #f8f6f0;
-  --surface: #ffffff;
-  --soft: #f0ebe1;
-  --ink: #0f1419;
-  --muted: #5e6d68;
-  --muted-foreground: #5e6d68;
-  --line: #e3dfd4;
-  --border: #e3dfd4;
-  --accent: #1e3a34;
-  --accent-ink: #ffffff;
-  --activity: #059669;
-  background-color: #f8f6f0 !important;
-  color: #0f1419 !important;
+  background-color: var(--paper) !important;
+  color: var(--ink) !important;
 }
 
 /* Authentic iOS 18 Liquid Glass Design System */

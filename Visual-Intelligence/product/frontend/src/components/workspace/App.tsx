@@ -277,17 +277,13 @@ export function VyrenWorkspace() {
           }}
         />
       </aside>
-      <Pullcord
-        night={theme.night}
-        onToggle={() => theme.setNight((n: boolean) => !n)}
-      />
       <MouseTrails />
       <RadialMenu
         onAction={(id) => {
           if (id === "home") router.push("/home");
           else if (id === "studio") router.push("/studio");
           else if (id === "metrics") router.push("/activity");
-          else if (id === "kanban") router.push("/campaigns");
+          else if (id === "kanban") router.push("/kanban");
           else if (id === "assets") router.push("/assets");
           else if (id === "settings") router.push("/settings");
           else if (id === "appearance") setThemesOpen(true);

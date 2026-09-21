@@ -147,7 +147,7 @@ export function Pullcord({
   }, []);
   function release(id: number) {
     if (drag.current?.id !== id) return;
-    suppress.current = drag.current.moved || drag.current.fired;
+    suppress.current = drag.current.fired;
     drag.current = null;
     wake.current();
   }
@@ -164,7 +164,7 @@ export function Pullcord({
         role="switch"
         aria-checked={night}
         aria-label={"Switch to " + (night ? "light" : "dark") + " theme"}
-        title="Pull down to switch theme"
+        title="Pull down or click to switch theme"
         onPointerDown={(e) => {
           if (e.button !== 0) return;
           suppress.current = false;
@@ -177,7 +177,9 @@ export function Pullcord({
             moved: false,
             fired: false,
           };
-          e.currentTarget.setPointerCapture(e.pointerId);
+          try {
+            e.currentTarget.setPointerCapture(e.pointerId);
+          } catch {}
           wake.current();
         }}
         onPointerMove={(e) => {
@@ -185,10 +187,10 @@ export function Pullcord({
           if (!d || d.id !== e.pointerId) return;
           const dy = Math.max(0, e.clientY - d.startY),
             dx = e.clientX - d.startX;
-          d.moved ||= Math.hypot(dx, dy) > 5;
+          d.moved ||= Math.hypot(dx, dy) > 4;
           d.x = 50 + Math.max(-33, Math.min(33, dx));
           d.y = 112 + Math.min(34, dy);
-          if (dy >= 22 && !d.fired) {
+          if (dy >= 15 && !d.fired) {
             d.fired = true;
             toggle.current();
           }
@@ -202,6 +204,7 @@ export function Pullcord({
             suppress.current = false;
             return;
           }
+          suppress.current = false;
           toggle.current();
           if (!reduced.current) {
             nodes.current[12].py -= 16;

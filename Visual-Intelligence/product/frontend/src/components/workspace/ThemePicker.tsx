@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import type { CSSProperties, KeyboardEvent } from "react";
 import { themes } from "./themes";
 import { Modal } from "./Modal";
 import { Icon } from "./Icon";
+import { useTheme as useAppTheme } from "@/contexts/ThemeContext";
+
 const keys = [
   "paper",
   "surface",
@@ -14,6 +16,7 @@ const keys = [
   "accent-ink",
   "activity",
 ];
+
 function saved(key: string, fallback: string) {
   try {
     return localStorage.getItem(key) || fallback;
@@ -21,29 +24,62 @@ function saved(key: string, fallback: string) {
     return fallback;
   }
 }
+
 export function useTheme() {
+  let appTheme: ReturnType<typeof useAppTheme> | null = null;
+  try {
+    appTheme = useAppTheme();
+  } catch {
+    appTheme = null;
+  }
+
   const [palette, setPalette] = useState(() => {
     const value = saved("fieldwork-chat-palette", "fieldwork");
     return themes.some((t) => t.id === value) ? value : "fieldwork";
   });
-  const [night, setNight] = useState(
-    () => saved("fieldwork-theme", "paper") === "night",
-  );
+
+  const [localNight, setLocalNight] = useState(() => {
+    const vyren = saved("vyren-theme", "");
+    if (vyren === "dark") return true;
+    if (vyren === "light") return false;
+    return saved("fieldwork-theme", "paper") === "night";
+  });
+
+  const night = appTheme ? appTheme.resolvedTheme === "dark" : localNight;
+
+  const setNight = useCallback((val: boolean | ((prev: boolean) => boolean)) => {
+    const nextNight = typeof val === "function" ? val(night) : val;
+    if (appTheme) {
+      appTheme.setTheme(nextNight ? "dark" : "light");
+    } else {
+      setLocalNight(nextNight);
+    }
+  }, [appTheme, night]);
+
   useEffect(() => {
-    const theme = themes.find((t) => t.id === palette)!;
+    const theme = themes.find((t) => t.id === palette) || themes[0];
     document.body.classList.toggle("night", night);
     document.body.dataset.chatTheme = palette;
-    keys.forEach((key, i) =>
-      document.body.style.setProperty(
-        "--" + key,
-        (night ? theme.dark : theme.light)[i],
-      ),
-    );
+    
+    // Sync with global dark class and theme attributes on html
+    const root = document.documentElement;
+    root.classList.toggle("dark", night);
+    root.classList.toggle("light", !night);
+    root.setAttribute("data-theme", night ? "dark" : "light");
+
+    keys.forEach((key, i) => {
+      const colorVal = (night ? theme.dark : theme.light)[i];
+      document.body.style.setProperty("--" + key, colorVal);
+      root.style.setProperty("--" + key, colorVal);
+    });
+
     try {
       localStorage.setItem("fieldwork-chat-palette", palette);
       localStorage.setItem("fieldwork-theme", night ? "night" : "paper");
+      localStorage.setItem("vyren-theme", night ? "dark" : "light");
     } catch {}
   }, [palette, night]);
+
   return { palette, setPalette, night, setNight };
 }
 export function ThemePicker({

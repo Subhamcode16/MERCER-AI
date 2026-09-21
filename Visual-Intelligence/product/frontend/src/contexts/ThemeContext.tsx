@@ -54,12 +54,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     if (nextResolved === "light") {
       root.classList.add("light");
       root.classList.remove("dark");
+      document.body.classList.remove("night");
     } else {
       root.classList.add("dark");
       root.classList.remove("light");
+      document.body.classList.add("night");
     }
 
     localStorage.setItem(STORAGE_KEY, theme);
+    localStorage.setItem("fieldwork-theme", nextResolved === "dark" ? "night" : "paper");
 
     const handleSystemChange = () => {
       if (theme === "system") {
@@ -69,9 +72,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         if (sysResolved === "light") {
           root.classList.add("light");
           root.classList.remove("dark");
+          document.body.classList.remove("night");
         } else {
           root.classList.add("dark");
           root.classList.remove("light");
+          document.body.classList.add("night");
         }
       }
     };

@@ -1897,7 +1897,7 @@ dialog,
   top: 0;
   width: 100px;
   height: 190px;
-  z-index: 15;
+  z-index: 50;
   pointer-events: none;
   color: var(--ink);
 }

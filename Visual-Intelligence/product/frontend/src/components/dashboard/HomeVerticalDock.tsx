@@ -24,7 +24,7 @@ export const CANONICAL_DOCK_ITEMS: DockItemData[] = [
   { id: "home", title: "Home", icon: HomeIcon, href: "/home" },
   { id: "workspace", title: "Workspace", icon: LayoutGrid, href: "/studio" },
   { id: "metrics", title: "Metrics Dashboard", icon: BarChart3, href: "/activity" },
-  { id: "kanban", title: "Kanban Board", icon: Columns3, href: "/campaigns" },
+  { id: "kanban", title: "Kanban Board", icon: Columns3, href: "/kanban" },
   { id: "assets", title: "Assets", icon: FolderKanban, href: "/assets" },
   { id: "settings", title: "Settings", icon: Settings, href: "/settings" },
 ];

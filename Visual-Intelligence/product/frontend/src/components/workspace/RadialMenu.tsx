@@ -151,7 +151,7 @@ export function RadialMenu({ onAction }: { onAction: (id: string) => void }) {
     const update = () => {
       if (!glassHost.current) return;
       const rect = glassHost.current.getBoundingClientRect();
-      glassInstance.current?.updatePosition(rect.left, rect.top);
+      (glassInstance.current as any)?.updatePosition?.(rect.left, rect.top);
     };
     update();
     const frame = requestAnimationFrame(update);
@@ -163,9 +163,9 @@ export function RadialMenu({ onAction }: { onAction: (id: string) => void }) {
     let active = true;
     loadLiquidGlass()
       .then((create) => {
-        if (!active || !glassHost.current) return;
+        if (!active || !glassHost.current || !create) return;
         const rect = glassHost.current.getBoundingClientRect();
-        glassInstance.current = create(glassHost.current, {
+        glassInstance.current = (create as any)(glassHost.current, {
           x: rect.left,
           y: rect.top,
           width: rect.width,
@@ -212,7 +212,7 @@ export function RadialMenu({ onAction }: { onAction: (id: string) => void }) {
       const next = clamp({ x, y }, dynamicRadius);
       setPosition(next);
       const rect = glassHost.current?.getBoundingClientRect();
-      if (rect) glassInstance.current?.updatePosition(rect.left, rect.top);
+      if (rect) (glassInstance.current as any)?.updatePosition?.(rect.left, rect.top);
     }
   }
 

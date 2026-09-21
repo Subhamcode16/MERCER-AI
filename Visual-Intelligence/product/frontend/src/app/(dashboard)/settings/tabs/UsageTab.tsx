@@ -84,39 +84,39 @@ export default function UsageTab() {
     <div className="space-y-8 font-sans">
       
       {/* Hero Quota Overview */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-6 border-b border-[#e3dfd4]">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-6 border-b border-[var(--line)]">
         <div className="space-y-1">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#5e6d68] font-mono">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)] font-mono">
             Active Compute Allocation
           </span>
           <div className="flex items-baseline gap-2">
-            <span className="font-serif text-4xl sm:text-5xl text-[#0f1419] font-normal tracking-tight">
+            <span className="font-serif text-4xl sm:text-5xl text-[var(--ink)] font-normal tracking-tight">
               {currentCredits}
             </span>
-            <span className="text-xs font-semibold text-[#5e6d68] font-mono">
+            <span className="text-xs font-semibold text-[var(--muted)] font-mono">
               / {maxCredits} Credits
             </span>
           </div>
-          <p className="text-xs text-[#5e6d68]">
+          <p className="text-xs text-[var(--muted)]">
             Refills on the 1st of each calendar month.
           </p>
         </div>
 
         {/* Progress Bar Block */}
-        <div className="w-full sm:w-72 space-y-2 p-4 rounded-xl bg-[#faf8f4] border border-[#e3dfd4]">
+        <div className="w-full sm:w-72 space-y-2 p-4 rounded-xl bg-[var(--soft)] border border-[var(--line)]">
           <div className="flex justify-between items-center text-xs font-medium">
-            <span className="text-[#0f1419]">Monthly Capacity</span>
-            <span className="font-mono text-[#059669] font-bold">{percentage}%</span>
+            <span className="text-[var(--ink)]">Monthly Capacity</span>
+            <span className="font-mono text-emerald-500 font-bold">{percentage}%</span>
           </div>
 
-          <div className="w-full h-2 rounded-full bg-[#f0ebe1] overflow-hidden p-0.5 border border-[#e3dfd4]">
+          <div className="w-full h-2 rounded-full bg-[var(--paper)] overflow-hidden p-0.5 border border-[var(--line)]">
             <div
-              className="h-full rounded-full bg-[#059669] transition-all duration-700 ease-out"
+              className="h-full rounded-full bg-emerald-500 transition-all duration-700 ease-out"
               style={{ width: `${percentage}%` }}
             />
           </div>
 
-          <div className="flex justify-between items-center text-[10px] font-mono text-[#5e6d68]">
+          <div className="flex justify-between items-center text-[10px] font-mono text-[var(--muted)]">
             <span>{consumedCredits} consumed</span>
             <span>{currentCredits} available</span>
           </div>
@@ -126,12 +126,12 @@ export default function UsageTab() {
       {/* Activity Table */}
       <div className="space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <h3 className="font-serif text-lg text-[#0f1419] font-medium">
+          <h3 className="font-serif text-lg text-[var(--ink)] font-medium">
             Recent Usage Activity
           </h3>
 
           {/* Filter Chips */}
-          <div className="inline-flex items-center gap-1 p-1 bg-[#f0ebe1] rounded-xl border border-[#e3dfd4] text-xs">
+          <div className="inline-flex items-center gap-1 p-1 bg-[var(--soft)] rounded-xl border border-[var(--line)] text-xs">
             {(["all", "generation", "subscription"] as const).map((mode) => (
               <button
                 key={mode}
@@ -143,8 +143,8 @@ export default function UsageTab() {
                 onMouseEnter={playHoverSound}
                 className={`px-3 py-1 rounded-lg font-semibold capitalize transition-all ${
                   filter === mode
-                    ? "bg-white text-[#0f1419] shadow-2xs border border-[#e3dfd4]"
-                    : "text-[#5e6d68] hover:text-[#0f1419]"
+                    ? "bg-[var(--surface)] text-[var(--ink)] shadow-2xs border border-[var(--line)]"
+                    : "text-[var(--muted)] hover:text-[var(--ink)]"
                 }`}
               >
                 {mode === "all" ? "All" : mode + "s"}
@@ -154,42 +154,42 @@ export default function UsageTab() {
         </div>
 
         {/* Table */}
-        <div className="rounded-xl border border-[#e3dfd4] overflow-hidden bg-white">
-          <div className="grid grid-cols-12 gap-3 px-4 py-2.5 border-b border-[#e3dfd4] bg-[#faf8f4] text-[10px] font-mono font-bold tracking-widest text-[#5e6d68] uppercase">
+        <div className="rounded-xl border border-[var(--line)] overflow-hidden bg-[var(--surface)]">
+          <div className="grid grid-cols-12 gap-3 px-4 py-2.5 border-b border-[var(--line)] bg-[var(--soft)] text-[10px] font-mono font-bold tracking-widest text-[var(--muted)] uppercase">
             <div className="col-span-6">Event</div>
             <div className="col-span-3 hidden sm:block">Date</div>
             <div className="col-span-3 text-right">Credits</div>
           </div>
 
-          <div className="divide-y divide-[#e3dfd4]">
+          <div className="divide-y divide-[var(--line)]">
             {filteredLogs.map((log) => {
               const isRefill = String(log.cost).startsWith("+");
               return (
                 <div
                   key={log.id}
-                  className="grid grid-cols-12 gap-3 px-4 py-3 items-center hover:bg-[#faf8f4]/60 transition-colors"
+                  className="grid grid-cols-12 gap-3 px-4 py-3 items-center hover:bg-[var(--soft)]/50 transition-colors"
                 >
                   <div className="col-span-6 flex items-center gap-2.5">
                     <div
                       className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 text-xs font-mono font-bold ${
                         isRefill
-                          ? "bg-[#f0ebe1] text-[#059669] border border-[#e3dfd4]"
-                          : "bg-[#f0ebe1] text-[#0f1419] border border-[#e3dfd4]"
+                          ? "bg-[var(--soft)] text-emerald-500 border border-[var(--line)]"
+                          : "bg-[var(--soft)] text-[var(--ink)] border border-[var(--line)]"
                       }`}
                     >
                       {isRefill ? "+" : "↓"}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-xs font-semibold text-[#0f1419] truncate">
+                      <p className="text-xs font-semibold text-[var(--ink)] truncate">
                         {log.type}
                       </p>
-                      <p className="text-[11px] text-[#5e6d68] truncate font-mono">
+                      <p className="text-[11px] text-[var(--muted)] truncate font-mono">
                         {log.model}
                       </p>
                     </div>
                   </div>
 
-                  <div className="col-span-3 hidden sm:flex items-center gap-1 text-xs text-[#5e6d68] font-mono">
+                  <div className="col-span-3 hidden sm:flex items-center gap-1 text-xs text-[var(--muted)] font-mono">
                     <Clock size={11} />
                     {new Date(log.date).toLocaleDateString(undefined, {
                       month: "short",
@@ -200,7 +200,7 @@ export default function UsageTab() {
                   <div className="col-span-6 sm:col-span-3 text-right">
                     <span
                       className={`font-mono text-xs font-bold ${
-                        isRefill ? "text-[#059669]" : "text-[#0f1419]"
+                        isRefill ? "text-emerald-500" : "text-[var(--ink)]"
                       }`}
                     >
                       {log.cost} Credits

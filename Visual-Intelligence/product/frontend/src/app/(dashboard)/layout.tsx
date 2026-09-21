@@ -4,8 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, createContext, useMemo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import { UserPopover } from "@/components/UserPopover";
 import { useTactileAudio } from "@/components/dashboard/useTactileAudio";
+import { Pullcord } from "@/components/workspace/Pullcord";
 import { LogIn, Volume2, VolumeX } from "lucide-react";
 
 export const SidebarContext = createContext<{
@@ -18,10 +20,17 @@ export const SidebarContext = createContext<{
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isWorkspace = pathname?.startsWith("/studio") || pathname?.startsWith("/settings");
+  const isWorkspace = 
+    pathname?.startsWith("/studio") || 
+    pathname?.startsWith("/settings") || 
+    pathname?.startsWith("/kanban") || 
+    pathname?.startsWith("/campaigns") ||
+    pathname?.startsWith("/activity") ||
+    pathname?.startsWith("/assets");
   const isSettings = pathname?.startsWith("/settings");
   const { session, profile, isLoading, logout, openAuthModal } = useAuth();
   const { isMuted, toggleMute, playHoverSound } = useTactileAudio();
+  const { resolvedTheme, toggleTheme } = useTheme();
   const [isInWorkspace, setIsInWorkspace] = useState(false);
 
   const contextValue = useMemo(() => ({ isInWorkspace, setIsInWorkspace }), [isInWorkspace]);
@@ -38,13 +47,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <SidebarContext.Provider value={contextValue}>
-      <div className={`flex flex-col h-screen overflow-hidden font-sans selection:bg-black selection:text-white ${isWorkspace ? "workspace-theme bg-[#f8f6f0] text-[#0f1419]" : "bg-[#87a8b8]"}`}>
+      <div className={`flex flex-col h-screen overflow-hidden font-sans selection:bg-black selection:text-white ${isWorkspace ? "workspace-theme bg-[var(--paper,#f8f6f0)] text-[var(--ink,#0f1419)]" : "bg-[#87a8b8]"}`}>
         
         {/* Top Header Bar: Wordmark on very left, Auth & Audio on very right */}
         <header 
           className={`fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-8 py-3.5 pointer-events-auto transition-colors duration-200 animate-reveal-down ${
             isWorkspace 
-              ? "bg-[#f8f6f0]/95 backdrop-blur-xl border-b border-[#e3dfd4] shadow-[0_1px_3px_rgba(0,0,0,0.04)] text-[#0f1419]" 
+              ? "bg-[var(--surface,#f8f6f0)]/95 backdrop-blur-xl border-b border-[var(--line,#e3dfd4)] shadow-[0_1px_3px_rgba(0,0,0,0.04)] text-[var(--ink,#0f1419)]" 
               : "bg-gradient-to-b from-black/20 via-black/5 to-transparent"
           }`}
         >
@@ -85,7 +94,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           )}
 
           {/* Very Right: Workspace Actions, Audio Toggle & Auth Buttons */}
-          <div className="flex items-center gap-2.5">
+          <div className={`flex items-center gap-2.5 ${isWorkspace ? "mr-12" : ""}`}>
             
             {/* Slot for Workspace Action Buttons (moved up from workspace header) */}
             <div id="top-header-workspace-actions" className="flex items-center gap-2" />
@@ -118,11 +127,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {session && profile ? (
               <UserPopover profile={profile} logout={logout} isCollapsed={false} />
             ) : isSettings ? (
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-[#e3dfd4] shadow-2xs">
-                <div className="w-5 h-5 rounded-full bg-[#1e3a34] text-white flex items-center justify-center text-[10px] font-bold font-mono">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--surface)] border border-[var(--line)] shadow-2xs">
+                <div className="w-5 h-5 rounded-full bg-[var(--accent)] text-[var(--accent-ink)] flex items-center justify-center text-[10px] font-bold font-mono">
                   DJ
                 </div>
-                <span className="text-xs font-semibold text-[#0f1419] font-sans">Dr. Julian Mercer</span>
+                <span className="text-xs font-semibold text-[var(--ink)] font-sans">Dr. Julian Mercer</span>
               </div>
             ) : (
               <div className="flex items-center gap-2">
@@ -152,6 +161,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             )}
           </div>
         </header>
+
+        {/* Workspace Theme Pullcord Trigger Switch */}
+        {isWorkspace && (
+          <Pullcord
+            night={resolvedTheme === "dark"}
+            onToggle={toggleTheme}
+          />
+        )}
 
         {/* Main Workspace Viewport */}
         <main className="flex-1 h-full min-h-0 relative flex flex-col min-w-0 overflow-hidden">

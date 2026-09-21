@@ -44,24 +44,24 @@ export default function SettingsClient() {
         <Link
           href="/studio"
           onMouseEnter={playHoverSound}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#5e6d68] hover:text-[#0f1419] transition-colors py-1 group"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--muted)] hover:text-[var(--ink)] transition-colors py-1 group"
         >
           <ArrowLeft size={13} className="transition-transform group-hover:-translate-x-0.5" />
           <span>Back to Studio</span>
         </Link>
 
         <div>
-          <h1 className="font-serif text-3xl sm:text-4xl text-[#0f1419] font-medium tracking-tight">
+          <h1 className="font-serif text-3xl sm:text-4xl text-[var(--ink)] font-medium tracking-tight">
             Settings
           </h1>
-          <p className="text-sm text-[#5e6d68] font-normal mt-1 leading-relaxed">
+          <p className="text-sm text-[var(--muted)] font-normal mt-1 leading-relaxed">
             Manage your personal profile, computational quotas, and subscription plan.
           </p>
         </div>
       </div>
 
       {/* Segmented Horizontal Tabs */}
-      <div className="flex border-b border-[#e3dfd4] gap-6">
+      <div className="flex border-b border-[var(--line)] gap-6">
         {tabs.map((tab) => {
           const IconComp = tab.icon;
           const isActive = activeTab === tab.id;
@@ -75,7 +75,7 @@ export default function SettingsClient() {
               }}
               onMouseEnter={playHoverSound}
               className={`relative pb-3 flex items-center gap-2 text-sm font-semibold transition-colors ${
-                isActive ? "text-[#0f1419]" : "text-[#5e6d68] hover:text-[#0f1419]"
+                isActive ? "text-[var(--ink)]" : "text-[var(--muted)] hover:text-[var(--ink)]"
               }`}
             >
               <IconComp size={15} />
@@ -83,7 +83,7 @@ export default function SettingsClient() {
               {isActive && (
                 <motion.div
                   layoutId="activeTabUnderline"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#1e3a34]"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--accent)]"
                   initial={false}
                   transition={{ type: "spring", stiffness: 450, damping: 35 }}
                 />
@@ -94,7 +94,7 @@ export default function SettingsClient() {
       </div>
 
       {/* Main Tab Stage Card */}
-      <main className="bg-white border border-[#e3dfd4] rounded-2xl p-6 sm:p-8 shadow-xs">
+      <main className="bg-[var(--surface)] border border-[var(--line)] text-[var(--ink)] rounded-2xl p-6 sm:p-8 shadow-xs transition-colors duration-200">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}

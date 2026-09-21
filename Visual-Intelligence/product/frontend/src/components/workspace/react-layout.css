@@ -903,58 +903,169 @@ dialog .dialogfoot .danger-action {
   font-weight: 600;
   border-radius: 6px;
 }
-.syntax-control {
+.prompt-toolbar {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  width: 100%;
+}
+
+.prompt-left {
   display: flex;
   align-items: center;
-  gap: 5px;
-  color: var(--muted);
-  padding: 5px 7px !important;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.prompt-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.composer .prompt-icon {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px;
+  min-height: 32px;
+  border-radius: 50% !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: 0 !important;
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  color: var(--muted) !important;
+  cursor: pointer;
+  flex-shrink: 0 !important;
+  transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.composer .prompt-icon:hover {
+  background: color-mix(in srgb, var(--ink) 7%, transparent) !important;
+  color: var(--ink) !important;
+}
+
+.composer .prompt-icon svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.composer .syntax-control {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  background: transparent !important;
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 5px 8px !important;
   font-size: 12px !important;
-  border: 0 !important;
-  outline: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
+  font-weight: 500 !important;
+  color: var(--muted) !important;
+  border-radius: 8px !important;
+  cursor: pointer;
+  transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.syntax-control:hover {
+
+.composer .syntax-control:hover {
   background: color-mix(in srgb, var(--ink) 6%, transparent) !important;
+  color: var(--ink) !important;
 }
-.syntax-control:first-child {
-  margin-left: -3px;
+
+.composer .syntax-control > span {
+  font-weight: 500 !important;
+  font-size: 11.5px !important;
 }
-.syntax-control > span {
-  font-size: 11px;
-}
-.approval-control {
-  border: 0 !important;
-  outline: none !important;
-  box-shadow: none !important;
+
+.composer .approval-control {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
   background: transparent !important;
-}
-.approval-control:hover {
-  background: color-mix(in srgb, var(--ink) 6%, transparent) !important;
-}
-.model-control {
   border: 0 !important;
   outline: none !important;
   box-shadow: none !important;
+  color: var(--muted) !important;
+  padding: 5px 8px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+  cursor: pointer;
+  transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.composer .approval-control:hover {
+  background: color-mix(in srgb, var(--ink) 6%, transparent) !important;
+  color: var(--ink) !important;
+}
+
+.composer .approval-control svg {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+.composer .model-control {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
   background: transparent !important;
-}
-.model-control:hover {
-  background: color-mix(in srgb, var(--ink) 6%, transparent) !important;
-}
-.prompt-icon {
   border: 0 !important;
   outline: none !important;
   box-shadow: none !important;
-  background: transparent !important;
+  color: var(--muted) !important;
+  padding: 5px 8px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+  cursor: pointer;
+  transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.prompt-icon:hover {
+
+.composer .model-control:hover {
   background: color-mix(in srgb, var(--ink) 6%, transparent) !important;
+  color: var(--ink) !important;
 }
-.voice-send {
+
+.composer .model-control svg {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+.composer .voice-send {
+  background: var(--ink) !important;
+  color: var(--surface) !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px;
+  min-height: 32px;
+  border-radius: 50% !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: 0 !important;
   border: 0 !important;
   outline: none !important;
-  box-shadow: none !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18) !important;
+  cursor: pointer;
+  flex-shrink: 0 !important;
+  transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.composer .voice-send:hover {
+  filter: brightness(1.15);
+  transform: scale(1.06);
+}
+
+.composer .voice-send svg {
+  width: 16px !important;
+  height: 16px !important;
+  color: var(--surface) !important;
+  stroke: var(--surface) !important;
 }
 .suggestion-list {
   position: absolute;
@@ -1735,16 +1846,9 @@ dialog .dialogfoot .danger-action {
   box-shadow: none !important;
 }
 
-/* 4. Composer & Prompt Dock Controls */
+/* 4. Composer Outer Shell */
 .composer,
-.composer:focus-within,
-.composer button,
-.syntax-control,
-.approval-control,
-.model-control,
-.prompt-icon,
-.voice-send {
-  border: 0 !important;
+.composer:focus-within {
   outline: none !important;
 }
 
