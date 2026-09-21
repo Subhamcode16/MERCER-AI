@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   User,
   Mail,
@@ -11,10 +11,24 @@ import {
   CheckCircle2,
   Lock,
   Sparkles,
+  AlertCircle,
+  X,
+  Trash2,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { useTactileAudio } from "@/components/dashboard/useTactileAudio";
+
+const ALLOWED_MIME_TYPES = [
+  "image/png",
+  "image/jpeg",
+  "image/jpg",
+  "image/webp",
+  "image/gif",
+];
+
+const ALLOWED_EXTENSIONS = [".png", ".jpg", ".jpeg", ".webp", ".gif"];
+const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 
 export default function ProfileTab() {
   const { session, profile } = useAuth();
@@ -27,8 +41,22 @@ export default function ProfileTab() {
       profile?.email?.split("@")[0] ||
       "Dr. Julian Mercer",
   );
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(
+    user?.user_metadata?.avatar_url || null,
+  );
   const [isUpdating, setIsUpdating] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Auto-dismiss error after 5 seconds
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => setErrorMessage(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
 
   // Keyboard shortcut ⌘S / Ctrl+S to save
   useEffect(() => {
@@ -40,14 +68,70 @@ export default function ProfileTab() {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [name]);
+  }, [name, avatarUrl]);
+
+  const handleAvatarClick = () => {
+    playFocusSound();
+    setErrorMessage(null);
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Reset input value so re-selecting same file triggers change
+    e.target.value = "";
+
+    // 1. Validate File Extension
+    const fileName = file.name.toLowerCase();
+    const hasValidExtension = ALLOWED_EXTENSIONS.some((ext) =>
+      fileName.endsWith(ext),
+    );
+
+    // 2. Validate MIME Type
+    const hasValidMime = ALLOWED_MIME_TYPES.includes(file.type.toLowerCase());
+
+    if (!hasValidExtension || !hasValidMime) {
+      setErrorMessage(
+        "Unsupported file format. Please upload a PNG, JPG, WEBP, or GIF image.",
+      );
+      return;
+    }
+
+    // 3. Validate File Size
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      setErrorMessage(
+        "File size exceeds the 5MB limit. Please upload a smaller image.",
+      );
+      return;
+    }
+
+    // Clear any previous error and generate preview
+    setErrorMessage(null);
+    playSubmitSound();
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event.target?.result) {
+        setAvatarUrl(event.target.result as string);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveAvatar = () => {
+    playFocusSound();
+    setAvatarUrl(null);
+    setErrorMessage(null);
+  };
 
   const handleUpdate = async () => {
     setIsUpdating(true);
     playSubmitSound();
     try {
       const { error } = await supabase.auth.updateUser({
-        data: { full_name: name },
+        data: { full_name: name, avatar_url: avatarUrl },
       });
       if (error) throw error;
       setSavedSuccess(true);
@@ -71,17 +155,37 @@ export default function ProfileTab() {
   return (
     <div className="space-y-8 font-sans">
       
+      {/* Hidden File Input with accept filter */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept="image/png,image/jpeg,image/jpg,image/webp,image/gif"
+        className="hidden"
+        aria-label="Upload profile photo"
+      />
+
       {/* Avatar & User Details */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 pb-6 border-b border-[#e3dfd4]">
         <div className="flex items-center gap-4">
           <div
             className="relative group cursor-pointer"
             onMouseEnter={playHoverSound}
-            onClick={playFocusSound}
-            title="Change Avatar"
+            onClick={handleAvatarClick}
+            title="Click to upload profile photo"
           >
-            <div className="w-16 h-16 rounded-full bg-[#f0ebe1] text-[#0f1419] border border-[#e3dfd4] flex items-center justify-center font-serif text-2xl font-bold tracking-wider shadow-2xs">
-              {initials}
+            <div className="w-16 h-16 rounded-full bg-[#f0ebe1] text-[#0f1419] border border-[#e3dfd4] flex items-center justify-center overflow-hidden shadow-2xs">
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt={name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="font-serif text-2xl font-bold tracking-wider">
+                  {initials}
+                </span>
+              )}
             </div>
             <div className="absolute inset-0 rounded-full bg-[#0f1419]/75 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white backdrop-blur-xs">
               <Camera size={16} />
@@ -92,13 +196,23 @@ export default function ProfileTab() {
             <h2 className="font-serif text-xl sm:text-2xl text-[#0f1419] font-medium tracking-tight">
               {name}
             </h2>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xs text-[#5e6d68] font-normal">
                 {user?.email || "user@example.com"}
               </span>
               <span className="inline-flex items-center gap-1 px-2 py-0.2 rounded-full bg-[#f0ebe1] text-[#059669] text-[10px] font-mono font-bold">
                 <CheckCircle2 size={10} /> Verified
               </span>
+              {avatarUrl && (
+                <button
+                  type="button"
+                  onClick={handleRemoveAvatar}
+                  onMouseEnter={playHoverSound}
+                  className="inline-flex items-center gap-1 text-[11px] text-[#ef4444] hover:underline font-sans ml-1"
+                >
+                  <Trash2 size={11} /> Remove photo
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -107,6 +221,23 @@ export default function ProfileTab() {
           Role: <strong className="text-[#0f1419] uppercase">{profile?.role || "Creative Director"}</strong>
         </div>
       </div>
+
+      {/* Security Validation Error Alert */}
+      {errorMessage && (
+        <div className="p-3.5 rounded-xl bg-[#fef2f2] border border-[#fecaca] text-[#b91c1c] text-xs font-medium flex items-center justify-between gap-3 animate-in fade-in">
+          <div className="flex items-center gap-2">
+            <AlertCircle size={15} className="shrink-0 text-[#dc2626]" />
+            <span>{errorMessage}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setErrorMessage(null)}
+            className="p-1 hover:bg-[#fee2e2] rounded text-[#b91c1c] transition-colors"
+          >
+            <X size={13} />
+          </button>
+        </div>
+      )}
 
       {/* Form Fields */}
       <div className="space-y-5">
