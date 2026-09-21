@@ -453,32 +453,80 @@ export const MeadowPromptBox: React.FC = () => {
     });
   }
 
+  const MENTION_PALETTES = [
+    { bg: "rgba(217, 119, 6, 0.15)", color: "#b45309", shadow: "rgba(217, 119, 6, 0.35)" }, // Amber
+    { bg: "rgba(16, 185, 129, 0.15)", color: "#047857", shadow: "rgba(16, 185, 129, 0.35)" }, // Emerald
+    { bg: "rgba(59, 130, 246, 0.15)", color: "#1d4ed8", shadow: "rgba(59, 130, 246, 0.35)" }, // Blue
+    { bg: "rgba(147, 51, 234, 0.15)", color: "#7e22ce", shadow: "rgba(147, 51, 234, 0.35)" }, // Violet
+    { bg: "rgba(244, 63, 94, 0.15)", color: "#be123c", shadow: "rgba(244, 63, 94, 0.35)" }, // Rose
+    { bg: "rgba(20, 184, 166, 0.15)", color: "#0f766e", shadow: "rgba(20, 184, 166, 0.35)" }, // Teal
+    { bg: "rgba(234, 88, 12, 0.15)", color: "#c2410c", shadow: "rgba(234, 88, 12, 0.35)" }, // Orange
+    { bg: "rgba(99, 102, 241, 0.15)", color: "#4338ca", shadow: "rgba(99, 102, 241, 0.35)" }, // Indigo
+    { bg: "rgba(236, 72, 153, 0.15)", color: "#be185d", shadow: "rgba(236, 72, 153, 0.35)" }, // Pink
+  ];
+
+  function getMentionStyle(nameOrToken: string) {
+    let hash = 0;
+    const clean = nameOrToken.replace(/^@/, "").toLowerCase();
+    for (let i = 0; i < clean.length; i++) {
+      hash = (hash * 31 + clean.charCodeAt(i)) >>> 0;
+    }
+    const p = MENTION_PALETTES[hash % MENTION_PALETTES.length];
+    return {
+      backgroundColor: p.bg,
+      color: p.color,
+      boxShadow: `inset 0 -1px ${p.shadow}`,
+    };
+  }
+
   function highlightedText(text: string) {
-    const names = members.map((a) =>
-      a.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+    if (!text) return text;
+    const sortedMembers = [...members].sort((a, b) => b.name.length - a.name.length);
+    const memberPatterns = sortedMembers.map((a) =>
+      a.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
     );
-    const words = [
-      ...names.map((name) => `@${name}`),
-      ...commands.map((c) => `/${c.name}`),
+    const commandPatterns = commands.map((c) =>
+      c.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+    );
+
+    const specificPatterns = [
+      ...memberPatterns.map((n) => `@${n}`),
+      ...commandPatterns.map((c) => `/${c}`),
     ];
-    if (!words.length) return text;
-    const regex = new RegExp(
-      `(${words.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})(?=\\s|$|[.,!?])`,
-      "gi"
-    );
-    const tokens = new Set(words.map((word) => word.toLowerCase()));
-    return text.split(regex).map((part, index) =>
-      tokens.has(part.toLowerCase()) ? (
-        <mark
-          key={index}
-          className={part.startsWith("@") ? "mention-token" : "command-token"}
-        >
-          {part}
-        </mark>
-      ) : (
-        part
-      )
-    );
+
+    const patternStr = specificPatterns.length
+      ? `(${specificPatterns.join("|")}|@[a-zA-Z0-9_.-]+)(?=\\s|$|[.,!?])`
+      : `(@[a-zA-Z0-9_.-]+|/[a-zA-Z0-9_-]+)(?=\\s|$|[.,!?])`;
+
+    const regex = new RegExp(patternStr, "gi");
+    const parts = text.split(regex);
+
+    return parts.map((part, index) => {
+      if (!part) return null;
+      if (part.startsWith("@")) {
+        const style = getMentionStyle(part);
+        return (
+          <mark
+            key={index}
+            className="mention-token"
+            style={style}
+          >
+            {part}
+          </mark>
+        );
+      }
+      if (part.startsWith("/")) {
+        return (
+          <mark
+            key={index}
+            className="command-token"
+          >
+            {part}
+          </mark>
+        );
+      }
+      return part;
+    });
   }
 
   function cleanAudio() {

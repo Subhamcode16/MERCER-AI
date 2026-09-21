@@ -867,16 +867,25 @@ dialog .dialogfoot .danger-action {
   pointer-events: none;
 }
 .prompt-highlight mark {
-  color: var(--ink);
   border-radius: 6px;
-  padding: 1px 3px;
-  margin: 0 -3px;
+  padding: 1px 4px;
+  margin: 0 -2px;
+  font-weight: 550;
+  display: inline;
+  line-height: inherit;
   background: color-mix(in srgb, var(--accent) 13%, var(--soft));
-  box-shadow: inset 0 -1px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+.prompt-highlight .mention-token {
+  font-weight: 600;
+  border-radius: 6px;
+  transition: all 120ms ease;
 }
 .prompt-highlight .command-token {
-  background: color-mix(in srgb, #7867bc 14%, var(--soft));
-  box-shadow: inset 0 -1px #7867bc66;
+  background: color-mix(in srgb, #7867bc 15%, var(--soft)) !important;
+  box-shadow: inset 0 -1px #7867bc66 !important;
+  color: #7867bc !important;
+  font-weight: 600;
+  border-radius: 6px;
 }
 .syntax-control {
   display: flex;
