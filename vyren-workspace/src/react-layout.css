@@ -56,6 +56,22 @@ dialog .dialogfoot button:not(.primary):not(.danger-action) {
   background: transparent;
   color: var(--muted);
 }
+dialog .dialogfoot button.primary,
+.radial-settings-modal .dialogfoot button.primary,
+button.primary {
+  background: var(--accent, #10251e) !important;
+  color: var(--accent-ink, #ffffff) !important;
+  border: 1px solid var(--accent, #10251e) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+}
+dialog .dialogfoot button.primary:hover,
+.radial-settings-modal .dialogfoot button.primary:hover,
+button.primary:hover {
+  filter: brightness(1.12);
+  background: var(--accent, #10251e) !important;
+  color: var(--accent-ink, #ffffff) !important;
+}
 dialog .dialogfoot .danger-action {
   margin-right: 0 !important;
   border-color: color-mix(in srgb, #b33 24%, var(--line));

@@ -386,7 +386,7 @@ export function RadialMenu({ onAction }: { onAction: (id: string) => void }) {
               className="primary"
               onClick={() => setSettingsOpen(false)}
             >
-              Done
+              Save &amp; Apply
             </button>
           </div>
         </Modal>
