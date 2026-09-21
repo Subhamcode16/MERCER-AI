@@ -290,8 +290,9 @@ export default function ProfileTab() {
             <span className="text-sm font-semibold text-[#0f1419] font-sans">
               {profile?.role ? profile.role.toUpperCase() : "CREATIVE DIRECTOR"}
             </span>
-            <span className="text-[10px] bg-[#0f1419] text-white px-2.5 py-0.5 rounded-full font-mono font-bold tracking-wider">
-              TIER-1 ACTIVE
+            <span className="inline-flex items-center gap-1.5 bg-[#ecfdf5] text-[#065f46] border border-[#a7f3d0] text-[11px] font-medium px-2.5 py-0.5 rounded-full font-sans shadow-xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#10b981] animate-pulse" />
+              Tier 1 Active
             </span>
           </div>
         </div>
@@ -310,15 +311,22 @@ export default function ProfileTab() {
 
           <button
             type="button"
+            role="switch"
+            aria-checked={!isMuted}
             onClick={toggleMute}
             onMouseEnter={playHoverSound}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all shadow-xs ${
-              isMuted
-                ? "bg-[#f0ebe1] text-[#5e6d68] hover:bg-[#e3dfd4]"
-                : "bg-[#1e3a34] text-white hover:bg-[#142824]"
+            aria-label={isMuted ? "Enable tactile audio feedback" : "Disable tactile audio feedback"}
+            className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+              !isMuted ? "bg-[#1e3a34]" : "bg-[#d8d3c5]"
             }`}
           >
-            {isMuted ? "Sound Disabled" : "Sound Enabled"}
+            <motion.span
+              layout
+              transition={{ type: "spring", stiffness: 500, damping: 30 }}
+              className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-xs ring-0 transition-transform ${
+                !isMuted ? "translate-x-5" : "translate-x-0"
+              }`}
+            />
           </button>
         </div>
       </div>
