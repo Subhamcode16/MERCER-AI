@@ -6,12 +6,9 @@ import {
   Clock,
   Zap,
   TrendingUp,
-  RefreshCw,
   Coins,
-  ShieldCheck,
   CheckCircle2,
   AlertCircle,
-  Filter,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTactileAudio } from "@/components/dashboard/useTactileAudio";
@@ -87,88 +84,88 @@ export default function UsageTab() {
 
   return (
     <div className="space-y-8">
-      {/* Hero Metric Liquid Glass Card */}
-      <div className="rounded-3xl bg-white/70 backdrop-blur-2xl border border-white/80 p-6 sm:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.06),inset_0_1.5px_2px_rgba(255,255,255,0.95)]">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
-          {/* Main Counter */}
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-slate-900/5 border border-slate-900/10 text-[10px] font-mono uppercase tracking-widest text-slate-700 font-bold">
-              <Coins size={11} className="text-amber-600" />
-              Live Ledger Balance
-            </div>
-            <div className="flex items-baseline gap-3">
-              <span className="font-serif text-5xl sm:text-6xl text-[#0f172a] font-normal tracking-tight">
-                {currentCredits}
-              </span>
-              <span className="text-sm font-semibold uppercase tracking-wider text-slate-600">
-                Credits Remaining
-              </span>
-            </div>
-            <p className="text-xs text-slate-600 font-light">
-              Automatic computational reset occurs on <strong className="text-slate-800">August 1st, 2026</strong>.
-            </p>
+      {/* Hero Metrics Row */}
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 pb-8 border-b border-slate-200/90">
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-[10px] font-mono uppercase tracking-widest text-slate-700 font-bold">
+            <Coins size={11} className="text-amber-600" />
+            Live Compute Allocation
           </div>
-
-          {/* Linear Meter with Glow */}
-          <div className="w-full lg:w-80 space-y-3 p-4 rounded-2xl bg-white/60 border border-white/90 shadow-xs">
-            <div className="flex justify-between text-xs font-semibold text-slate-700">
-              <span className="flex items-center gap-1.5">
-                <TrendingUp size={13} className="text-emerald-700" />
-                Consumption Capacity
-              </span>
-              <span className="font-mono text-slate-900">{percentage}% Available</span>
-            </div>
-
-            <div className="h-2.5 w-full bg-slate-200/80 rounded-full overflow-hidden p-[1px]">
-              <div
-                className="h-full bg-gradient-to-r from-emerald-600 to-teal-600 rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(16,185,129,0.4)]"
-                style={{ width: `${percentage}%` }}
-              />
-            </div>
-
-            <div className="flex justify-between text-[11px] font-mono text-slate-500 pt-1">
-              <span>Used: {consumedCredits}</span>
-              <span>Total: {maxCredits}</span>
-            </div>
+          <div className="flex items-baseline gap-3">
+            <span className="font-serif text-5xl sm:text-6xl text-[#0f172a] font-normal tracking-tight">
+              {currentCredits}
+            </span>
+            <span className="text-sm font-semibold uppercase tracking-wider text-slate-600">
+              Credits Remaining
+            </span>
           </div>
+          <p className="text-xs text-slate-600 font-light">
+            Automatic computational refresh on{" "}
+            <strong className="text-slate-900 font-semibold">August 1st, 2026</strong>.
+          </p>
         </div>
 
-        {/* 3 Micro Stat Pillars */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 pt-6 border-t border-slate-200/80">
-          <div className="p-4 rounded-2xl bg-white/50 border border-white/80">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-bold">
-              Base Limit
+        {/* Capacity Meter */}
+        <div className="w-full lg:w-80 space-y-3 p-4 rounded-2xl bg-slate-50 border border-slate-200/90 shadow-2xs">
+          <div className="flex justify-between text-xs font-semibold text-slate-800">
+            <span className="flex items-center gap-1.5">
+              <TrendingUp size={13} className="text-emerald-700" />
+              Available Quota
             </span>
-            <p className="font-serif text-2xl text-[#0f172a] font-medium mt-1">
-              {maxCredits.toLocaleString()} <span className="text-xs font-sans text-slate-600 font-normal">credits</span>
-            </p>
+            <span className="font-mono text-slate-900">{percentage}%</span>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white/50 border border-white/80">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-bold">
-              Average Cost / Gen
-            </span>
-            <p className="font-serif text-2xl text-[#0f172a] font-medium mt-1">
-              1.4 <span className="text-xs font-sans text-slate-600 font-normal">units</span>
-            </p>
+          <div className="h-2.5 w-full bg-slate-200 rounded-full overflow-hidden p-[1px]">
+            <div
+              className="h-full bg-gradient-to-r from-emerald-600 to-teal-600 rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(16,185,129,0.4)]"
+              style={{ width: `${percentage}%` }}
+            />
           </div>
 
-          <div className="p-4 rounded-2xl bg-white/50 border border-white/80">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-bold">
-              Compute Node Status
-            </span>
-            <div className="flex items-center gap-2 mt-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-600" />
-              <span className="text-xs font-semibold text-emerald-800">
-                100% Operational
-              </span>
-            </div>
+          <div className="flex justify-between text-[11px] font-mono text-slate-600 pt-0.5">
+            <span>Burned: {consumedCredits}</span>
+            <span>Limit: {maxCredits}</span>
           </div>
         </div>
       </div>
 
-      {/* Activity Ledger Table Card */}
-      <div className="rounded-3xl bg-white/70 backdrop-blur-2xl border border-white/80 p-6 sm:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.06),inset_0_1.5px_2px_rgba(255,255,255,0.95)] space-y-5">
+      {/* 3 Pillar Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/80">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-bold">
+            Monthly Pool
+          </span>
+          <p className="font-serif text-2xl text-[#0f172a] font-medium mt-1">
+            {maxCredits.toLocaleString()}{" "}
+            <span className="text-xs font-sans text-slate-600 font-normal">credits</span>
+          </p>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/80">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-bold">
+            Average Cost / Gen
+          </span>
+          <p className="font-serif text-2xl text-[#0f172a] font-medium mt-1">
+            1.4{" "}
+            <span className="text-xs font-sans text-slate-600 font-normal">units</span>
+          </p>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/80">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-bold">
+            Cluster Reliability
+          </span>
+          <div className="flex items-center gap-2 mt-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-600" />
+            <span className="text-xs font-semibold text-emerald-800">
+              100% Operational
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Cryptographic Activity Ledger */}
+      <div className="space-y-4 pt-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-slate-900 text-white shadow-xs">
@@ -176,16 +173,16 @@ export default function UsageTab() {
             </div>
             <div>
               <h3 className="font-serif text-xl text-[#0f172a] font-medium">
-                Activity &amp; Consensus Ledger
+                Activity Ledger &amp; Audit Log
               </h3>
               <p className="text-xs text-slate-600 font-light">
-                Cryptographic record of neural inference and monthly allocations.
+                Verifiable cryptographic record of neural inference and monthly allocations.
               </p>
             </div>
           </div>
 
-          {/* Filter Pills */}
-          <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-white/80 border border-slate-200 shadow-xs self-start sm:self-center text-xs">
+          {/* Filter Chips */}
+          <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-slate-100 border border-slate-200 text-xs">
             {(["all", "generation", "subscription"] as const).map((mode) => (
               <button
                 key={mode}
@@ -194,9 +191,9 @@ export default function UsageTab() {
                   setFilter(mode);
                 }}
                 onMouseEnter={playHoverSound}
-                className={`px-3 py-1.5 rounded-lg font-medium capitalize transition-all ${
+                className={`px-3 py-1.5 rounded-lg font-semibold capitalize transition-all ${
                   filter === mode
-                    ? "bg-[#0f172a] text-white shadow-xs font-semibold"
+                    ? "bg-[#0f172a] text-white shadow-xs"
                     : "text-slate-600 hover:text-[#0f172a]"
                 }`}
               >
@@ -206,22 +203,22 @@ export default function UsageTab() {
           </div>
         </div>
 
-        {/* Ledger Entries */}
-        <div className="rounded-2xl border border-slate-200/90 overflow-hidden bg-white/80 shadow-xs">
-          <div className="grid grid-cols-12 gap-4 px-5 py-3.5 border-b border-slate-200 bg-slate-100/70 text-[10px] font-mono font-bold tracking-widest text-slate-600 uppercase">
+        {/* Ledger Table */}
+        <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white shadow-xs">
+          <div className="grid grid-cols-12 gap-4 px-5 py-3.5 border-b border-slate-200 bg-slate-50 text-[10px] font-mono font-bold tracking-widest text-slate-600 uppercase">
             <div className="col-span-5 md:col-span-5">Event &amp; Workflow</div>
             <div className="col-span-3 md:col-span-3 hidden sm:block">Timestamp</div>
             <div className="col-span-4 md:col-span-2">Verification</div>
             <div className="col-span-3 md:col-span-2 text-right">Debit / Credit</div>
           </div>
 
-          <div className="divide-y divide-slate-200/70">
+          <div className="divide-y divide-slate-100">
             {filteredLogs.map((log) => {
               const isRefill = String(log.cost).startsWith("+");
               return (
                 <div
                   key={log.id}
-                  className="grid grid-cols-12 gap-4 px-5 py-4 items-center hover:bg-slate-50/80 transition-colors"
+                  className="grid grid-cols-12 gap-4 px-5 py-4 items-center hover:bg-slate-50 transition-colors"
                 >
                   <div className="col-span-5 md:col-span-5 flex items-center gap-3">
                     <div
