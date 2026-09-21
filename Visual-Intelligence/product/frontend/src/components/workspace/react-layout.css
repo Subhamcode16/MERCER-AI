@@ -157,6 +157,9 @@ dialog .dialogfoot .danger-action {
   align-items: center;
   justify-content: space-between;
   margin: 15px 2px 6px;
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 .sectionhead .section-toggle {
   display: flex;
@@ -165,8 +168,10 @@ dialog .dialogfoot .danger-action {
   min-width: 0;
   flex: 1;
   justify-content: space-between;
-  border: 0;
-  background: transparent;
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
   color: var(--muted);
   padding: 5px 4px;
   font-size: 10px;
@@ -184,24 +189,34 @@ dialog .dialogfoot .danger-action {
 .section-toggle[aria-expanded="true"] svg {
   transform: rotate(180deg);
 }
-.sectionhead .icon-only {
+.sectionhead .icon-only,
+.sectionhead .icon-button {
   align-self: center;
   width: 24px;
   height: 24px;
   padding: 4px;
-  border: 0;
+  border: 0 !important;
+  outline: none !important;
   border-radius: 7px;
-  background: transparent;
-  box-shadow: none;
+  background: transparent !important;
+  box-shadow: none !important;
 }
-.sectionhead .icon-only:hover {
-  background: color-mix(in srgb, var(--ink) 7%, transparent);
+.sectionhead .icon-only:hover,
+.sectionhead .icon-button:hover {
+  background: color-mix(in srgb, var(--ink) 7%, transparent) !important;
 }
 .thread-shell {
   position: relative;
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
-.thread-shell .thread {
+.thread-shell .thread,
+.thread {
   padding-right: 9px;
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 .agent-actions {
   position: absolute;
@@ -212,6 +227,9 @@ dialog .dialogfoot .danger-action {
   gap: 1px;
   opacity: 0;
   pointer-events: none;
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
   transition:
     opacity 170ms ease,
     transform 190ms cubic-bezier(0.2, 0.75, 0.25, 1);
@@ -221,18 +239,26 @@ dialog .dialogfoot .danger-action {
   height: 27px;
   display: grid;
   place-items: center;
-  border: 0;
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
   border-radius: 7px;
-  background: transparent;
+  background: transparent !important;
   color: var(--muted);
 }
 .agent-actions button:hover {
-  background: transparent;
+  background: color-mix(in srgb, var(--ink) 8%, transparent) !important;
   color: var(--ink);
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 .agent-actions button:last-child:hover {
   color: #b33;
-  background: transparent;
+  background: color-mix(in srgb, #b33 12%, transparent) !important;
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 .agent-actions svg {
   width: 16px;
@@ -859,18 +885,51 @@ dialog .dialogfoot .danger-action {
   color: var(--muted);
   padding: 5px 7px !important;
   font-size: 12px !important;
-  transition: all 140ms ease;
-  border-radius: 6px;
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
 }
 .syntax-control:hover {
-  color: var(--ink);
-  background: var(--soft);
+  background: color-mix(in srgb, var(--ink) 6%, transparent) !important;
 }
 .syntax-control:first-child {
   margin-left: -3px;
 }
 .syntax-control > span {
   font-size: 11px;
+}
+.approval-control {
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+.approval-control:hover {
+  background: color-mix(in srgb, var(--ink) 6%, transparent) !important;
+}
+.model-control {
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+.model-control:hover {
+  background: color-mix(in srgb, var(--ink) 6%, transparent) !important;
+}
+.prompt-icon {
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+.prompt-icon:hover {
+  background: color-mix(in srgb, var(--ink) 6%, transparent) !important;
+}
+.voice-send {
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 .suggestion-list {
   position: absolute;
@@ -1573,3 +1632,66 @@ dialog .dialogfoot .danger-action {
     animation: none;
   }
 }
+
+/* =========================================================================
+   BORDERLESS / INVISIBLE OUTLINE SYSTEM
+   Removes visible borders from Headings, Agents, Action Icons, and Toolbar
+   ========================================================================= */
+
+/* 1. Headings & Section Toggles */
+.sectionhead,
+.sectionhead *,
+.section-toggle,
+.section-toggle *,
+.sectionlabel,
+.workspace-trigger,
+.workspace-menu-heading,
+.recent-chats-head,
+.recent-chats-head * {
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* 2. Agent Cards & Roster Items */
+.thread,
+.thread-shell,
+.thread-shell .thread,
+.task-list > button,
+.thread[aria-pressed="true"],
+.thread:hover,
+.task-list > button[aria-pressed="true"],
+.task-list > button:hover {
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* 3. Action Icons & Buttons */
+.agent-actions button,
+.agent-actions button:hover,
+.icon-only,
+.icon-button,
+.project-search-toggle,
+.sectionhead .icon-only,
+.sectionhead .icon-button,
+.dialoghead .icon-only,
+.prompt-popover .icon-only {
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* 4. Composer & Prompt Dock Controls */
+.composer,
+.composer:focus-within,
+.composer button,
+.syntax-control,
+.approval-control,
+.model-control,
+.prompt-icon,
+.voice-send {
+  border: 0 !important;
+  outline: none !important;
+}
+

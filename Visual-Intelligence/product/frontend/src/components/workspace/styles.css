@@ -77,7 +77,7 @@ dialog button:focus-visible {
 .app button:not(.icon-only):not(.dock-item-btn),
 dialog .dialogfoot button,
 .sidebar-foot button {
-  border: 1px solid var(--line);
+  border: 0;
   border-radius: 11px;
   background: var(--surface);
   padding: 8px 13px;
@@ -192,14 +192,17 @@ dialog .dialogfoot button:hover,
   text-align: left;
   gap: 10px;
   width: 100%;
-  border: 1px solid transparent;
+  border: 0 !important;
+  outline: none !important;
   padding: 12px 9px;
   background: transparent;
   margin-bottom: 3px;
 }
 .thread[aria-pressed="true"] {
   background: var(--soft);
-  border-color: var(--line);
+  border: 0 !important;
+  border-color: transparent !important;
+  outline: none !important;
 }
 .avatar {
   width: 35px;
